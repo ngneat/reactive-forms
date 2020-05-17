@@ -1,11 +1,3 @@
-TODO:
-
-- Create lint rule that forbids import from @angular/forms
-- Create schematics that converts from angular imports to ours
-- Test the types with https://github.com/Microsoft/dtslint
-- Extract the copied functionality to reusable functions
-
-
 <p align="center">
  <img width="20%" height="20%" src="./logo.svg">
 </p>
