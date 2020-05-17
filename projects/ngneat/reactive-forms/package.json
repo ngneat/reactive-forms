@@ -1,0 +1,26 @@
+{
+  "name": "@ngneat/reactive-forms",
+  "version": "1.0.0",
+  "peerDependencies": {
+    "@angular/common": "^9.1.7",
+    "@angular/core": "^9.1.7",
+    "tslib": "^1.10.0"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "reactive-forms"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/reactive-forms/issue"
+  },
+  "homepage": "https://github.com/reactive-forms#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reactive-forms"
+  }
+}
