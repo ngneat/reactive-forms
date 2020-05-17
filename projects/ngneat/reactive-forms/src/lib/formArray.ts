@@ -102,13 +102,13 @@ export class FormArray<T = null> extends NgFormArray {
     return super.setControl(index, control);
   }
 
-  disabledWhen(observable: Observable<boolean>, options?: ControlOptions) {
+  disabledWhile(observable: Observable<boolean>, options?: ControlOptions) {
     return observable.subscribe(isDisabled => {
       isDisabled ? this.disable(options) : this.enable(options);
     });
   }
 
-  enableWhen(observable: Observable<boolean>, options?: ControlOptions) {
+  enableWhile(observable: Observable<boolean>, options?: ControlOptions) {
     return observable.subscribe(isEnabled => {
       isEnabled ? this.enable(options) : this.disable(options);
     });
@@ -136,6 +136,12 @@ export class FormArray<T = null> extends NgFormArray {
 
   markAsDirty(opts?: { onlySelf?: boolean }): void {
     super.markAsDirty(opts);
+    this.dirtyChanges.next(true);
+  }
+
+  markAllAsDirty(): void {
+    this.markAsDirty({ onlySelf: true });
+    (this as any)._forEachChild(control => control.markAllAsDirty());
   }
 
   reset(value?: T[], options?: LimitedControlOptions): void {

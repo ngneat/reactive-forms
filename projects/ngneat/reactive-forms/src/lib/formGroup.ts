@@ -120,13 +120,13 @@ export class FormGroup<T = null> extends NgFormGroup {
     }
   }
 
-  disabledWhen(observable: Observable<boolean>, options?: ControlOptions) {
+  disabledWhile(observable: Observable<boolean>, options?: ControlOptions) {
     return observable.subscribe(isDisabled => {
       isDisabled ? this.disable(options) : this.enable(options);
     });
   }
 
-  enableWhen(observable: Observable<boolean>, options?: ControlOptions) {
+  enableWhile(observable: Observable<boolean>, options?: ControlOptions) {
     return observable.subscribe(isEnabled => {
       isEnabled ? this.enable(options) : this.disable(options);
     });
@@ -154,6 +154,12 @@ export class FormGroup<T = null> extends NgFormGroup {
 
   markAsDirty(opts?: { onlySelf?: boolean }): void {
     super.markAsDirty(opts);
+    this.dirtyChanges.next(true);
+  }
+
+  markAllAsDirty(): void {
+    this.markAsDirty({ onlySelf: true });
+    (this as any)._forEachChild(control => control.markAllAsDirty());
   }
 
   reset(formState?: T, options?: LimitedControlOptions): void {

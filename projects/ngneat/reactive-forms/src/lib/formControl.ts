@@ -5,7 +5,8 @@ import {
   LimitedControlOptions,
   ControlOptions,
   ControlState,
-  ValidatorFn
+  ValidatorFn,
+  AbstractControl
 } from './types';
 import { defer, isObservable, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { coerceArray } from './utils';
@@ -86,13 +87,13 @@ export class FormControl<T = null> extends NgFormControl {
     }
   }
 
-  disabledWhen(observable: Observable<boolean>, options?: ControlOptions) {
+  disabledWhile(observable: Observable<boolean>, options?: ControlOptions) {
     return observable.subscribe(isDisabled => {
       isDisabled ? this.disable(options) : this.enable(options);
     });
   }
 
-  enableWhen(observable: Observable<boolean>, options?: ControlOptions) {
+  enableWhile(observable: Observable<boolean>, options?: ControlOptions) {
     return observable.subscribe(isEnabled => {
       isEnabled ? this.enable(options) : this.disable(options);
     });
@@ -120,6 +121,11 @@ export class FormControl<T = null> extends NgFormControl {
 
   markAsDirty(opts?: { onlySelf?: boolean }): void {
     super.markAsDirty(opts);
+    this.dirtyChanges.next(true);
+  }
+
+  markAllAsDirty(): void {
+    this.markAsDirty({ onlySelf: true });
   }
 
   reset(formState?: T, options?: LimitedControlOptions): void {
