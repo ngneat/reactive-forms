@@ -75,6 +75,7 @@ export class FormControl<T = null> extends NgFormControl {
     }
   }
 
+  //TODO: Allow callback: patchValue(state => ...)
   patchValue(valueOrObservable: Observable<T>, options?: ControlOptions): Subscription;
   patchValue(valueOrObservable: T, options?: ControlOptions): void;
   patchValue(valueOrObservable: T | Observable<T>, options?: ControlOptions): Subscription | void {
