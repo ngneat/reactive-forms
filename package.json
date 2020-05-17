@@ -29,6 +29,7 @@
     "@angular/platform-browser-dynamic": "~9.1.7",
     "@angular/router": "~9.1.7",
     "@ngneat/lib": "^1.0.0",
+    "requireindex": "^1.1.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
@@ -48,6 +49,7 @@
     "codelyzer": "^5.1.2",
     "cross-env": "^5.2.0",
     "expect-type": "^0.7.4",
+    "eslint": "^3.9.1",
     "git-cz": "^3.2.1",
     "husky": "^3.0.1",
     "jasmine-core": "~3.5.0",
@@ -55,6 +57,7 @@
     "jest": "26.0.1",
     "jest-preset-angular": "8.2.0",
     "lint-staged": "^9.2.0",
+    "mocha": "^3.1.2",
     "ng-packagr": "^9.0.0",
     "prettier": "^1.18.2",
     "protractor": "~5.4.3",
