@@ -13,7 +13,7 @@ import { defer, isObservable, merge, Observable, of, Subject, Subscription } fro
 import { coerceArray } from './utils';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
-export class FormGroup<T = null> extends NgFormGroup {
+export class FormGroup<T extends object = null> extends NgFormGroup {
   value: T;
 
   private touchChanges = new Subject<boolean>();
