@@ -140,6 +140,12 @@ export class FormControl<T = null> extends NgFormControl {
     super.setAsyncValidators(newValidator);
   }
 
+  validateOn(observableValidation: Observable<null | object>) {
+    return observableValidation.subscribe(maybeError => {
+      this.setErrors(maybeError);
+    });
+  }
+
   private getRawValue() {
     return this.value;
   }
