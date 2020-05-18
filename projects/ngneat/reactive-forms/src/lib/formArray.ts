@@ -6,7 +6,8 @@ import {
   LimitedControlOptions,
   ControlOptions,
   ControlState,
-  ValidatorFn
+  ValidatorFn,
+  ExtendedAbstractControl
 } from './types';
 import { defer, isObservable, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { coerceArray } from './utils';
@@ -66,8 +67,8 @@ export class FormArray<T = null> extends NgFormArray {
     return this.valueChanges$.pipe(map(mapFn), distinctUntilChanged());
   }
 
-  at(index: number): AbstractControl<T> {
-    return super.at(index);
+  at(index: number): ExtendedAbstractControl<T> {
+    return super.at(index) as ExtendedAbstractControl<T>;
   }
 
   setValue(valueOrObservable: Observable<T[]>, options?: LimitedControlOptions): Subscription;
