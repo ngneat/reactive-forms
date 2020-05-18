@@ -10,7 +10,7 @@ import {
   ExtendedAbstractControl
 } from './types';
 import { defer, isObservable, merge, Observable, of, Subject, Subscription } from 'rxjs';
-import { coerceArray } from './utils';
+import { coerceArray, isFunction } from './utils';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
 export class FormArray<T = null> extends NgFormArray {
@@ -83,11 +83,19 @@ export class FormArray<T = null> extends NgFormArray {
 
   patchValue(valueOrObservable: Observable<T[]>, options?: LimitedControlOptions): Subscription;
   patchValue(valueOrObservable: T[], options?: LimitedControlOptions): void;
-  patchValue(valueOrObservable: T[] | Observable<T[]>, options?: LimitedControlOptions): Subscription | void {
+  patchValue(valueOrObservable: (state: T[]) => T[], options?: ControlOptions): void;
+  patchValue(
+    valueOrObservable: T[] | Observable<T[]> | ((state: T[]) => T[]),
+    options?: LimitedControlOptions
+  ): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
     } else {
-      super.patchValue(valueOrObservable, options);
+      let value = valueOrObservable;
+      if (isFunction(valueOrObservable)) {
+        value = valueOrObservable(this.value);
+      }
+      super.patchValue(value as T[], options);
     }
   }
 
@@ -161,5 +169,13 @@ export class FormArray<T = null> extends NgFormArray {
     return observableValidation.subscribe(maybeError => {
       this.setErrors(maybeError);
     });
+  }
+
+  hasErrorAndTouched(error: string) {
+    return this.hasError(error) && this.touched;
+  }
+
+  hasErrorAndDirty(error: string) {
+    return this.hasError(error) && this.dirty;
   }
 }

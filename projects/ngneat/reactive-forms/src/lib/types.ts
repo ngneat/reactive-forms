@@ -71,4 +71,56 @@ export interface ExtendedAbstractControl<T> extends AbstractControl<T> {
   ): ExtendedAbstractControl<T[P1][P2][P3][P4]>;
 
   getControl?(...names: any): any;
+
+  hasErrorAndTouched<P1 extends keyof T>(error: string, prop1?: P1): boolean;
+
+  hasErrorAndTouched<P1 extends keyof T, P2 extends keyof T[P1]>(error: string, prop1?: P1, prop2?: P2): boolean;
+
+  hasErrorAndTouched<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
+    error: string,
+    prop1?: P1,
+    prop2?: P2,
+    prop3?: P3
+  ): boolean;
+
+  hasErrorAndTouched<
+    P1 extends keyof T,
+    P2 extends keyof T[P1],
+    P3 extends keyof T[P1][P2],
+    P4 extends keyof T[P1][P2][P3]
+  >(
+    error: string,
+    prop1?: P1,
+    prop2?: P2,
+    prop3?: P3,
+    prop4?: P4
+  ): boolean;
+
+  hasErrorAndTouched(error: string, ...path: any): any;
+
+  hasErrorAndDirty<P1 extends keyof T>(error: string, prop1?: P1): boolean;
+
+  hasErrorAndDirty<P1 extends keyof T, P2 extends keyof T[P1]>(error: string, prop1?: P1, prop2?: P2): boolean;
+
+  hasErrorAndDirty<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
+    error: string,
+    prop1?: P1,
+    prop2?: P2,
+    prop3?: P3
+  ): boolean;
+
+  hasErrorAndDirty<
+    P1 extends keyof T,
+    P2 extends keyof T[P1],
+    P3 extends keyof T[P1][P2],
+    P4 extends keyof T[P1][P2][P3]
+  >(
+    error: string,
+    prop1?: P1,
+    prop2?: P2,
+    prop3?: P3,
+    prop4?: P4
+  ): boolean;
+
+  hasErrorAndDirty(error: string, ...path: any): any;
 }

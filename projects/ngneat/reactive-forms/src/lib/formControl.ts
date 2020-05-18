@@ -2,14 +2,13 @@ import { FormControl as NgFormControl } from '@angular/forms';
 import {
   AbstractControlOptions,
   AsyncValidatorFn,
-  LimitedControlOptions,
   ControlOptions,
   ControlState,
-  ValidatorFn,
-  AbstractControl
+  LimitedControlOptions,
+  ValidatorFn
 } from './types';
 import { defer, isObservable, merge, Observable, of, Subject, Subscription } from 'rxjs';
-import { coerceArray } from './utils';
+import { coerceArray, isFunction } from './utils';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
 export class FormControl<T = null> extends NgFormControl {
@@ -76,14 +75,18 @@ export class FormControl<T = null> extends NgFormControl {
     }
   }
 
-  //TODO: Allow callback: patchValue(state => ...)
   patchValue(valueOrObservable: Observable<T>, options?: ControlOptions): Subscription;
+  patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
   patchValue(valueOrObservable: T, options?: ControlOptions): void;
-  patchValue(valueOrObservable: T | Observable<T>, options?: ControlOptions): Subscription | void {
+  patchValue(valueOrObservable: T | Observable<T> | ((state: T) => T), options?: ControlOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
     } else {
-      super.patchValue(valueOrObservable, options);
+      let value = valueOrObservable;
+      if (isFunction(valueOrObservable)) {
+        value = valueOrObservable(this.value);
+      }
+      super.patchValue(value, options);
     }
   }
 
@@ -144,6 +147,14 @@ export class FormControl<T = null> extends NgFormControl {
     return observableValidation.subscribe(maybeError => {
       this.setErrors(maybeError);
     });
+  }
+
+  hasErrorAndTouched(error: string) {
+    return this.hasError(error) && this.touched;
+  }
+
+  hasErrorAndDirty(error: string) {
+    return this.hasError(error) && this.dirty;
   }
 
   private getRawValue() {

@@ -11,7 +11,7 @@ import {
   ValidatorFn
 } from './types';
 import { defer, isObservable, merge, Observable, of, Subject, Subscription } from 'rxjs';
-import { coerceArray } from './utils';
+import { coerceArray, isFunction } from './utils';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
 export class FormGroup<T extends object = null> extends NgFormGroup {
@@ -113,11 +113,19 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
 
   patchValue(valueOrObservable: Observable<T>, options?: LimitedControlOptions): Subscription;
   patchValue(valueOrObservable: T, options?: LimitedControlOptions): void;
-  patchValue(valueOrObservable: T | Observable<T>, options?: LimitedControlOptions): Subscription | void {
+  patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
+  patchValue(
+    valueOrObservable: T | Observable<T> | ((state: T) => T),
+    options?: LimitedControlOptions
+  ): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
     } else {
-      super.patchValue(valueOrObservable, options);
+      let value = valueOrObservable;
+      if (isFunction(valueOrObservable)) {
+        value = valueOrObservable(this.value);
+      }
+      super.patchValue(value, options);
     }
   }
 
@@ -179,5 +187,41 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
     return observableValidation.subscribe(maybeError => {
       this.setErrors(maybeError);
     });
+  }
+
+  hasErrorAndTouched<P1 extends keyof T>(error: string, prop1?: P1): boolean;
+  hasErrorAndTouched<P1 extends keyof T, P2 extends keyof T[P1]>(error: string, prop1?: P1, prop2?: P2): boolean;
+  hasErrorAndTouched<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
+    error: string,
+    prop1?: P1,
+    prop2?: P2,
+    prop3?: P3
+  ): boolean;
+  hasErrorAndTouched<
+    P1 extends keyof T,
+    P2 extends keyof T[P1],
+    P3 extends keyof T[P1][P2],
+    P4 extends keyof T[P1][P2][P3]
+  >(error: string, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
+  hasErrorAndTouched(error: string, ...path: any): any {
+    return this.hasError(error, path.length === 0 ? undefined : path) && this.touched;
+  }
+
+  hasErrorAndDirty<P1 extends keyof T>(error: string, prop1?: P1): boolean;
+  hasErrorAndDirty<P1 extends keyof T, P2 extends keyof T[P1]>(error: string, prop1?: P1, prop2?: P2): boolean;
+  hasErrorAndDirty<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
+    error: string,
+    prop1?: P1,
+    prop2?: P2,
+    prop3?: P3
+  ): boolean;
+  hasErrorAndDirty<
+    P1 extends keyof T,
+    P2 extends keyof T[P1],
+    P3 extends keyof T[P1][P2],
+    P4 extends keyof T[P1][P2][P3]
+  >(error: string, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
+  hasErrorAndDirty(error: string, ...path: any): any {
+    return this.hasError(error, path.length === 0 ? undefined : path) && this.dirty;
   }
 }
