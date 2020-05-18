@@ -178,4 +178,12 @@ export class FormArray<T = null> extends NgFormArray {
   hasErrorAndDirty(error: string) {
     return this.hasError(error) && this.dirty;
   }
+
+  setEnable(enable = true, opts?: LimitedControlOptions) {
+    enable ? this.enable(opts) : this.disable(opts);
+  }
+
+  setDisable(disable = true, opts?: LimitedControlOptions) {
+    disable ? this.disable(opts) : this.enable(opts);
+  }
 }

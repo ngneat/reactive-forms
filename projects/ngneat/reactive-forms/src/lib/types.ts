@@ -42,7 +42,22 @@ export interface AbstractControl<T> extends AngularAbstractControl {
 
 export type ExtractStrings<T> = Extract<keyof T, string>;
 
+// We need this methods for `getControl` method type
 export interface ExtendedAbstractControl<T> extends AbstractControl<T> {
+  patchValue(valueOrObservable: Observable<T>, options?: ControlOptions): Subscription;
+
+  patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
+
+  patchValue(valueOrObservable: T, options?: ControlOptions): void;
+
+  patchValue(valueOrObservable: T | Observable<T> | ((state: T) => T), options?: ControlOptions): Subscription | void;
+
+  setValue(valueOrObservable: Observable<T>, options?: ControlOptions): Subscription;
+
+  setValue(valueOrObservable: T, options?: ControlOptions): void;
+
+  setValue(valueOrObservable: T | Observable<T>, options?: ControlOptions): Subscription | void;
+
   mergeValidators(validators: ValidatorFn<T> | ValidatorFn<T>[]): void;
 
   validateOn(observableValidation: Observable<null | object>): Subscription;
@@ -123,4 +138,8 @@ export interface ExtendedAbstractControl<T> extends AbstractControl<T> {
   ): boolean;
 
   hasErrorAndDirty(error: string, ...path: any): any;
+
+  setEnable(enable: boolean, opts?: LimitedControlOptions);
+
+  setDisable(disable: boolean, opts?: LimitedControlOptions);
 }

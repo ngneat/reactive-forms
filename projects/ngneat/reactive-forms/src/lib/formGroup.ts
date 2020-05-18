@@ -224,4 +224,12 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
   hasErrorAndDirty(error: string, ...path: any): any {
     return this.hasError(error, path.length === 0 ? undefined : path) && this.dirty;
   }
+
+  setEnable(enable = true, opts?: LimitedControlOptions) {
+    enable ? this.enable(opts) : this.disable(opts);
+  }
+
+  setDisable(disable = true, opts?: LimitedControlOptions) {
+    disable ? this.disable(opts) : this.enable(opts);
+  }
 }

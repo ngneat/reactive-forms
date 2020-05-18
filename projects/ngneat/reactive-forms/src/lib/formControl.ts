@@ -157,6 +157,14 @@ export class FormControl<T = null> extends NgFormControl {
     return this.hasError(error) && this.dirty;
   }
 
+  setEnable(enable = true, opts?: LimitedControlOptions) {
+    enable ? this.enable(opts) : this.disable(opts);
+  }
+
+  setDisable(disable = true, opts?: LimitedControlOptions) {
+    disable ? this.disable(opts) : this.enable(opts);
+  }
+
   private getRawValue() {
     return this.value;
   }
