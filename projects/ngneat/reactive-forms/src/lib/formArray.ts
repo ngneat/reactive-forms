@@ -171,12 +171,14 @@ export class FormArray<T = null> extends NgFormArray {
     });
   }
 
-  hasErrorAndTouched(error: string) {
-    return this.hasError(error) && this.touched;
+  hasErrorAndTouched(error: string, ...path: any): any {
+    const hasError = this.hasError(error, path.length === 0 ? undefined : path);
+    return hasError !== null && this.touched;
   }
 
-  hasErrorAndDirty(error: string) {
-    return this.hasError(error) && this.dirty;
+  hasErrorAndDirty(error: string, ...path: any): any {
+    const hasError = this.hasError(error, path.length === 0 ? undefined : path);
+    return hasError !== null && this.dirty;
   }
 
   setEnable(enable = true, opts?: LimitedControlOptions) {

@@ -60,7 +60,7 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
     super(controls, validatorOrOpts, asyncValidator);
   }
 
-  connect(observable: Observable<T>, options?: ControlOptions) {
+  connect(observable: Observable<Partial<T>>, options?: ControlOptions) {
     return observable.subscribe(value => this.patchValue(value, options));
   }
 
@@ -111,11 +111,11 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
     }
   }
 
-  patchValue(valueOrObservable: Observable<T>, options?: LimitedControlOptions): Subscription;
-  patchValue(valueOrObservable: T, options?: LimitedControlOptions): void;
+  patchValue(valueOrObservable: Observable<Partial<T>>, options?: LimitedControlOptions): Subscription;
+  patchValue(valueOrObservable: Partial<T>, options?: LimitedControlOptions): void;
   patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
   patchValue(
-    valueOrObservable: T | Observable<T> | ((state: T) => T),
+    valueOrObservable: Partial<T> | Observable<Partial<T>> | ((state: T) => T),
     options?: LimitedControlOptions
   ): Subscription | void {
     if (isObservable(valueOrObservable)) {
@@ -204,7 +204,8 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
     P4 extends keyof T[P1][P2][P3]
   >(error: string, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
   hasErrorAndTouched(error: string, ...path: any): any {
-    return this.hasError(error, path.length === 0 ? undefined : path) && this.touched;
+    const hasError = this.hasError(error, path.length === 0 ? undefined : path);
+    return hasError !== null && this.touched;
   }
 
   hasErrorAndDirty<P1 extends keyof T>(error: string, prop1?: P1): boolean;
@@ -222,7 +223,8 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
     P4 extends keyof T[P1][P2][P3]
   >(error: string, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
   hasErrorAndDirty(error: string, ...path: any): any {
-    return this.hasError(error, path.length === 0 ? undefined : path) && this.dirty;
+    const hasError = this.hasError(error, path.length === 0 ? undefined : path);
+    return hasError !== null && this.dirty;
   }
 
   setEnable(enable = true, opts?: LimitedControlOptions) {
