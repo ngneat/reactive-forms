@@ -1,17 +1,31 @@
 import { FormArray as NgFormArray } from '@angular/forms';
+import { isObservable, Observable, Subject, Subscription } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
+import {
+  connectControl,
+  controlDisabled$,
+  controlDisabledWhile,
+  controlEnabled$,
+  controlEnabledWhile,
+  controlStatusChanges$,
+  controlValueChanges$,
+  disableControl,
+  enableControl,
+  hasErrorAndDirty,
+  hasErrorAndTouched,
+  markAllDirty,
+  mergeControlValidators
+} from './control-actions';
 import {
   AbstractControl,
   AbstractControlOptions,
   AsyncValidatorFn,
-  LimitedControlOptions,
   ControlOptions,
-  ControlState,
-  ValidatorFn,
-  ExtendedAbstractControl
+  ExtendedAbstractControl,
+  LimitedControlOptions,
+  ValidatorFn
 } from './types';
-import { defer, isObservable, merge, Observable, of, Subject, Subscription } from 'rxjs';
-import { coerceArray, isFunction } from './utils';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { isFunction } from './utils';
 
 export class FormArray<T = null> extends NgFormArray {
   value: T[];
@@ -22,34 +36,10 @@ export class FormArray<T = null> extends NgFormArray {
   touchChanges$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
   dirtyChanges$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  valueChanges$: Observable<T[]> = merge(
-    this.valueChanges.pipe(map(() => this.getRawValue())),
-    defer(() => of(this.getRawValue()))
-  );
-
-  disabledChanges$: Observable<boolean> = merge(
-    this.statusChanges.pipe(
-      map(() => this.disabled),
-      distinctUntilChanged()
-    ),
-    defer(() => of(this.disabled))
-  );
-
-  enabledChanges$: Observable<boolean> = merge(
-    this.statusChanges.pipe(
-      map(() => this.enabled),
-      distinctUntilChanged()
-    ),
-    defer(() => of(this.enabled))
-  );
-
-  statusChanges$: Observable<ControlState> = merge(
-    defer(() => of(this.status as ControlState)),
-    this.statusChanges.pipe(
-      map(() => this.status as ControlState),
-      distinctUntilChanged()
-    )
-  );
+  valueChanges$ = controlValueChanges$(this);
+  disabledChanges$ = controlDisabled$(this);
+  enabledChanges$ = controlEnabled$(this);
+  statusChanges$ = controlStatusChanges$(this);
 
   constructor(
     public controls: AbstractControl<T>[],
@@ -60,7 +50,7 @@ export class FormArray<T = null> extends NgFormArray {
   }
 
   connect(observable: Observable<T[]>, options?: ControlOptions) {
-    return observable.subscribe(value => this.patchValue(value, options));
+    return connectControl(this, observable, options);
   }
 
   select<R>(mapFn: (state: T[]) => R): Observable<R> {
@@ -112,20 +102,15 @@ export class FormArray<T = null> extends NgFormArray {
   }
 
   disabledWhile(observable: Observable<boolean>, options?: ControlOptions) {
-    return observable.subscribe(isDisabled => {
-      isDisabled ? this.disable(options) : this.enable(options);
-    });
+    return controlDisabledWhile(this, observable, options);
   }
 
   enableWhile(observable: Observable<boolean>, options?: ControlOptions) {
-    return observable.subscribe(isEnabled => {
-      isEnabled ? this.enable(options) : this.disable(options);
-    });
+    return controlEnabledWhile(this, observable, options);
   }
 
   mergeValidators(validators: ValidatorFn<T[]> | ValidatorFn<T[]>[]) {
-    this.setValidators([this.validator, ...coerceArray(validators)]);
-    this.updateValueAndValidity();
+    mergeControlValidators(this, validators);
   }
 
   markAsTouched(opts?: { onlySelf?: boolean }): void {
@@ -149,8 +134,7 @@ export class FormArray<T = null> extends NgFormArray {
   }
 
   markAllAsDirty(): void {
-    this.markAsDirty({ onlySelf: true });
-    (this as any)._forEachChild(control => control.markAllAsDirty());
+    markAllDirty(this);
   }
 
   reset(value?: T[], options?: LimitedControlOptions): void {
@@ -171,21 +155,19 @@ export class FormArray<T = null> extends NgFormArray {
     });
   }
 
-  hasErrorAndTouched(error: string, ...path: any): any {
-    const hasError = this.hasError(error, path.length === 0 ? undefined : path);
-    return hasError && this.touched;
+  hasErrorAndTouched(error: string, ...path: any): boolean {
+    return hasErrorAndTouched(this, error, ...path);
   }
 
-  hasErrorAndDirty(error: string, ...path: any): any {
-    const hasError = this.hasError(error, path.length === 0 ? undefined : path);
-    return hasError && this.dirty;
+  hasErrorAndDirty(error: string, ...path: any): boolean {
+    return hasErrorAndDirty(this, error, ...path);
   }
 
   setEnable(enable = true, opts?: LimitedControlOptions) {
-    enable ? this.enable(opts) : this.disable(opts);
+    enableControl(this, enable, opts);
   }
 
   setDisable(disable = true, opts?: LimitedControlOptions) {
-    disable ? this.disable(opts) : this.enable(opts);
+    disableControl(this, disable, opts);
   }
 }
