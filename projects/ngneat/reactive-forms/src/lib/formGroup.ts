@@ -205,7 +205,7 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
   >(error: string, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
   hasErrorAndTouched(error: string, ...path: any): any {
     const hasError = this.hasError(error, path.length === 0 ? undefined : path);
-    return hasError !== null && this.touched;
+    return hasError && this.touched;
   }
 
   hasErrorAndDirty<P1 extends keyof T>(error: string, prop1?: P1): boolean;
@@ -224,7 +224,7 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
   >(error: string, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
   hasErrorAndDirty(error: string, ...path: any): any {
     const hasError = this.hasError(error, path.length === 0 ? undefined : path);
-    return hasError !== null && this.dirty;
+    return hasError && this.dirty;
   }
 
   setEnable(enable = true, opts?: LimitedControlOptions) {

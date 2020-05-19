@@ -150,13 +150,11 @@ export class FormControl<T = null> extends NgFormControl {
   }
 
   hasErrorAndTouched(error: string) {
-    const hasError = this.hasError(error);
-    return hasError !== null && this.touched;
+    return this.hasError(error) && this.touched;
   }
 
   hasErrorAndDirty(error: string) {
-    const hasError = this.hasError(error);
-    return hasError !== null && this.dirty;
+    return this.hasError(error) && this.dirty;
   }
 
   setEnable(enable = true, opts?: LimitedControlOptions) {

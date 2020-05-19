@@ -1,46 +1,28 @@
-import { FormGroup } from './formGroup';
-import { FormControl } from './formControl';
+import { FormArray } from './formArray';
 import { of, Subject } from 'rxjs';
-
-type Person = {
-  name: string;
-  phone: {
-    num: number;
-    prefix: number;
-  };
-};
+import { FormControl } from './formControl';
+import { Validators } from '@angular/forms';
 
 const errorFn = group => {
   return { isInvalid: true };
 };
 
-const createGroup = (withError = false) => {
-  return new FormGroup<Person>(
-    {
-      name: new FormControl(),
-      phone: new FormGroup({
-        num: new FormControl(),
-        prefix: new FormControl()
-      })
-    },
-    { validators: withError ? errorFn : [] }
-  );
+const createArray = (withError = false) => {
+  return new FormArray<string>([new FormControl(''), new FormControl('')], withError ? errorFn : []);
 };
 
-describe('FormGroup', () => {
+describe('FormArray', () => {
   it('should valueChanges$', () => {
-    const control = createGroup();
+    const control = createArray();
     const spy = jest.fn();
     control.valueChanges$.subscribe(spy);
-    expect(spy).toHaveBeenCalledWith({ name: null, phone: { num: null, prefix: null } });
-    control.patchValue({
-      name: 'changed'
-    });
-    expect(spy).toHaveBeenCalledWith({ name: 'changed', phone: { num: null, prefix: null } });
+    expect(spy).toHaveBeenCalledWith(['', '']);
+    control.patchValue(['1', '2']);
+    expect(spy).toHaveBeenCalledWith(['1', '2']);
   });
 
   it('should disabledChanges$', () => {
-    const control = createGroup();
+    const control = createArray();
     const spy = jest.fn();
     control.disabledChanges$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(false);
@@ -51,7 +33,7 @@ describe('FormGroup', () => {
   });
 
   it('should enabledChanges$', () => {
-    const control = createGroup();
+    const control = createArray();
     const spy = jest.fn();
     control.enabledChanges$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(true);
@@ -62,7 +44,7 @@ describe('FormGroup', () => {
   });
 
   it('should statusChanges$', () => {
-    const control = createGroup();
+    const control = createArray();
     const spy = jest.fn();
     control.statusChanges$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith('VALID');
@@ -71,111 +53,45 @@ describe('FormGroup', () => {
   });
 
   it('should connect$', () => {
-    const control = createGroup();
-    control.connect(of({ name: 'changed' }));
-    expect(control.value).toEqual({ name: 'changed', phone: { num: null, prefix: null } });
+    const control = createArray();
+    control.connect(of(['1', '2']));
+    expect(control.value).toEqual(['1', '2']);
   });
 
   it('should select$', () => {
-    const control = createGroup();
+    const control = createArray();
     const spy = jest.fn();
-    control.select(state => state.name).subscribe(spy);
-    expect(spy).toHaveBeenCalledWith(null);
-    control.patchValue({
-      name: 'changed'
-    });
-    expect(spy).toHaveBeenCalledWith('changed');
-    control.patchValue({
-      name: 'changed'
-    });
+    control.select(state => state[0]).subscribe(spy);
+    expect(spy).toHaveBeenCalledWith('');
+    control.patchValue(['1', '2']);
+    expect(spy).toHaveBeenCalledWith('1');
+    control.patchValue(['1', '2']);
     expect(spy).toHaveBeenCalledTimes(2);
   });
 
   it('should setValue', () => {
-    const control = createGroup();
+    const control = createArray();
 
-    control.setValue(
-      of({
-        name: 'a',
-        phone: {
-          num: 1,
-          prefix: 2
-        }
-      })
-    );
-    expect(control.value).toEqual({
-      name: 'a',
-      phone: {
-        num: 1,
-        prefix: 2
-      }
-    });
-
-    control.setValue({
-      name: 'd',
-      phone: {
-        num: 1,
-        prefix: 2
-      }
-    });
-    expect(control.value).toEqual({
-      name: 'd',
-      phone: {
-        num: 1,
-        prefix: 2
-      }
-    });
+    control.setValue(of(['1', '2']));
+    expect(control.value).toEqual(['1', '2']);
+    control.setValue(['3', '4']);
+    expect(control.value).toEqual(['3', '4']);
   });
 
   it('should patchValue', () => {
-    const control = createGroup();
+    const control = createArray();
 
-    control.patchValue(
-      of({
-        name: 'patched'
-      })
-    );
-
-    expect(control.value).toEqual({
-      name: 'patched',
-      phone: {
-        num: null,
-        prefix: null
-      }
-    });
-
-    control.patchValue({
-      name: 'dd',
-      phone: {
-        num: 1,
-        prefix: 2
-      }
-    });
-
-    expect(control.value).toEqual({
-      name: 'dd',
-      phone: {
-        num: 1,
-        prefix: 2
-      }
-    });
-
-    control.patchValue(state => ({
-      ...state,
-      name: 'ccc'
-    }));
-
-    expect(control.value).toEqual({
-      name: 'ccc',
-      phone: {
-        num: 1,
-        prefix: 2
-      }
-    });
+    control.patchValue(of(['1', '2']));
+    expect(control.value).toEqual(['1', '2']);
+    control.patchValue(['5', '4']);
+    expect(control.value).toEqual(['5', '4']);
+    control.patchValue(state => ['6', '7']);
+    expect(control.value).toEqual(['6', '7']);
   });
 
   it('should disabledWhile', () => {
-    const control = createGroup();
+    const control = createArray();
+
     const subject = new Subject<boolean>();
     control.disabledWhile(subject);
     expect(control.disabled).toBeFalsy();
@@ -186,7 +102,7 @@ describe('FormGroup', () => {
   });
 
   it('should enableWhile', () => {
-    const control = createGroup();
+    const control = createArray();
 
     const subject = new Subject<boolean>();
     control.enableWhile(subject);
@@ -198,7 +114,8 @@ describe('FormGroup', () => {
   });
 
   it('should markAsTouched/Untouched', () => {
-    const control = createGroup();
+    const control = createArray();
+
     const spy = jest.fn();
     control.touchChanges$.subscribe(spy);
     control.markAsTouched();
@@ -208,7 +125,7 @@ describe('FormGroup', () => {
   });
 
   it('should markAsPristine/Dirty', () => {
-    const control = createGroup();
+    const control = createArray();
     const spy = jest.fn();
     control.dirtyChanges$.subscribe(spy);
     control.markAllAsDirty();
@@ -218,35 +135,40 @@ describe('FormGroup', () => {
   });
 
   it('should markAllAsDirty', () => {
-    const control = createGroup();
+    const control = createArray();
+
     spyOn(control, 'markAsDirty');
     control.markAllAsDirty();
     expect(control.markAsDirty).toHaveBeenCalled();
   });
 
   it('should reset', () => {
-    const control = createGroup();
+    const control = createArray();
+
     spyOn(control, 'reset');
     control.reset();
     expect(control.reset).toHaveBeenCalled();
   });
 
   it('should setValidators', () => {
-    const control = createGroup();
+    const control = createArray();
+
     spyOn(control, 'setValidators');
     control.setValidators([]);
     expect(control.setValidators).toHaveBeenCalled();
   });
 
   it('should setAsyncValidators', () => {
-    const control = createGroup();
+    const control = createArray();
+
     spyOn(control, 'setAsyncValidators');
     control.setAsyncValidators([]);
     expect(control.setAsyncValidators).toHaveBeenCalled();
   });
 
   it('should validateOn', () => {
-    const control = createGroup();
+    const control = createArray();
+
     const subject = new Subject<object>();
     control.validateOn(subject);
     subject.next({ someError: true });
@@ -256,21 +178,23 @@ describe('FormGroup', () => {
   });
 
   it('should hasErrorAndTouched', () => {
-    const control = createGroup(true);
+    const control = createArray(true);
     expect(control.hasErrorAndTouched('isInvalid')).toBeFalsy();
     control.markAsTouched();
     expect(control.hasErrorAndTouched('isInvalid')).toBeTruthy();
   });
 
   it('should hasErrorAndDirty', () => {
-    const control = createGroup(true);
+    const control = createArray(true);
+
     expect(control.hasErrorAndDirty('isInvalid')).toBeFalsy();
     control.markAsDirty();
     expect(control.hasErrorAndDirty('isInvalid')).toBeTruthy();
   });
 
   it('should setEnable', () => {
-    const control = createGroup();
+    const control = createArray();
+
     control.setEnable();
     expect(control.enabled).toBe(true);
     control.setEnable(false);
@@ -278,7 +202,8 @@ describe('FormGroup', () => {
   });
 
   it('should setDisable', () => {
-    const control = createGroup();
+    const control = createArray();
+
     control.setDisable();
     expect(control.enabled).toBe(false);
     control.setDisable(false);
