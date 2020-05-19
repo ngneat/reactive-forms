@@ -7,6 +7,7 @@ import {
   controlDisabledWhile,
   controlEnabled$,
   controlEnabledWhile,
+  controlErrorChanges$,
   controlStatusChanges$,
   controlValueChanges$,
   disableControl,
@@ -40,6 +41,7 @@ export class FormArray<T = null> extends NgFormArray {
   disabledChanges$ = controlDisabled$(this);
   enabledChanges$ = controlEnabled$(this);
   statusChanges$ = controlStatusChanges$(this);
+  errorChanges$ = controlErrorChanges$(this);
 
   constructor(
     public controls: AbstractControl<T>[],
@@ -55,6 +57,10 @@ export class FormArray<T = null> extends NgFormArray {
 
   select<R>(mapFn: (state: T[]) => R): Observable<R> {
     return this.valueChanges$.pipe(map(mapFn), distinctUntilChanged());
+  }
+
+  getRawValue(): T[] {
+    return super.getRawValue();
   }
 
   at(index: number): ExtendedAbstractControl<T> {

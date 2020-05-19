@@ -1,9 +1,11 @@
+import { ValidationErrors } from '@angular/forms';
 import { defer, merge, Observable, of, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FormArray } from './formArray';
+import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
 import { AbstractControl, ControlOptions, ControlState, ValidatorFn } from './types';
-import { coerceArray } from './utils';
+import { coerceArray, deepEqual } from './utils';
 
 function getControlValue<T>(control: AbstractControl<T>): T {
   if (control instanceof FormGroup || control instanceof FormArray) {
@@ -47,6 +49,16 @@ export function controlStatusChanges$<T>(control: AbstractControl<T>): Observabl
     control.statusChanges.pipe(
       map(() => control.status as ControlState),
       distinctUntilChanged()
+    )
+  );
+}
+
+export function controlErrorChanges$<T>(control: AbstractControl<T>): Observable<ValidationErrors | null> {
+  return merge(
+    defer(() => of(control.errors)),
+    control.valueChanges.pipe(
+      map(() => control.errors),
+      distinctUntilChanged((a, b) => deepEqual(a, b))
     )
   );
 }
@@ -114,4 +126,11 @@ export function connectControl<T>(
   options?: ControlOptions
 ): Subscription {
   return observable.subscribe(value => control.patchValue(value, options));
+}
+
+export function selectControlValue$<O extends object, T, R>(
+  control: FormGroup<O> | FormArray<T> | FormControl<T>,
+  mapFn: (state: T | T[] | O | O[]) => R
+): Observable<R> {
+  return (control.valueChanges$ as Observable<any>).pipe(map(mapFn), distinctUntilChanged());
 }

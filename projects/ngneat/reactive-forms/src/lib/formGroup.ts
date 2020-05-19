@@ -7,6 +7,7 @@ import {
   controlDisabledWhile,
   controlEnabled$,
   controlEnabledWhile,
+  controlErrorChanges$,
   controlStatusChanges$,
   controlValueChanges$,
   disableControl,
@@ -15,6 +16,7 @@ import {
   hasErrorAndTouched,
   markAllDirty,
   mergeControlValidators,
+  selectControlValue$,
   validateControlOn
 } from './control-actions';
 import {
@@ -42,6 +44,7 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
   disabledChanges$ = controlDisabled$(this);
   enabledChanges$ = controlEnabled$(this);
   statusChanges$ = controlStatusChanges$(this);
+  errorChanges$ = controlErrorChanges$(this);
 
   constructor(
     public controls: { [K in keyof T]: AbstractControl<T[K]> },
@@ -56,7 +59,11 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
   }
 
   select<R>(mapFn: (state: T) => R): Observable<R> {
-    return this.valueChanges$.pipe(map(mapFn), distinctUntilChanged());
+    return selectControlValue$(this, mapFn);
+  }
+
+  getRawValue(): T {
+    return super.getRawValue();
   }
 
   getControl<P1 extends keyof T>(prop1: P1): ExtendedAbstractControl<T[P1]>;

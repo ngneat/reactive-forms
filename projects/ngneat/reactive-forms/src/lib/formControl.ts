@@ -7,6 +7,7 @@ import {
   controlDisabledWhile,
   controlEnabled$,
   controlEnabledWhile,
+  controlErrorChanges$,
   controlStatusChanges$,
   controlValueChanges$,
   disableControl,
@@ -14,6 +15,7 @@ import {
   hasErrorAndDirty,
   hasErrorAndTouched,
   mergeControlValidators,
+  selectControlValue$,
   validateControlOn
 } from './control-actions';
 import { AbstractControlOptions, AsyncValidatorFn, ControlOptions, LimitedControlOptions, ValidatorFn } from './types';
@@ -32,6 +34,7 @@ export class FormControl<T = null> extends NgFormControl {
   disabledChanges$ = controlDisabled$(this);
   enabledChanges$ = controlEnabled$(this);
   statusChanges$ = controlStatusChanges$(this);
+  errorChanges$ = controlErrorChanges$(this);
 
   constructor(
     formState: T = null,
@@ -46,7 +49,7 @@ export class FormControl<T = null> extends NgFormControl {
   }
 
   select<R>(mapFn: (state: T) => R): Observable<R> {
-    return this.valueChanges$.pipe(map(mapFn), distinctUntilChanged());
+    return selectControlValue$(this, mapFn);
   }
 
   setValue(valueOrObservable: Observable<T>, options?: ControlOptions): Subscription;
