@@ -130,7 +130,7 @@ export function connectControl<T>(
 
 export function selectControlValue$<O extends object, T, R>(
   control: FormGroup<O> | FormArray<T> | FormControl<T>,
-  mapFn: (state: T | T[] | O | O[]) => R
+  mapFn: (state: T | T[] | O) => R
 ): Observable<R> {
   return (control.valueChanges$ as Observable<any>).pipe(map(mapFn), distinctUntilChanged());
 }
