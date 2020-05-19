@@ -284,4 +284,12 @@ describe('FormGroup', () => {
     control.setDisable(false);
     expect(control.enabled).toBe(true);
   });
+
+  it('should getControl', () => {
+    const control = createGroup();
+    const nameControl = control.getControl('name');
+    expect(nameControl).toBeInstanceOf(FormControl);
+    const numControl = control.getControl('phone', 'num');
+    expect(numControl).toBeInstanceOf(FormControl);
+  });
 });
