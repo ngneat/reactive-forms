@@ -4,6 +4,7 @@
 /dist
 /tmp
 /out-tsc
+/projects/ngneat/reactive-forms/src/lib/type-tests/**/*.js
 # Only exists if Bazel was run
 /bazel-out
 
