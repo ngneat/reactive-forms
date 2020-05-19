@@ -12,6 +12,8 @@ function getControlValue<T>(control: AbstractControl<T>): T {
   return control.value;
 }
 
+type getControlType<T> = T extends AbstractControl<infer U> ? U : unknown;
+
 export function controlValueChanges$<T>(control: AbstractControl<T>): Observable<T> {
   return merge(
     defer(() => of(getControlValue(control))),
@@ -76,8 +78,6 @@ export function controlEnabledWhile<T>(
 ): Subscription {
   return observable.subscribe(isEnabled => enableControl(control, isEnabled, opts));
 }
-
-type getControlType<T> = T extends AbstractControl<infer U> ? U : unknown;
 
 export function mergeControlValidators<T, Control extends AbstractControl<T>, Validator extends ValidatorFn<T>>(
   control: Control,
