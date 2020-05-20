@@ -5,13 +5,20 @@ import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
 import { AbstractControl, ControlOptions, ControlState, ValidatorFn } from './types';
-import { coerceArray, deepEqual } from './utils';
+import { coerceArray, isNil } from './utils';
 
 function getControlValue<T>(control: AbstractControl<T>): T {
   if (control instanceof FormGroup || control instanceof FormArray) {
     return control.getRawValue();
   }
   return control.value;
+}
+
+function compareErrors(a: ValidationErrors | null, b: ValidationErrors | null) {
+  if (isNil(a) || isNil(b)) {
+    return a === b;
+  }
+  return JSON.stringify(a) === JSON.stringify(b);
 }
 
 type getControlType<T> = T extends AbstractControl<infer U> ? U : unknown;
@@ -58,7 +65,7 @@ export function controlErrorChanges$<T>(control: AbstractControl<T>): Observable
     defer(() => of(control.errors)),
     control.valueChanges.pipe(
       map(() => control.errors),
-      distinctUntilChanged((a, b) => deepEqual(a, b))
+      distinctUntilChanged((a, b) => compareErrors(a, b))
     )
   );
 }
