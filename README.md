@@ -1,5 +1,5 @@
 <p align="center">
- <img width="20%" height="20%" src="./logo.svg">
+ <img width="25%" src="./logo.svg">
 </p>
 
 <br />
@@ -8,50 +8,343 @@
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 [![ngneat](https://img.shields.io/badge/@-ngneat-383636?style=flat-square&labelColor=8f68d4)](https://github.com/ngneat/)
 [![spectator](https://img.shields.io/badge/tested%20with-spectator-2196F3.svg?style=flat-square)]()
 
-> The Library Slogan
+> (Angular Reactive) Forms with Benefits 😉
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid assumenda atque blanditiis cum delectus eligendi ipsam iste iure, maxime modi molestiae nihil obcaecati odit officiis pariatur quibusdam suscipit temporibus unde.
-Accusantium aliquid corporis cupiditate dolores eum exercitationem illo iure laborum minus nihil numquam odit officiis possimus quas quasi quos similique, temporibus veritatis? Exercitationem, iure magni nulla quo sapiente soluta. Esse?
+How many times have you told yourself "I wish Angular Reactive Forms would support types", or "I really want API to query the form reactively. It missed some methods."
 
-## Features
+Your wish is my command! This library extends every Angular `AbstractControl`, and provides features that don't exist in the original one. It adds types, reactive queries, and helper methods. The most important thing is that you can start using it today! The only thing that you need to change is the import path. So don't worry, no form refactoring required - we've got you covered; One schematics command (link), and you're done!
 
-- ✅ One
-- ✅ Two
-- ✅ Three
+Let's take a look at all the neat things we provide:
+
+## 🔮 Features
+
+✅ Seamless `FormControl`, `FormGroup`, `FormArray` Replacement<br>
+✅ Allows Typed Forms! <br>
+✅ Provides Reactive Queries <br>
+✅ Provides Helpful Methods
+
+```
+👉 npm install @ngneat/reactive-forms
+```
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [FAQ](#faq)
+- [Types](#types)
+- [Queries](#queries)
+- [Methods](#methods)
+- [ESLint Rule](#eslint-rule)
+- [Schematics](#schematics)
 
-## Installation
+## Types
 
-### NPM
+Each `AbstractControl` takes a generic that serves as the `type` for each method Angular and this library exposes:
 
-`npm install @ngneat/reactive-forms --save-dev`
-
-### Yarn
-
-`yarn add @ngneat/reactive-forms --dev`
-
-## Usage
-
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid assumenda atque blanditiis cum delectus eligendi ipsam iste iure, maxime modi molestiae nihil obcaecati odit officiis pariatur quibusdam suscipit temporibus unde.
+Use it with a `FormControl`:
 
 ```ts
-function helloWorld() {}
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl('');
+control.valueChanges$.subscribe(value => {
+  // value is typed as string
+});
 ```
 
-## FAQ
+Use it with a `FormGroup`:
 
-## How to ...
+```ts
+import { FormGroup } from '@ngneat/reactive-forms';
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid assumenda atque blanditiis cum delectus eligendi ips
+interface Profile {
+  firstName: string;
+  lastName: string;
+  address: {
+    street: string;
+    city: string;
+  };
+}
+
+const profileForm = new FormGroup<Profile>({
+  firstName: new FormControl(''),
+  lastName: new FormControl(''),
+  address: new FormGroup({
+    street: new FormControl(''),
+    city: new FormControl('')
+  })
+});
+
+profileForm.setValue(new Profile()); // typed as Profile
+profileForm.patchValue(new Profile()); // typed as Partial<Profile>
+```
+
+Use it with a `FormArray`:
+
+```ts
+import { FormArray, FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormArray<string>([new FormControl()]);
+
+control.valueChanges$.subscribe(value => {
+  // value is typed as string[]
+});
+```
+
+## Queries
+
+### `valueChanges$`
+
+Observe the control's value. Unlike the behavior of the built-in `valueChanges` observable, it emits the current `rawValue` **immediately**. ( which means you'll also get the values of the `disabled` controls)
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.valueChanges$.subscribe(value => ...);
+```
+
+### `disabledChanges$`
+
+Observe the control's `disable` status.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.disabledChanges$.subscribe(isDisabled => ...);
+```
+
+### `enabledChanges$`
+
+Observe the control's `enable` status.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.enabledChanges$.subscribe(isEnabled => ...);
+```
+
+### `statusChanges$`
+
+Observe the control's `status`.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.statusChanges$.subscribe(status => ...);
+```
+
+The `status` is typed as `ControlState`.
+
+### `touchChanges$`
+
+Observe the control's `touched` status.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.touchChanges$.subscribe(isTouched => ...);
+```
+
+This emits **only** when `markAsTouched` or `markAsUnTouched` has been called.
+
+### `dirtyChanges$`
+
+Observe the control's `dirty` status.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.dirtyChanges$.subscribe(isDirty => ...);
+```
+
+This emits **only** when `markAsDirty` or `markAsPristine` has been called.
+
+### Methods
+
+### `connect()`
+
+Subscribes to the given source observable, and calls `patchValue` when emits.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.connect(query.select('formValue'));
+```
+
+### `select()`
+
+Select a `slice` of the form's state.
+
+```ts
+import { FormGroup } from '@ngneat/reactive-forms';
+
+const control = new FormGroup<Person>(...);
+control.select(state => state.name).subscribe(name => ...)
+```
+
+### `setValue()`
+
+In addition to the built-in method, it also takes an `observable`.
+
+```ts
+import { FormGroup } from '@ngneat/reactive-forms';
+
+const control = new FormGroup<Person>();
+control.setValue(query.select('formValue'));
+```
+
+### `patchValue()`
+
+In addition to the built-in method, it also takes an `observable` or a `callback` function.
+
+```ts
+import { FormGroup } from '@ngneat/reactive-forms';
+
+const control = new FormGroup<Person>();
+control.patchValue(query.select('formValue'));
+
+control.patchValue(state => ({
+  ...state,
+  name: state.someProp ? 'someName' : 'anotherName'
+}));
+```
+
+### `disabledWhile()`
+
+Takes an observable that emits a boolean indicating whether to `disable` the control.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.disabledWhile(query.select('isDisabled'));
+```
+
+### `enabledWhile()`
+
+Takes an observable that emits a `boolean` indicating whether to `enable` the control.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.enabledWhile(query.select('isEnable'));
+```
+
+### `mergeValidators()`
+
+Unlike the built-in `setValidator` method, it'll persist any existing validators.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.mergeValidators(Validators.minLength(2));
+control.mergeAsyncValidators(...);
+```
+
+### `markAllAsDirty()`
+
+Mark all the controls as `dirty`.
+
+```ts
+import { FormGroup } from '@ngneat/reactive-forms';
+
+const control = new FormGroup<Person>();
+control.markAllAsDirty();
+```
+
+### `validateOn()`
+
+Takes an observable that emits an `error-like` response and call `setErrors()` with the response.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+const error$ = source.pipe(map(condition => ({
+  condition ? { someError: true } : null
+})));
+
+control.validateOn(error$);
+```
+
+### `hasErrorAndTouched()`
+
+A sugar method to use in the template:
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>('', Validators.required);
+
+// In the HTML *ngIf
+control.hasErrorAndTouched('required');
+```
+
+### `hasErrorAndDirty()`
+
+A sugar method to use in the template:
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>('', Validators.required);
+// In the HTML *ngIf
+control.hasErrorAndDirty('required');
+```
+
+### `setEnable()`
+
+Set whether the control is `enabled`.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.setEnable();
+control.setEnable(false);
+```
+
+### `setDisable`
+
+Set whether the control is `disabled`.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>();
+control.setDisable();
+control.setDisable(false);
+```
+
+### `getControl()`
+
+A `typed` method to obtain a reference to a specific control.
+
+```ts
+import { FormGroup } from '@ngneat/reactive-forms';
+
+const group = new FormGroup<Person>(...);
+group.getControl('name');
+group.getControl('nested', 'field');
+```
+
+## ESLint Rule
+
+We provide a special lint rule that forbids the imports of `FormControl`, `FormGroup`, and `FormArray` from `@angular/forms`.
+Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/master/projects/ngneat/eslint-plugin-reactive-forms).
+
+## Schematics
 
 ## Contributors ✨
 

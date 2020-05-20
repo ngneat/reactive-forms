@@ -60,11 +60,11 @@ export function controlStatusChanges$<T>(control: AbstractControl<T>): Observabl
   );
 }
 
-export function controlErrorChanges$<T>(control: AbstractControl<T>): Observable<ValidationErrors | null> {
+export function controlErrorChanges$<T, E = ValidationErrors>(control: AbstractControl<T>): Observable<E | null> {
   return merge(
-    defer(() => of(control.errors)),
+    defer(() => of(control.errors as E)),
     control.valueChanges.pipe(
-      map(() => control.errors),
+      map(() => control.errors as E),
       distinctUntilChanged((a, b) => compareErrors(a, b))
     )
   );
@@ -122,7 +122,7 @@ export function hasErrorAndDirty<T>(control: AbstractControl<T>, error: string, 
   return hasError && control.dirty;
 }
 
-export function markAllDirty<T extends object, R extends any>(control: FormArray<R> | FormGroup<T>): void {
+export function markAllDirty<T>(control: FormArray<T> | FormGroup<T>): void {
   control.markAsDirty({ onlySelf: true });
   (control as any)._forEachChild(control => control.markAllAsDirty());
 }
@@ -135,9 +135,9 @@ export function connectControl<T>(
   return observable.subscribe(value => control.patchValue(value, options));
 }
 
-export function selectControlValue$<O extends object, T, R>(
-  control: FormGroup<O> | FormArray<T> | FormControl<T>,
-  mapFn: (state: T | T[] | O) => R
+export function selectControlValue$<T, R>(
+  control: FormGroup<T> | FormArray<T> | FormControl<T>,
+  mapFn: (state: T | T[]) => R
 ): Observable<R> {
   return (control.valueChanges$ as Observable<any>).pipe(map(mapFn), distinctUntilChanged());
 }

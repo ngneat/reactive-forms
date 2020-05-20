@@ -23,13 +23,16 @@ import {
   AsyncValidatorFn,
   ControlOptions,
   ExtendedAbstractControl,
+  ExtractStrings,
   LimitedControlOptions,
+  ValidationErrors,
   ValidatorFn
 } from './types';
-import { isFunction } from './utils';
+import { coerceArray, isFunction } from './utils';
 
-export class FormArray<T = null> extends NgFormArray {
+export class FormArray<T = any, E extends object = ValidationErrors> extends NgFormArray {
   value: T[];
+  errors: ValidationErrors<E> | null;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -41,7 +44,7 @@ export class FormArray<T = null> extends NgFormArray {
   disabledChanges$ = controlDisabled$(this);
   enabledChanges$ = controlEnabled$(this);
   statusChanges$ = controlStatusChanges$(this);
-  errorChanges$ = controlErrorChanges$(this);
+  errorChanges$ = controlErrorChanges$<T[], E>(this);
 
   constructor(
     public controls: AbstractControl<T>[],
@@ -119,6 +122,11 @@ export class FormArray<T = null> extends NgFormArray {
     mergeControlValidators(this, validators);
   }
 
+  mergeAsyncValidators(validators: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[]) {
+    this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
+    this.updateValueAndValidity();
+  }
+
   markAsTouched(opts?: { onlySelf?: boolean }): void {
     super.markAsTouched(opts);
     this.touchChanges.next(true);
@@ -163,12 +171,24 @@ export class FormArray<T = null> extends NgFormArray {
     });
   }
 
-  hasErrorAndTouched(error: string, ...path: any): boolean {
-    return hasErrorAndTouched(this, error, ...path);
+  hasError<K extends ExtractStrings<E>>(errorCode: K, path?: Array<string | number> | string) {
+    return super.hasError(errorCode, path);
   }
 
-  hasErrorAndDirty(error: string, ...path: any): boolean {
-    return hasErrorAndDirty(this, error, ...path);
+  setErrors(errors: ValidationErrors | null, opts: { emitEvent?: boolean } = {}) {
+    return super.setErrors(errors, opts);
+  }
+
+  getError(errorCode: ExtractStrings<E>, path?: Array<string | number> | string) {
+    return super.getError(errorCode, path);
+  }
+
+  hasErrorAndTouched(errorCode: ExtractStrings<E>, path?: Array<string | number> | string): boolean {
+    return hasErrorAndTouched(this, errorCode, path);
+  }
+
+  hasErrorAndDirty(errorCode: ExtractStrings<E>, path?: Array<string | number> | string): boolean {
+    return hasErrorAndDirty(this, errorCode, path);
   }
 
   setEnable(enable = true, opts?: LimitedControlOptions) {

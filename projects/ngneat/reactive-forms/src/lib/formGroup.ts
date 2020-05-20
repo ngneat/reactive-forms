@@ -19,6 +19,7 @@ import {
   selectControlValue$,
   validateControlOn
 } from './control-actions';
+import { FormControl } from './formControl';
 import {
   AbstractControl,
   AbstractControlOptions,
@@ -27,12 +28,14 @@ import {
   ExtendedAbstractControl,
   ExtractStrings,
   LimitedControlOptions,
+  ValidationErrors,
   ValidatorFn
 } from './types';
-import { isFunction } from './utils';
+import { coerceArray, isFunction } from './utils';
 
-export class FormGroup<T extends object = null> extends NgFormGroup {
+export class FormGroup<T = any, E extends object = ValidationErrors> extends NgFormGroup {
   value: T;
+  errors: ValidationErrors<E> | null;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -44,7 +47,7 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
   disabledChanges$ = controlDisabled$(this);
   enabledChanges$ = controlEnabled$(this);
   statusChanges$ = controlStatusChanges$(this);
-  errorChanges$ = controlErrorChanges$(this);
+  errorChanges$ = controlErrorChanges$<T, E>(this);
 
   constructor(
     public controls: { [K in keyof T]: AbstractControl<T[K]> },
@@ -139,6 +142,11 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
     mergeControlValidators(this, validators);
   }
 
+  mergeAsyncValidators(validators: AsyncValidatorFn<T> | AsyncValidatorFn<T>[]) {
+    this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
+    this.updateValueAndValidity();
+  }
+
   markAsTouched(opts?: { onlySelf?: boolean }): void {
     super.markAsTouched(opts);
     this.touchChanges.next(true);
@@ -181,10 +189,26 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
     return validateControlOn(this, observableValidation);
   }
 
-  hasErrorAndTouched<P1 extends keyof T>(error: string, prop1?: P1): boolean;
-  hasErrorAndTouched<P1 extends keyof T, P2 extends keyof T[P1]>(error: string, prop1?: P1, prop2?: P2): boolean;
+  hasError<K extends ExtractStrings<E>>(errorCode: K, path?: Array<string | number> | string) {
+    return super.hasError(errorCode, path);
+  }
+
+  setErrors(errors: ValidationErrors | null, opts: { emitEvent?: boolean } = {}) {
+    return super.setErrors(errors, opts);
+  }
+
+  getError(errorCode: ExtractStrings<E>, path?: Array<string | number> | string) {
+    return super.getError(errorCode, path);
+  }
+
+  hasErrorAndTouched<P1 extends keyof T>(error: ExtractStrings<E>, prop1?: P1): boolean;
+  hasErrorAndTouched<P1 extends keyof T, P2 extends keyof T[P1]>(
+    error: ExtractStrings<E>,
+    prop1?: P1,
+    prop2?: P2
+  ): boolean;
   hasErrorAndTouched<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
-    error: string,
+    error: ExtractStrings<E>,
     prop1?: P1,
     prop2?: P2,
     prop3?: P3
@@ -194,15 +218,19 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
     P2 extends keyof T[P1],
     P3 extends keyof T[P1][P2],
     P4 extends keyof T[P1][P2][P3]
-  >(error: string, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
-  hasErrorAndTouched(error: string, ...path: any): boolean {
+  >(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
+  hasErrorAndTouched(error: any, ...path: any): boolean {
     return hasErrorAndTouched(this, error, ...path);
   }
 
-  hasErrorAndDirty<P1 extends keyof T>(error: string, prop1?: P1): boolean;
-  hasErrorAndDirty<P1 extends keyof T, P2 extends keyof T[P1]>(error: string, prop1?: P1, prop2?: P2): boolean;
+  hasErrorAndDirty<P1 extends keyof T>(error: ExtractStrings<E>, prop1?: P1): boolean;
+  hasErrorAndDirty<P1 extends keyof T, P2 extends keyof T[P1]>(
+    error: ExtractStrings<E>,
+    prop1?: P1,
+    prop2?: P2
+  ): boolean;
   hasErrorAndDirty<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
-    error: string,
+    error: ExtractStrings<E>,
     prop1?: P1,
     prop2?: P2,
     prop3?: P3
@@ -212,8 +240,8 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
     P2 extends keyof T[P1],
     P3 extends keyof T[P1][P2],
     P4 extends keyof T[P1][P2][P3]
-  >(error: string, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
-  hasErrorAndDirty(error: string, ...path: any): boolean {
+  >(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
+  hasErrorAndDirty(error: any, ...path: any): boolean {
     return hasErrorAndDirty(this, error, ...path);
   }
 
@@ -225,3 +253,15 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
     disableControl(this, disable, opts);
   }
 }
+
+interface User {
+  name: string;
+  id: number;
+}
+
+interface Errors {
+  required: boolean;
+  minlength: number;
+}
+
+const group = new FormGroup<User, Errors>({ name: new FormControl('Dan'), id: new FormControl(1) });
