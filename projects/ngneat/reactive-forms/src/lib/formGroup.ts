@@ -1,6 +1,6 @@
 import { FormGroup as NgFormGroup } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operators';
 import {
   connectControl,
   controlDisabled$,
@@ -169,10 +169,12 @@ export class FormGroup<T extends object = null> extends NgFormGroup {
 
   setValidators(newValidator: ValidatorFn<T> | ValidatorFn<T>[] | null): void {
     super.setValidators(newValidator);
+    super.updateValueAndValidity();
   }
 
   setAsyncValidators(newValidator: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null): void {
     super.setAsyncValidators(newValidator);
+    super.updateValueAndValidity();
   }
 
   validateOn(observableValidation: Observable<null | object>) {

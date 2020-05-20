@@ -149,10 +149,12 @@ export class FormArray<T = null> extends NgFormArray {
 
   setValidators(newValidator: ValidatorFn<T[]> | ValidatorFn<T[]>[] | null): void {
     super.setValidators(newValidator);
+    super.updateValueAndValidity();
   }
 
   setAsyncValidators(newValidator: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[] | null): void {
     super.setAsyncValidators(newValidator);
+    super.updateValueAndValidity();
   }
 
   validateOn(observableValidation: Observable<null | object>) {
