@@ -48,7 +48,7 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
 
   constructor(
     public controls: AbstractControl<T>[],
-    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T[]>[] | AbstractControlOptions<T[]> | null,
+    validatorOrOpts?: ValidatorFn<T[]> | ValidatorFn<T[]>[] | AbstractControlOptions<T[]> | null,
     asyncValidator?: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[] | null
   ) {
     super(controls, validatorOrOpts, asyncValidator);
