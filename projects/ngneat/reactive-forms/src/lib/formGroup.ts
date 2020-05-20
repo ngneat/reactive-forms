@@ -19,7 +19,6 @@ import {
   selectControlValue$,
   validateControlOn
 } from './control-actions';
-import { FormControl } from './formControl';
 import {
   AbstractControl,
   AbstractControlOptions,
@@ -253,15 +252,3 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     disableControl(this, disable, opts);
   }
 }
-
-interface User {
-  name: string;
-  id: number;
-}
-
-interface Errors {
-  required: boolean;
-  minlength: number;
-}
-
-const group = new FormGroup<User, Errors>({ name: new FormControl('Dan'), id: new FormControl(1) });
