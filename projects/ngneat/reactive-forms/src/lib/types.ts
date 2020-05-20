@@ -1,4 +1,4 @@
-import { AbstractControl as AngularAbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl as AngularAbstractControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 
 export interface ValidatorFn<T> {
@@ -143,3 +143,15 @@ export interface ExtendedAbstractControl<T> extends AbstractControl<T> {
 
   setDisable(disable: boolean, opts?: LimitedControlOptions);
 }
+
+export interface ValidatorsErrors {
+  required: true;
+  email: true;
+  pattern: { requiredPattern: string; actualValue: string };
+  minlength: { requiredLength: number; actualLength: number };
+  maxlength: { requiredLength: number; actualLength: number };
+  min: { min: number; actual: number };
+  max: { max: number; actual: number };
+}
+
+export type ValidationErrors<T extends object = any> = T;

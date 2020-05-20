@@ -7,14 +7,17 @@ import {
   ControlOptions,
   ControlState,
   ValidatorFn,
-  ExtendedAbstractControl
+  ExtendedAbstractControl,
+  ExtractStrings,
+  ValidationErrors
 } from './types';
 import { defer, isObservable, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { coerceArray, isFunction } from './utils';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
-export class FormArray<T = null> extends NgFormArray {
+export class FormArray<T = null, E extends object = ValidationErrors> extends NgFormArray {
   value: T[];
+  errors: ValidationErrors<E> | null;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -128,6 +131,11 @@ export class FormArray<T = null> extends NgFormArray {
     this.updateValueAndValidity();
   }
 
+  mergeAsyncValidators(validators: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[]) {
+    this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
+    this.updateValueAndValidity();
+  }
+
   markAsTouched(opts?: { onlySelf?: boolean }): void {
     super.markAsTouched(opts);
     this.touchChanges.next(true);
@@ -171,13 +179,25 @@ export class FormArray<T = null> extends NgFormArray {
     });
   }
 
-  hasErrorAndTouched(error: string, ...path: any): any {
-    const hasError = this.hasError(error, path.length === 0 ? undefined : path);
+  hasError<K extends ExtractStrings<E>>(errorCode: K, path?: Array<string | number> | string) {
+    return super.hasError(errorCode, path);
+  }
+
+  setErrors(errors: ValidationErrors | null, opts: { emitEvent?: boolean } = {}) {
+    return super.setErrors(errors, opts);
+  }
+
+  getError(errorCode: ExtractStrings<E>, path?: Array<string | number> | string) {
+    return super.getError(errorCode, path);
+  }
+
+  hasErrorAndTouched(errorCode: ExtractStrings<E>, path?: Array<string | number> | string): any {
+    const hasError = this.hasError(errorCode, path);
     return hasError && this.touched;
   }
 
-  hasErrorAndDirty(error: string, ...path: any): any {
-    const hasError = this.hasError(error, path.length === 0 ? undefined : path);
+  hasErrorAndDirty(errorCode: ExtractStrings<E>, path?: Array<string | number> | string): any {
+    const hasError = this.hasError(errorCode, path);
     return hasError && this.dirty;
   }
 

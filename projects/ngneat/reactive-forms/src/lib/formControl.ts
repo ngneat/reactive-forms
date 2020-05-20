@@ -5,14 +5,17 @@ import {
   ControlOptions,
   ControlState,
   LimitedControlOptions,
-  ValidatorFn
+  ValidatorFn,
+  ValidationErrors,
+  ExtractStrings
 } from './types';
 import { defer, isObservable, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { coerceArray, isFunction } from './utils';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
-export class FormControl<T = null> extends NgFormControl {
+export class FormControl<T = any, E extends object = ValidationErrors> extends NgFormControl {
   value: T;
+  errors: ValidationErrors<E> | null;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -50,7 +53,7 @@ export class FormControl<T = null> extends NgFormControl {
   );
 
   constructor(
-    formState: T = null,
+    formState?: T | { value: T; disabled: boolean },
     validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
     asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
   ) {
@@ -107,6 +110,11 @@ export class FormControl<T = null> extends NgFormControl {
     this.updateValueAndValidity();
   }
 
+  mergeAsyncValidators(validators: AsyncValidatorFn<T> | AsyncValidatorFn<T>[]) {
+    this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
+    this.updateValueAndValidity();
+  }
+
   markAsTouched(opts?: { onlySelf?: boolean }): void {
     super.markAsTouched(opts);
     this.touchChanges.next(true);
@@ -149,11 +157,23 @@ export class FormControl<T = null> extends NgFormControl {
     });
   }
 
-  hasErrorAndTouched(error: string) {
+  getError<K extends ExtractStrings<E> = any>(errorCode: K) {
+    return super.getError(errorCode) as E[K] | null;
+  }
+
+  hasError<K extends ExtractStrings<E>>(errorCode: K) {
+    return super.hasError(errorCode);
+  }
+
+  setErrors(errors: ValidationErrors | null, opts: { emitEvent?: boolean } = {}) {
+    return super.setErrors(errors, opts);
+  }
+
+  hasErrorAndTouched<K extends ExtractStrings<E> = any>(error: K) {
     return this.hasError(error) && this.touched;
   }
 
-  hasErrorAndDirty(error: string) {
+  hasErrorAndDirty<K extends ExtractStrings<E> = any>(error: K) {
     return this.hasError(error) && this.dirty;
   }
 
