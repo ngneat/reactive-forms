@@ -214,7 +214,6 @@ describe('FormArray', () => {
     const spy = jest.fn();
     const validator = (control: FormArray) => (control.length < 4 ? { minimum: 4 } : null);
     control.setValidators(validator);
-    control.updateValueAndValidity();
     control.errorChanges$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith({ minimum: 4 });
     control.push(new FormControl('Name'));
