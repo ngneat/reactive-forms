@@ -184,11 +184,11 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
   }
 
   hasErrorAndTouched(errorCode: ExtractStrings<E>, path?: Array<string | number> | string): boolean {
-    return hasErrorAndTouched(this, errorCode, ...path);
+    return hasErrorAndTouched(this, errorCode, path);
   }
 
   hasErrorAndDirty(errorCode: ExtractStrings<E>, path?: Array<string | number> | string): boolean {
-    return hasErrorAndDirty(this, errorCode, ...path);
+    return hasErrorAndDirty(this, errorCode, path);
   }
 
   setEnable(enable = true, opts?: LimitedControlOptions) {

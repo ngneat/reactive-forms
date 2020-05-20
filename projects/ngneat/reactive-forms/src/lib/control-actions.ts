@@ -112,13 +112,21 @@ export function validateControlOn<T>(control: AbstractControl<T>, validation: Ob
   });
 }
 
-export function hasErrorAndTouched<T>(control: AbstractControl<T>, error: string, ...path: any): boolean {
-  const hasError = control.hasError(error, path.length === 0 ? undefined : path);
+export function hasErrorAndTouched<T>(
+  control: AbstractControl<T>,
+  error: string,
+  path?: Array<string | number> | string
+): boolean {
+  const hasError = control.hasError(error, !path || path.length === 0 ? undefined : path);
   return hasError && control.touched;
 }
 
-export function hasErrorAndDirty<T>(control: AbstractControl<T>, error: string, ...path: any): boolean {
-  const hasError = control.hasError(error, path.length === 0 ? undefined : path);
+export function hasErrorAndDirty<T>(
+  control: AbstractControl<T>,
+  error: string,
+  path?: Array<string | number> | string
+): boolean {
+  const hasError = control.hasError(error, !path || path.length === 0 ? undefined : path);
   return hasError && control.dirty;
 }
 
