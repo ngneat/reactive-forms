@@ -169,17 +169,6 @@ This emits **only** when `markAsDirty` or `markAsPristine` has been called.
 
 ### Methods
 
-### `connect()`
-
-Subscribes to the given source observable, and calls `patchValue` when emits.
-
-```ts
-import { FormControl } from '@ngneat/reactive-forms';
-
-const control = new FormControl<string>();
-control.connect(query.select('formValue'));
-```
-
 ### `select()`
 
 Select a `slice` of the form's state.

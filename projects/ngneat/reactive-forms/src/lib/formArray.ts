@@ -2,7 +2,6 @@ import { FormArray as NgFormArray } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import {
-  connectControl,
   controlDisabled$,
   controlDisabledWhile,
   controlEnabled$,
@@ -52,10 +51,6 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     asyncValidator?: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[] | null
   ) {
     super(controls, validatorOrOpts, asyncValidator);
-  }
-
-  connect(observable: Observable<T[]>, options?: ControlOptions) {
-    return connectControl(this, observable, options);
   }
 
   select<R>(mapFn: (state: T[]) => R): Observable<R> {
