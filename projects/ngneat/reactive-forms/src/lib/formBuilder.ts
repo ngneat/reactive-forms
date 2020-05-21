@@ -17,14 +17,14 @@ export type FbControlConfig<T = any> =
 
 @Injectable({ providedIn: 'root' })
 export class FormBuilder extends NgFormBuilder {
-  group<T = any>(
+  group<T>(
     controlsConfig: { [P in keyof T]: FbControlConfig<T[P]> },
     options: AbstractControlOptions<T> | NgControlOptions | null = null
   ): FormGroup<T> {
     return super.group(controlsConfig, options) as FormGroup<T>;
   }
 
-  control<T = any>(
+  control<T>(
     formState: T,
     validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
     asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
@@ -32,7 +32,7 @@ export class FormBuilder extends NgFormBuilder {
     return super.control(formState, validatorOrOpts, asyncValidator) as FormControl<T>;
   }
 
-  array<T = any>(
+  array<T>(
     controlsConfig: FbControlConfig<T>[],
     validatorOrOpts?: ValidatorFn<T[]> | ValidatorFn<T[]>[] | AbstractControlOptions<T[]> | null,
     asyncValidator?: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[] | null
