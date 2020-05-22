@@ -135,14 +135,6 @@ export function markAllDirty<T>(control: FormArray<T> | FormGroup<T>): void {
   (control as any)._forEachChild(control => control.markAllAsDirty());
 }
 
-export function connectControl<T>(
-  control: AbstractControl<T>,
-  observable: Observable<T>,
-  options?: ControlOptions
-): Subscription {
-  return observable.subscribe(value => control.patchValue(value, options));
-}
-
 export function selectControlValue$<T, R>(
   control: FormGroup<T> | FormArray<T> | FormControl<T>,
   mapFn: (state: T | T[]) => R

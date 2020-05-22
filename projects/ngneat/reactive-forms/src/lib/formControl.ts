@@ -2,7 +2,6 @@ import { FormControl as NgFormControl } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import {
-  connectControl,
   controlDisabled$,
   controlDisabledWhile,
   controlEnabled$,
@@ -51,10 +50,6 @@ export class FormControl<T = any, E extends object = ValidationErrors> extends N
     asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
   ) {
     super(formState, validatorOrOpts, asyncValidator);
-  }
-
-  connect(observable: Observable<T>, options?: ControlOptions) {
-    return connectControl(this, observable, options);
   }
 
   select<R>(mapFn: (state: T) => R): Observable<R> {

@@ -2,7 +2,6 @@ import { FormGroup as NgFormGroup } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import {
-  connectControl,
   controlDisabled$,
   controlDisabledWhile,
   controlEnabled$,
@@ -54,10 +53,6 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
   ) {
     super(controls, validatorOrOpts, asyncValidator);
-  }
-
-  connect(observable: Observable<Partial<T>>, options?: ControlOptions) {
-    return connectControl(this, observable, options);
   }
 
   select<R>(mapFn: (state: T) => R): Observable<R> {
