@@ -178,7 +178,7 @@ import { FormGroup } from '@ngneat/reactive-forms';
 
 const control = new FormGroup<Person>(...);
 control.select(state => state.name).subscribe(name => ...)
-```
+``` 
 
 ### `setValue()`
 
@@ -254,7 +254,7 @@ control.markAllAsDirty();
 
 ### `validateOn()`
 
-Takes an observable that emits an `error-like` response and calls `setErrors()` with it.
+Takes an observable that emits a response, which is either null or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors) by default, but this can be overriden via the `AbstractControl`'s second generic). The control's `setErrors()` method is called whenever the source emits.
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
