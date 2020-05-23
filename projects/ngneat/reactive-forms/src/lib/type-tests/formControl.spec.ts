@@ -13,7 +13,7 @@ test('control valueChanges should be stream of strings', () => {
   expectTypeOf(control.valueChanges$).toMatchTypeOf(new Observable<string>());
 });
 
-test('control valueChanges should be stream of strings', () => {
+test('should type errors', () => {
   const control = new FormControl<string, NgValidatorsErrors>('a string');
   control.getError('email');
   control.hasError('maxlength');

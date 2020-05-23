@@ -143,7 +143,7 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     return validateControlOn(this, observableValidation);
   }
 
-  getError<K extends ExtractStrings<E>>(errorCode: K) {
+  getError<K extends ExtractStrings<E>>(errorCode: K): E[K] | null {
     return super.getError(errorCode) as E[K] | null;
   }
 
@@ -155,11 +155,11 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     return super.setErrors(errors, opts);
   }
 
-  hasErrorAndTouched<K extends ExtractStrings<E> = any>(error: K): boolean {
+  hasErrorAndTouched(error: ExtractStrings<E>): boolean {
     return hasErrorAndTouched(this, error);
   }
 
-  hasErrorAndDirty<K extends ExtractStrings<E> = any>(error: K): boolean {
+  hasErrorAndDirty(error: ExtractStrings<E>): boolean {
     return hasErrorAndDirty(this, error);
   }
 

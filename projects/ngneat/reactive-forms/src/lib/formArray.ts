@@ -25,11 +25,13 @@ import {
   ControlEventOptions,
   ValidationErrors,
   ValidatorFn,
-  ControlType
+  ControlType,
+  ControlPath,
+  EmitEvent
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
-export class FormArray<T = any, E extends object = ValidationErrors> extends NgFormArray {
+export class FormArray<T = any, E extends object = any> extends NgFormArray {
   value: T[];
   errors: ValidationErrors<E> | null;
 
@@ -93,15 +95,15 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     }
   }
 
-  push(control: AbstractControl<T>): void {
+  push(control: ControlType<T>): void {
     return super.push(control);
   }
 
-  insert(index: number, control: AbstractControl<T>): void {
+  insert(index: number, control: ControlType<T>): void {
     return super.insert(index, control);
   }
 
-  setControl(index: number, control: AbstractControl<T>): void {
+  setControl(index: number, control: ControlType<T>): void {
     return super.setControl(index, control);
   }
 
@@ -166,19 +168,19 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     });
   }
 
-  hasError<K extends ExtractStrings<E>>(errorCode: K, path?: Array<string | number> | string) {
+  hasError(errorCode: ExtractStrings<E>, path?: ControlPath) {
     return super.hasError(errorCode, path);
   }
 
-  setErrors(errors: ValidationErrors | null, opts: { emitEvent?: boolean } = {}) {
+  setErrors(errors: Partial<E> | null, opts: EmitEvent = {}) {
     return super.setErrors(errors, opts);
   }
 
-  getError(errorCode: ExtractStrings<E>, path?: Array<string | number> | string) {
-    return super.getError(errorCode, path);
+  getError<K extends ExtractStrings<E>>(errorCode: K, path?: ControlPath) {
+    return super.getError(errorCode, path) as E[K] | null;
   }
 
-  hasErrorAndTouched(errorCode: ExtractStrings<E>, path?: Array<string | number> | string): boolean {
+  hasErrorAndTouched(errorCode: ExtractStrings<E>, path?: ControlPath): boolean {
     return hasErrorAndTouched(this, errorCode, path);
   }
 

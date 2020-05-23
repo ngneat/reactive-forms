@@ -29,6 +29,8 @@ export interface AbstractControlOptions<T> {
   updateOn?: 'change' | 'blur' | 'submit';
 }
 
+export type ControlPath = Array<string | number> | string;
+
 export type ControlState = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED';
 
 export interface AbstractControl<T> extends AngularAbstractControl {

@@ -27,11 +27,13 @@ import {
   ControlEventOptions,
   ValidationErrors,
   ValidatorFn,
-  ControlType
+  ControlType,
+  EmitEvent,
+  ControlPath
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
-export class FormGroup<T = any, E extends object = ValidationErrors> extends NgFormGroup {
+export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   value: T;
   errors: ValidationErrors<E> | null;
 
@@ -80,7 +82,7 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return this.get(names.join('.'));
   }
 
-  addControl<K extends ExtractStrings<T>>(name: K, control: AbstractControl<T[K]>): void {
+  addControl<K extends ExtractStrings<T>>(name: K, control: ControlType<T[K]>): void {
     super.addControl(name, control);
   }
 
@@ -92,7 +94,7 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return super.contains(controlName);
   }
 
-  setControl<K extends ExtractStrings<T>>(name: K, control: AbstractControl<T[K]>): void {
+  setControl<K extends ExtractStrings<T>>(name: K, control: ControlType<T[K]>): void {
     super.setControl(name, control);
   }
 
@@ -183,16 +185,16 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return validateControlOn(this, observableValidation);
   }
 
-  hasError<K extends ExtractStrings<E>>(errorCode: K, path?: Array<string | number> | string) {
+  hasError(errorCode: ExtractStrings<E>, path?: ControlPath) {
     return super.hasError(errorCode, path);
   }
 
-  setErrors(errors: ValidationErrors | null, opts: { emitEvent?: boolean } = {}) {
+  setErrors(errors: Partial<E> | null, opts: EmitEvent = {}) {
     return super.setErrors(errors, opts);
   }
 
-  getError(errorCode: ExtractStrings<E>, path?: Array<string | number> | string) {
-    return super.getError(errorCode, path);
+  getError<K extends ExtractStrings<E>>(errorCode: K, path?: ControlPath): E[K] | null {
+    return super.getError(errorCode, path) as E[K] | null;
   }
 
   hasErrorAndTouched<P1 extends keyof T>(error: ExtractStrings<E>, prop1?: P1): boolean;

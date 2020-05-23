@@ -178,7 +178,7 @@ import { FormGroup } from '@ngneat/reactive-forms';
 
 const control = new FormGroup<Person>(...);
 control.select(state => state.name).subscribe(name => ...)
-``` 
+```
 
 ### `setValue()`
 
@@ -254,17 +254,23 @@ control.markAllAsDirty();
 
 ### `validateOn()`
 
-Takes an observable that emits a response, which is either null or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors) by default, but this can be overriden via the `AbstractControl`'s second generic). The control's `setErrors()` method is called whenever the source emits.
+Takes an observable that emits a response, which is either `null` or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors). The control's `setErrors()` method is called whenever the source emits.
 
 ```ts
-import { FormControl } from '@ngneat/reactive-forms';
+const passwordValidator = combineLatest([
+  this.signup.select(state => state.password),
+  this.signup.select(state => state.repeatPassword)
+]).pipe(
+  map(([password, repeat]) => {
+    return password === repeat
+      ? null
+      : {
+          isEqual: false
+        };
+  })
+);
 
-const control = new FormControl<string>();
-const error$ = source.pipe(map(condition => ({
-  condition ? { someError: true } : null
-})));
-
-control.validateOn(error$);
+this.signup.validateOn(passwordValidator);
 ```
 
 ### `hasErrorAndTouched()`
@@ -280,7 +286,6 @@ this.control = new FormControl<string>('', Validators.required);
 ```html
 <span *ngIf="control.hasErrorAndTouched('required')"></span>
 ```
-
 
 ### `hasErrorAndDirty()`
 
@@ -328,8 +333,33 @@ A `typed` method which obtains a reference to a specific control.
 import { FormGroup } from '@ngneat/reactive-forms';
 
 const group = new FormGroup<Person>(...);
-group.getControl('name');
-group.getControl('nested', 'field');
+const nameControl = group.getControl('name');
+const nestedFieldControl = group.getControl('nested', 'field');
+```
+
+There is no need to infer it! (i.e: `as FormControl`)
+
+## Errors Methods
+
+Each `AbstractControl` takes a second generic which serves as the type of the errors:
+
+```ts
+type MyErrors = { isEqual: false };
+
+const control = new FormControl<string, MyErrors>();
+control.getError('isEqual'); // keyof MyErrors
+control.hasError('isEqual'); // keyof MyErrors
+
+// error type is MyErrors['isEqual']
+const error = control.getError('isEqual'); // keyof MyErrors
+```
+
+The library provides a type for the built-in Angular validators types:
+
+```ts
+import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string, NgValidatorsErrors>();
 ```
 
 ## ESLint Rule
