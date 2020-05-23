@@ -1,5 +1,8 @@
 import { AbstractControl as AngularAbstractControl } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
+import { FormGroup } from './formGroup';
+import { FormControl } from './formControl';
+import { FormArray } from './formArray';
 
 export interface ValidatorFn<T> {
   (control: AbstractControl<T>): ValidationErrors | null;
@@ -42,109 +45,7 @@ export interface AbstractControl<T> extends AngularAbstractControl {
 
 export type ExtractStrings<T> = Extract<keyof T, string>;
 
-// We need this methods for `getControl` method type
-export interface ExtendedAbstractControl<T> extends AbstractControl<T> {
-  patchValue(valueOrObservable: Observable<T>, options?: ControlOptions): Subscription;
-
-  patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
-
-  patchValue(valueOrObservable: T, options?: ControlOptions): void;
-
-  patchValue(valueOrObservable: T | Observable<T> | ((state: T) => T), options?: ControlOptions): Subscription | void;
-
-  setValue(valueOrObservable: Observable<T>, options?: ControlOptions): Subscription;
-
-  setValue(valueOrObservable: T, options?: ControlOptions): void;
-
-  setValue(valueOrObservable: T | Observable<T>, options?: ControlOptions): Subscription | void;
-
-  mergeValidators(validators: ValidatorFn<T> | ValidatorFn<T>[]): void;
-
-  validateOn(observableValidation: Observable<null | object>): Subscription;
-
-  markAllAsDirty(): void;
-
-  disabledWhile(observable: Observable<boolean>, options?: ControlOptions): Subscription;
-
-  enableWhile(observable: Observable<boolean>, options?: ControlOptions): Subscription;
-
-  getControl?<P1 extends keyof T>(prop1: P1): ExtendedAbstractControl<T[P1]>;
-
-  getControl?<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): ExtendedAbstractControl<T[P1][P2]>;
-
-  getControl?<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
-    prop1: P1,
-    prop2: P2,
-    prop3: P3
-  ): ExtendedAbstractControl<T[P1][P2][P3]>;
-
-  getControl?<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2], P4 extends keyof T[P1][P2][P3]>(
-    prop1: P1,
-    prop2: P2,
-    prop3: P3,
-    prop4: P4
-  ): ExtendedAbstractControl<T[P1][P2][P3][P4]>;
-
-  getControl?(...names: any): any;
-
-  hasErrorAndTouched<P1 extends keyof T>(error: string, prop1?: P1): boolean;
-
-  hasErrorAndTouched<P1 extends keyof T, P2 extends keyof T[P1]>(error: string, prop1?: P1, prop2?: P2): boolean;
-
-  hasErrorAndTouched<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
-    error: string,
-    prop1?: P1,
-    prop2?: P2,
-    prop3?: P3
-  ): boolean;
-
-  hasErrorAndTouched<
-    P1 extends keyof T,
-    P2 extends keyof T[P1],
-    P3 extends keyof T[P1][P2],
-    P4 extends keyof T[P1][P2][P3]
-  >(
-    error: string,
-    prop1?: P1,
-    prop2?: P2,
-    prop3?: P3,
-    prop4?: P4
-  ): boolean;
-
-  hasErrorAndTouched(error: string, ...path: any): any;
-
-  hasErrorAndDirty<P1 extends keyof T>(error: string, prop1?: P1): boolean;
-
-  hasErrorAndDirty<P1 extends keyof T, P2 extends keyof T[P1]>(error: string, prop1?: P1, prop2?: P2): boolean;
-
-  hasErrorAndDirty<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
-    error: string,
-    prop1?: P1,
-    prop2?: P2,
-    prop3?: P3
-  ): boolean;
-
-  hasErrorAndDirty<
-    P1 extends keyof T,
-    P2 extends keyof T[P1],
-    P3 extends keyof T[P1][P2],
-    P4 extends keyof T[P1][P2][P3]
-  >(
-    error: string,
-    prop1?: P1,
-    prop2?: P2,
-    prop3?: P3,
-    prop4?: P4
-  ): boolean;
-
-  hasErrorAndDirty(error: string, ...path: any): any;
-
-  setEnable(enable: boolean, opts?: LimitedControlOptions);
-
-  setDisable(disable: boolean, opts?: LimitedControlOptions);
-}
-
-export interface ValidatorsErrors {
+export interface BuiltInErrors {
   required: true;
   email: true;
   pattern: { requiredPattern: string; actualValue: string };
@@ -155,3 +56,20 @@ export interface ValidatorsErrors {
 }
 
 export type ValidationErrors<T extends object = any> = T;
+
+const uniqueKey = Symbol();
+interface UniqToken {
+  [uniqueKey]: never;
+}
+type ExtractAny<T> = T extends Extract<T, string & number & boolean & object & null & undefined> ? any : never;
+export type Control<T extends object> = T & UniqToken;
+
+export type ControlType<T> = [T] extends [ExtractAny<T>]
+  ? FormControl<any> | FormGroup<any> | FormArray<any>
+  : [T] extends [Control<infer Type>]
+  ? FormControl<Type>
+  : [T] extends [object]
+  ? FormGroup<T>
+  : [T] extends [Array<infer Item>]
+  ? FormArray<Item>
+  : FormControl<T>;

@@ -23,11 +23,11 @@ import {
   AbstractControlOptions,
   AsyncValidatorFn,
   ControlOptions,
-  ExtendedAbstractControl,
   ExtractStrings,
   LimitedControlOptions,
   ValidationErrors,
-  ValidatorFn
+  ValidatorFn,
+  ControlType
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
@@ -63,24 +63,24 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return super.getRawValue();
   }
 
-  getControl<P1 extends keyof T>(prop1: P1): ExtendedAbstractControl<T[P1]>;
-  getControl<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): ExtendedAbstractControl<T[P1][P2]>;
+  getControl<P1 extends keyof T>(prop1: P1): ControlType<T[P1]>;
+  getControl<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): ControlType<T[P1][P2]>;
   getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
     prop1: P1,
     prop2: P2,
     prop3: P3
-  ): ExtendedAbstractControl<T[P1][P2][P3]>;
+  ): ControlType<T[P1][P2][P3]>;
   getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2], P4 extends keyof T[P1][P2][P3]>(
     prop1: P1,
     prop2: P2,
     prop3: P3,
     prop4: P4
-  ): ExtendedAbstractControl<T[P1][P2][P3][P4]>;
+  ): ControlType<T[P1][P2][P3][P4]>;
   getControl(...names: any): any {
     return this.get(names.join('.'));
   }
 
-  addControl<K extends ExtractStrings<T>>(name: K, control: ExtendedAbstractControl<T[K]>): void {
+  addControl<K extends ExtractStrings<T>>(name: K, control: AbstractControl<T[K]>): void {
     super.addControl(name, control);
   }
 
@@ -92,7 +92,7 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return super.contains(controlName);
   }
 
-  setControl<K extends ExtractStrings<T>>(name: K, control: ExtendedAbstractControl<T[K]>): void {
+  setControl<K extends ExtractStrings<T>>(name: K, control: AbstractControl<T[K]>): void {
     super.setControl(name, control);
   }
 

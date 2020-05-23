@@ -21,11 +21,11 @@ import {
   AbstractControlOptions,
   AsyncValidatorFn,
   ControlOptions,
-  ExtendedAbstractControl,
   ExtractStrings,
   LimitedControlOptions,
   ValidationErrors,
-  ValidatorFn
+  ValidatorFn,
+  ControlType
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
@@ -61,8 +61,8 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     return super.getRawValue();
   }
 
-  at(index: number): ExtendedAbstractControl<T> {
-    return super.at(index) as ExtendedAbstractControl<T>;
+  at(index: number): ControlType<T> {
+    return super.at(index) as ControlType<T>;
   }
 
   setValue(valueOrObservable: Observable<T[]>, options?: LimitedControlOptions): Subscription;
