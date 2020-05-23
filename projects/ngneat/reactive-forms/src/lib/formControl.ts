@@ -57,7 +57,7 @@ export class FormControl<T = null> extends NgFormControl {
     super(formState, validatorOrOpts, asyncValidator);
   }
 
-  connect(observable: Observable<T>, options?: ControlOptions) {
+  connect(observable: Observable<T>, options?: ControlOptions): Subscription {
     return observable.subscribe(value => this.patchValue(value, options));
   }
 

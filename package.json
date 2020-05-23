@@ -7,7 +7,7 @@
     "build": "ng build",
     "test": "jest --coverage=false",
     "test:watch": "jest --watch --coverage=false",
-    "test:type:watch": "tsc ./projects/ngneat/reactive-forms/src/lib/type-tests/*.ts -w",
+    "test:type": "cd projects/ngneat/reactive-forms/src/lib/type-tests && tsc --outDir ./out-tsc",
     "test:lib:headless": "cross-env CI=true npm run test",
     "lint": "ng lint",
     "e2e": "ng e2e",
