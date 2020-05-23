@@ -22,7 +22,7 @@ import {
   AsyncValidatorFn,
   ControlOptions,
   ExtractStrings,
-  LimitedControlOptions,
+  ControlEventOptions,
   ValidationErrors,
   ValidatorFn,
   ControlType
@@ -65,9 +65,9 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     return super.at(index) as ControlType<T>;
   }
 
-  setValue(valueOrObservable: Observable<T[]>, options?: LimitedControlOptions): Subscription;
-  setValue(valueOrObservable: T[], options?: LimitedControlOptions): void;
-  setValue(valueOrObservable: T[] | Observable<T[]>, options?: LimitedControlOptions): Subscription | void {
+  setValue(valueOrObservable: Observable<T[]>, options?: ControlEventOptions): Subscription;
+  setValue(valueOrObservable: T[], options?: ControlEventOptions): void;
+  setValue(valueOrObservable: T[] | Observable<T[]>, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
     } else {
@@ -75,12 +75,12 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     }
   }
 
-  patchValue(valueOrObservable: Observable<T[]>, options?: LimitedControlOptions): Subscription;
-  patchValue(valueOrObservable: T[], options?: LimitedControlOptions): void;
+  patchValue(valueOrObservable: Observable<T[]>, options?: ControlEventOptions): Subscription;
+  patchValue(valueOrObservable: T[], options?: ControlEventOptions): void;
   patchValue(valueOrObservable: (state: T[]) => T[], options?: ControlOptions): void;
   patchValue(
     valueOrObservable: T[] | Observable<T[]> | ((state: T[]) => T[]),
-    options?: LimitedControlOptions
+    options?: ControlEventOptions
   ): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
@@ -146,7 +146,7 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     markAllDirty(this);
   }
 
-  reset(value?: T[], options?: LimitedControlOptions): void {
+  reset(value?: T[], options?: ControlEventOptions): void {
     super.reset(value, options);
   }
 
@@ -186,11 +186,11 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     return hasErrorAndDirty(this, errorCode, path);
   }
 
-  setEnable(enable = true, opts?: LimitedControlOptions) {
+  setEnable(enable = true, opts?: ControlEventOptions) {
     enableControl(this, enable, opts);
   }
 
-  setDisable(disable = true, opts?: LimitedControlOptions) {
+  setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
   }
 }

@@ -24,7 +24,7 @@ import {
   AsyncValidatorFn,
   ControlOptions,
   ExtractStrings,
-  LimitedControlOptions,
+  ControlEventOptions,
   ValidationErrors,
   ValidatorFn,
   ControlType
@@ -96,9 +96,9 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     super.setControl(name, control);
   }
 
-  setValue(valueOrObservable: Observable<T>, options?: LimitedControlOptions): Subscription;
-  setValue(valueOrObservable: T, options?: LimitedControlOptions): void;
-  setValue(valueOrObservable: T | Observable<T>, options?: LimitedControlOptions): Subscription | void {
+  setValue(valueOrObservable: Observable<T>, options?: ControlEventOptions): Subscription;
+  setValue(valueOrObservable: T, options?: ControlEventOptions): void;
+  setValue(valueOrObservable: T | Observable<T>, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
     } else {
@@ -106,12 +106,12 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     }
   }
 
-  patchValue(valueOrObservable: Observable<Partial<T>>, options?: LimitedControlOptions): Subscription;
-  patchValue(valueOrObservable: Partial<T>, options?: LimitedControlOptions): void;
+  patchValue(valueOrObservable: Observable<Partial<T>>, options?: ControlEventOptions): Subscription;
+  patchValue(valueOrObservable: Partial<T>, options?: ControlEventOptions): void;
   patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
   patchValue(
     valueOrObservable: Partial<T> | Observable<Partial<T>> | ((state: T) => T),
-    options?: LimitedControlOptions
+    options?: ControlEventOptions
   ): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
@@ -165,7 +165,7 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     markAllDirty(this);
   }
 
-  reset(formState?: T, options?: LimitedControlOptions): void {
+  reset(formState?: T, options?: ControlEventOptions): void {
     super.reset(formState, options);
   }
 
@@ -239,11 +239,11 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return hasErrorAndDirty(this, error, ...path);
   }
 
-  setEnable(enable = true, opts?: LimitedControlOptions) {
+  setEnable(enable = true, opts?: ControlEventOptions) {
     enableControl(this, enable, opts);
   }
 
-  setDisable(disable = true, opts?: LimitedControlOptions) {
+  setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
   }
 }

@@ -19,7 +19,9 @@ export interface ControlOptions {
   emitViewToModelChange?: boolean;
 }
 
-export type LimitedControlOptions = Pick<ControlOptions, 'emitEvent' | 'onlySelf'>;
+export type ControlEventOptions = Pick<ControlOptions, 'emitEvent' | 'onlySelf'>;
+export type OnlySelf = Pick<ControlOptions, 'onlySelf'>;
+export type EmitEvent = Pick<ControlOptions, 'emitEvent'>;
 
 export interface AbstractControlOptions<T> {
   validators?: ValidatorFn<T> | ValidatorFn<T>[] | null;
@@ -45,7 +47,7 @@ export interface AbstractControl<T> extends AngularAbstractControl {
 
 export type ExtractStrings<T> = Extract<keyof T, string>;
 
-export interface BuiltInErrors {
+export interface NgValidatorsErrors {
   required: true;
   email: true;
   pattern: { requiredPattern: string; actualValue: string };
@@ -55,6 +57,7 @@ export interface BuiltInErrors {
   max: { max: number; actual: number };
 }
 
+export type BoxedValue<T> = { value: T; disabled: boolean };
 export type ValidationErrors<T extends object = any> = T;
 
 const uniqueKey = Symbol();

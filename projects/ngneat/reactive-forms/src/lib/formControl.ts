@@ -22,13 +22,16 @@ import {
   AsyncValidatorFn,
   ControlOptions,
   ExtractStrings,
-  LimitedControlOptions,
+  ControlEventOptions,
   ValidationErrors,
-  ValidatorFn
+  ValidatorFn,
+  BoxedValue,
+  OnlySelf,
+  EmitEvent
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
-export class FormControl<T = any, E extends object = ValidationErrors> extends NgFormControl {
+export class FormControl<T = any, E extends object = any> extends NgFormControl {
   value: T;
   errors: ValidationErrors<E> | null;
 
@@ -45,7 +48,7 @@ export class FormControl<T = any, E extends object = ValidationErrors> extends N
   errorChanges$ = controlErrorChanges$<T, E>(this);
 
   constructor(
-    formState?: T | { value: T; disabled: boolean },
+    formState?: T | BoxedValue<T>,
     validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
     asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
   ) {
@@ -98,22 +101,22 @@ export class FormControl<T = any, E extends object = ValidationErrors> extends N
     this.updateValueAndValidity();
   }
 
-  markAsTouched(opts?: { onlySelf?: boolean }): void {
+  markAsTouched(opts?: OnlySelf): void {
     super.markAsTouched(opts);
     this.touchChanges.next(true);
   }
 
-  markAsUntouched(opts?: { onlySelf?: boolean }): void {
+  markAsUntouched(opts?: OnlySelf): void {
     super.markAsUntouched(opts);
     this.touchChanges.next(false);
   }
 
-  markAsPristine(opts?: { onlySelf?: boolean }): void {
+  markAsPristine(opts?: OnlySelf): void {
     super.markAsPristine(opts);
     this.dirtyChanges.next(false);
   }
 
-  markAsDirty(opts?: { onlySelf?: boolean }): void {
+  markAsDirty(opts?: OnlySelf): void {
     super.markAsDirty(opts);
     this.dirtyChanges.next(true);
   }
@@ -122,7 +125,7 @@ export class FormControl<T = any, E extends object = ValidationErrors> extends N
     this.markAsDirty({ onlySelf: true });
   }
 
-  reset(formState?: T, options?: LimitedControlOptions): void {
+  reset(formState?: T | BoxedValue<T>, options?: ControlEventOptions): void {
     super.reset(formState, options);
   }
 
@@ -140,7 +143,7 @@ export class FormControl<T = any, E extends object = ValidationErrors> extends N
     return validateControlOn(this, observableValidation);
   }
 
-  getError<K extends ExtractStrings<E> = any>(errorCode: K) {
+  getError<K extends ExtractStrings<E>>(errorCode: K) {
     return super.getError(errorCode) as E[K] | null;
   }
 
@@ -148,7 +151,7 @@ export class FormControl<T = any, E extends object = ValidationErrors> extends N
     return super.hasError(errorCode);
   }
 
-  setErrors(errors: ValidationErrors | null, opts: { emitEvent?: boolean } = {}) {
+  setErrors(errors: Partial<E> | null, opts: EmitEvent = {}) {
     return super.setErrors(errors, opts);
   }
 
@@ -160,11 +163,11 @@ export class FormControl<T = any, E extends object = ValidationErrors> extends N
     return hasErrorAndDirty(this, error);
   }
 
-  setEnable(enable = true, opts?: LimitedControlOptions) {
+  setEnable(enable = true, opts?: ControlEventOptions) {
     enableControl(this, enable, opts);
   }
 
-  setDisable(disable = true, opts?: LimitedControlOptions) {
+  setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
   }
 }
