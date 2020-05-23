@@ -37,11 +37,6 @@ test('control dirtyChanges$ should be of type stream of boolean', () => {
   expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
 });
 
-test('control connect parameter should be of type stream of User', () => {
-  const control = new FormGroup<User>(null);
-  expectTypeOf(control.connect(of(user))).toMatchTypeOf(new Subscription());
-});
-
 test('control select parameter should be of type stream of given type', () => {
   const control = new FormGroup<User>(null);
   const cb = (user: User) => user.id;

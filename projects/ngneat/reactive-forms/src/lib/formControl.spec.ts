@@ -1,6 +1,6 @@
-import { FormControl } from './formControl';
-import { of, Subject } from 'rxjs';
 import { Validators } from '@angular/forms';
+import { of, Subject } from 'rxjs';
+import { FormControl } from './formControl';
 
 describe('FormControl', () => {
   it('should valueChanges$', () => {
@@ -41,12 +41,6 @@ describe('FormControl', () => {
     expect(spy).toHaveBeenCalledWith('VALID');
     control.disable();
     expect(spy).toHaveBeenCalledWith('DISABLED');
-  });
-
-  it('should connect$', () => {
-    const control = new FormControl<string>();
-    control.connect(of('value'));
-    expect(control.value).toEqual('value');
   });
 
   it('should select$', () => {
@@ -206,5 +200,17 @@ describe('FormControl', () => {
     expect(control.enabled).toBe(false);
     control.setDisable(false);
     expect(control.enabled).toBe(true);
+  });
+
+  it('should errorChanges$', () => {
+    const control = new FormControl<string>(null, Validators.required);
+    const spy = jest.fn();
+    control.errorChanges$.subscribe(spy);
+    expect(spy).toHaveBeenCalledWith({ required: true });
+    control.patchValue(null);
+    control.patchValue('');
+    expect(spy).toHaveBeenCalledTimes(2);
+    control.patchValue('Test');
+    expect(spy).toHaveBeenCalledWith(null);
   });
 });

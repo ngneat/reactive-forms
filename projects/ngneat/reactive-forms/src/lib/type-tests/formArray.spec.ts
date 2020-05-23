@@ -33,13 +33,6 @@ test('control dirtyChanges$ should be of type stream of boolean', () => {
   expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
 });
 
-test('control connect parameter should be of type stream of User[]', () => {
-  const control = new FormArray<User>([]);
-  expectTypeOf(control.connect)
-    .parameter(0)
-    .toMatchTypeOf(new Observable<User[]>());
-});
-
 test('control select parameter should be of type stream of given type', () => {
   const control = new FormArray<User>([]);
   const cb = (users: User[]) => users.map(user => user.id);

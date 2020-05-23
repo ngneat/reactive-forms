@@ -1,7 +1,6 @@
-import { FormArray } from './formArray';
 import { of, Subject } from 'rxjs';
+import { FormArray } from './formArray';
 import { FormControl } from './formControl';
-import { Validators } from '@angular/forms';
 
 const errorFn = group => {
   return { isInvalid: true };
@@ -50,12 +49,6 @@ describe('FormArray', () => {
     expect(spy).toHaveBeenCalledWith('VALID');
     control.disable();
     expect(spy).toHaveBeenCalledWith('DISABLED');
-  });
-
-  it('should connect$', () => {
-    const control = createArray();
-    control.connect(of(['1', '2']));
-    expect(control.value).toEqual(['1', '2']);
   });
 
   it('should select$', () => {
@@ -208,5 +201,17 @@ describe('FormArray', () => {
     expect(control.enabled).toBe(false);
     control.setDisable(false);
     expect(control.enabled).toBe(true);
+  });
+
+  it('should errorChanges$', () => {
+    const control = createArray();
+    const spy = jest.fn();
+    const validator = (control: FormArray) => (control.length < 4 ? { minimum: 4 } : null);
+    control.setValidators(validator);
+    control.errorChanges$.subscribe(spy);
+    expect(spy).toHaveBeenCalledWith({ minimum: 4 });
+    control.push(new FormControl('Name'));
+    control.push(new FormControl('Phone'));
+    expect(spy).toHaveBeenCalledWith(null);
   });
 });

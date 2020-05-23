@@ -1,6 +1,6 @@
-import { FormGroup } from './formGroup';
-import { FormControl } from './formControl';
 import { of, Subject } from 'rxjs';
+import { FormControl } from './formControl';
+import { FormGroup } from './formGroup';
 
 type Person = {
   name: string;
@@ -68,12 +68,6 @@ describe('FormGroup', () => {
     expect(spy).toHaveBeenCalledWith('VALID');
     control.disable();
     expect(spy).toHaveBeenCalledWith('DISABLED');
-  });
-
-  it('should connect$', () => {
-    const control = createGroup();
-    control.connect(of({ name: 'changed' }));
-    expect(control.value).toEqual({ name: 'changed', phone: { num: null, prefix: null } });
   });
 
   it('should select$', () => {
@@ -291,5 +285,17 @@ describe('FormGroup', () => {
     expect(nameControl).toBeInstanceOf(FormControl);
     const numControl = control.getControl('phone', 'num');
     expect(numControl).toBeInstanceOf(FormControl);
+  });
+
+  it('should errorChanges$', () => {
+    const control = createGroup();
+    const validator = (control: FormGroup<Person>) =>
+      control.getRawValue().name === 'Test' ? { invalidName: true } : null;
+    control.setValidators(validator);
+    const spy = jest.fn();
+    control.errorChanges$.subscribe(spy);
+    expect(spy).toHaveBeenCalledWith(null);
+    control.patchValue({ name: 'Test' });
+    expect(spy).toHaveBeenCalledWith({ invalidName: true });
   });
 });
