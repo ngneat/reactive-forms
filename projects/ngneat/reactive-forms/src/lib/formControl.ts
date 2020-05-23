@@ -90,7 +90,7 @@ export class FormControl<T = any, E extends object = ValidationErrors> extends N
     return controlDisabledWhile(this, observable, options);
   }
 
-  enableWhile(observable: Observable<boolean>, options?: ControlOptions) {
+  enabledWhile(observable: Observable<boolean>, options?: ControlOptions) {
     return controlEnabledWhile(this, observable, options);
   }
 

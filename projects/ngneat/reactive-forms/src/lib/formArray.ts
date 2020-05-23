@@ -114,7 +114,7 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     return controlDisabledWhile(this, observable, options);
   }
 
-  enableWhile(observable: Observable<boolean>, options?: ControlOptions) {
+  enabledWhile(observable: Observable<boolean>, options?: ControlOptions) {
     return controlEnabledWhile(this, observable, options);
   }
 
