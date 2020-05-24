@@ -185,7 +185,14 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     return validateControlOn(this, observableValidation);
   }
 
-  hasError(errorCode: ExtractStrings<E>, path?: ControlPath) {
+  hasError<K1 extends keyof T>(errorCode: ExtractStrings<E>, path?: [K1]): boolean;
+  hasError<K1 extends keyof T, K2 extends keyof T[K1]>(errorCode: ExtractStrings<E>, path?: [K1, K2]): boolean;
+  hasError<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
+    errorCode: ExtractStrings<E>,
+    path?: [K1, K2, K3]
+  ): boolean;
+  hasError(errorCode: ExtractStrings<E>, path?: string): boolean;
+  hasError(errorCode: ExtractStrings<E>, path?: any): boolean {
     return super.hasError(errorCode, path);
   }
 
@@ -193,8 +200,15 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     return super.setErrors(errors, opts);
   }
 
-  getError<K extends ExtractStrings<E>>(errorCode: K, path?: ControlPath): E[K] | null {
-    return super.getError(errorCode, path) as E[K] | null;
+  getError<K extends keyof E, K1 extends keyof T>(errorCode: K, path?: [K1]): E[K] | null;
+  getError<K extends keyof E, K1 extends keyof T, K2 extends keyof T[K1]>(errorCode: K, path?: [K1, K2]): E[K] | null;
+  getError<K extends keyof E, K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
+    errorCode: K,
+    path?: [K1, K2, K3]
+  ): E[K] | null;
+  getError<K extends keyof E>(errorCode: K, path?: string): E[K] | null;
+  getError<K extends keyof E>(errorCode: K, path?: any): E[K] | null {
+    return super.getError(errorCode as any, path) as E[K] | null;
   }
 
   hasErrorAndTouched<P1 extends keyof T>(error: ExtractStrings<E>, prop1?: P1): boolean;

@@ -1,6 +1,8 @@
 import { of, Subject } from 'rxjs';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
+import { Validators } from '@angular/forms';
+import { NgValidatorsErrors } from './types';
 
 type Person = {
   name: string;
@@ -13,6 +15,17 @@ type Person = {
 const errorFn = group => {
   return { isInvalid: true };
 };
+
+const g = new FormGroup<Person, NgValidatorsErrors>({
+  name: new FormControl(),
+  phone: new FormGroup({
+    num: new FormControl(null, Validators.required),
+    prefix: new FormControl()
+  })
+});
+
+g.hasError('required', ['phone', 'num']);
+const err = g.getError('maxlength', ['phone', 'prefix']);
 
 const createGroup = (withError = false) => {
   return new FormGroup<Person>(
