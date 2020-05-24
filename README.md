@@ -36,6 +36,7 @@ Let's take a look at all the neat things we provide:
 - [Types](#types)
 - [Queries](#queries)
 - [Methods](#methods)
+- [Errors Type](#errors-type)
 - [Form Builder](#form-builder)
 - [ESLint Rule](#eslint-rule)
 - [Schematics](#schematics)
@@ -340,7 +341,17 @@ const nestedFieldControl = group.getControl('nested', 'field');
 
 There is no need to infer it! (i.e: `as FormControl`)
 
-## Errors Methods
+### Extras
+
+The **array** path variation of `hasError`, `getError`, and `get()` is now typed:
+
+```ts
+group.get(['phone', 'num']);
+group.hasError('required', ['phone', 'num']);
+group.getError('required', ['phone', 'num']);
+```
+
+## Errors Type
 
 Each `AbstractControl` takes a second generic which serves as the type of the errors:
 
@@ -371,14 +382,16 @@ We also introduce a typed version of `FormBuilder` which returns a typed `FormGr
 import { FormBuilder } from '@ngneat/reactive-forms';
 
 const fb = new FormBuilder();
-const group = fb.group({ name: 'ngneat', id: 1 }); // Returns a FormGroup<{name: string, id: number}>
+// Returns a FormGroup<{name: string, id: number}>
+const group = fb.group({ name: 'ngneat', id: 1 });
 
 interface User {
   userName: string;
   email: string;
 }
 
-const userGroup: FormGroup<User> = fb.group({ userName: 'User', email: 'Email', id: 1 }); // Will error as "id" does not exist in User
+// We'll get an error because "id" does not exist in type `User`
+const userGroup: FormGroup<User> = fb.group({ id: 1, userName: 'User', email: 'Email' });
 ```
 
 ## ESLint Rule
