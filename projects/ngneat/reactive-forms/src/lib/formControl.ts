@@ -20,14 +20,15 @@ import {
 import {
   AbstractControlOptions,
   AsyncValidatorFn,
-  ControlOptions,
-  ExtractStrings,
-  ControlEventOptions,
-  ValidationErrors,
-  ValidatorFn,
   BoxedValue,
+  ControlEventOptions,
+  ControlOptions,
+  EmitEvent,
+  ExtractStrings,
   OnlySelf,
-  EmitEvent
+  OrBoxedValue,
+  ValidationErrors,
+  ValidatorFn
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
@@ -48,7 +49,7 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   errorChanges$ = controlErrorChanges$<T, E>(this);
 
   constructor(
-    formState?: T | BoxedValue<T>,
+    formState?: OrBoxedValue<T>,
     validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
     asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
   ) {
@@ -125,7 +126,7 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     this.markAsDirty({ onlySelf: true });
   }
 
-  reset(formState?: T | BoxedValue<T>, options?: ControlEventOptions): void {
+  reset(formState?: OrBoxedValue<T>, options?: ControlEventOptions): void {
     super.reset(formState, options);
   }
 

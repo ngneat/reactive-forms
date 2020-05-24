@@ -60,6 +60,7 @@ export interface NgValidatorsErrors {
 }
 
 export type BoxedValue<T> = { value: T; disabled: boolean };
+export type OrBoxedValue<T> = T | BoxedValue<T>;
 export type ValidationErrors<T extends object = any> = T;
 
 const uniqueKey = Symbol();
