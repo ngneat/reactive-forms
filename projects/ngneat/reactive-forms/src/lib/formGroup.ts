@@ -130,7 +130,7 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     return controlDisabledWhile(this, observable, options);
   }
 
-  enableWhile(observable: Observable<boolean>, options?: ControlOptions) {
+  enabledWhile(observable: Observable<boolean>, options?: ControlOptions) {
     return controlEnabledWhile(this, observable, options);
   }
 

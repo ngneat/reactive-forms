@@ -92,7 +92,7 @@ describe('FormControl', () => {
   it('should enableWhile', () => {
     const control = new FormControl<string>();
     const subject = new Subject<boolean>();
-    control.enableWhile(subject);
+    control.enabledWhile(subject);
     expect(control.enabled).toBeTruthy();
     subject.next(false);
     expect(control.enabled).toBeFalsy();
