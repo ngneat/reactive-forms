@@ -35,7 +35,7 @@ test('control dirtyChanges$ should be of type stream of boolean', () => {
 
 test('get control should accept a type of given generic keys', () => {
   const control = new FormGroup<User>(null);
-  expectTypeOf(control.getControl('id') as FormControl).toEqualTypeOf(new FormControl());
+  expectTypeOf(control.getControl('id')).toMatchTypeOf(new FormControl());
 });
 
 test('control select parameter should be of type stream of given type', () => {
