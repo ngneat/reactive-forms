@@ -1,6 +1,7 @@
 import {
   AbstractControl as AngularAbstractControl,
-  ControlValueAccessor as NgControlValueAccessor
+  ControlValueAccessor as NgControlValueAccessor,
+  Validator as NgValidator
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormGroup } from './formGroup';
@@ -10,6 +11,10 @@ import { FormArray } from './formArray';
 export interface ControlValueAccessor<T> extends NgControlValueAccessor {
   writeValue(value: T): void;
   registerOnChange(fn: (value: T | null) => void): void;
+}
+
+export interface Validator<T, E extends object = any> extends NgValidator {
+  validate(control: AbstractControl<T>): ValidationErrors<E> | null;
 }
 
 export interface ValidatorFn<T, E extends object = any> {
