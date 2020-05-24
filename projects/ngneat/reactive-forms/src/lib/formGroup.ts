@@ -22,13 +22,13 @@ import {
   AbstractControl,
   AbstractControlOptions,
   AsyncValidatorFn,
-  ControlOptions,
-  ExtractStrings,
   ControlEventOptions,
-  ValidationErrors,
-  ValidatorFn,
+  ControlOptions,
   ControlType,
-  EmitEvent
+  EmitEvent,
+  ExtractStrings,
+  ValidationErrors,
+  ValidatorFn
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
@@ -49,7 +49,7 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   errorChanges$ = controlErrorChanges$<T, E>(this);
 
   constructor(
-    public controls: { [K in keyof T]: AbstractControl<T[K]> },
+    public controls: { [K in keyof T]: ControlType<T[K]> },
     validatorOrOpts?:
       | ValidatorFn<T, Partial<E>>
       | ValidatorFn<T, Partial<E>>[]

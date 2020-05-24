@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "jest --coverage=false",
+    "test": "jest --coverage=false && npm run test:type",
     "test:watch": "jest --watch --coverage=false",
     "test:type": "cd projects/ngneat/reactive-forms/src/lib/type-tests && tsc --outDir ./out-tsc",
     "test:lib:headless": "cross-env CI=true npm run test",
