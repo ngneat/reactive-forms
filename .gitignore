@@ -46,4 +46,4 @@ testem.log
 .DS_Store
 Thumbs.db
 .cache
-projects/reactive-forms/src/lib/*.js
+projects/ngneat/reactive-forms/src/lib/**/*.js
