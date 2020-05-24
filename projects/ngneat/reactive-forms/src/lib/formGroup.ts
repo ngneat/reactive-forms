@@ -19,6 +19,7 @@ import {
   validateControlOn
 } from './control-actions';
 import {
+  AbstractControl,
   AbstractControlOptions,
   AsyncValidatorFn,
   ControlEventOptions,
@@ -61,6 +62,17 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
 
   getRawValue(): T {
     return super.getRawValue();
+  }
+
+  get<K1 extends keyof T>(path?: [K1]): ControlType<T[K1]>;
+  get<K1 extends keyof T, K2 extends keyof T[K1]>(path?: [K1, K2]): ControlType<T[K1][K2]>;
+  get<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
+    errorCode: ExtractStrings<E>,
+    path?: [K1, K2, K3]
+  ): ControlType<T[K1][K2][K3]>;
+  get(path?: string): AbstractControl<any>;
+  get(path: any) {
+    return super.get(path);
   }
 
   getControl<P1 extends keyof T>(prop1: P1): ControlType<T[P1]>;
