@@ -51,12 +51,6 @@ describe('FormArray', () => {
     expect(spy).toHaveBeenCalledWith('DISABLED');
   });
 
-  it('should connect$', () => {
-    const control = createArray();
-    control.connect(of(['1', '2']));
-    expect(control.value).toEqual(['1', '2']);
-  });
-
   it('should select$', () => {
     const control = createArray();
     const spy = jest.fn();
@@ -104,7 +98,7 @@ describe('FormArray', () => {
     const control = createArray();
 
     const subject = new Subject<boolean>();
-    control.enableWhile(subject);
+    control.enabledWhile(subject);
     expect(control.enabled).toBeTruthy();
     subject.next(false);
     expect(control.enabled).toBeFalsy();

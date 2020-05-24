@@ -43,12 +43,6 @@ describe('FormControl', () => {
     expect(spy).toHaveBeenCalledWith('DISABLED');
   });
 
-  it('should connect$', () => {
-    const control = new FormControl<string>();
-    control.connect(of('value'));
-    expect(control.value).toEqual('value');
-  });
-
   it('should select$', () => {
     const control = new FormControl<string>();
     const spy = jest.fn();
@@ -98,7 +92,7 @@ describe('FormControl', () => {
   it('should enableWhile', () => {
     const control = new FormControl<string>();
     const subject = new Subject<boolean>();
-    control.enableWhile(subject);
+    control.enabledWhile(subject);
     expect(control.enabled).toBeTruthy();
     subject.next(false);
     expect(control.enabled).toBeFalsy();
