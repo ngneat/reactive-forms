@@ -36,6 +36,7 @@ Let's take a look at all the neat things we provide:
 - [Types](#types)
 - [Queries](#queries)
 - [Methods](#methods)
+- [Form Builder](#form-builder)
 - [ESLint Rule](#eslint-rule)
 - [Schematics](#schematics)
 
@@ -360,6 +361,24 @@ The library provides a type for the built-in Angular validators types:
 import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
 
 const control = new FormControl<string, NgValidatorsErrors>();
+```
+
+## Form Builder
+
+We also introduce a typed version of `FormBuilder` which returns a typed `FormGroup`, `FormControl` and `FormArray` with all our sweet additions:
+
+```ts
+import { FormBuilder } from '@ngneat/reactive-forms';
+
+const fb = new FormBuilder();
+const group = fb.group({ name: 'ngneat', id: 1 }); // Returns a FormGroup<{name: string, id: number}>
+
+interface User {
+  userName: string;
+  email: string;
+}
+
+const userGroup: FormGroup<User> = fb.group({ userName: 'User', email: 'Email', id: 1 }); // Will error as "id" does not exist in User
 ```
 
 ## ESLint Rule
