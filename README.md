@@ -22,7 +22,7 @@ Let's take a look at all the neat things we provide:
 
 ## 🔮 Features
 
-✅ Seamless `FormControl`, `FormGroup`, `FormArray` Replacement<br>
+✅ Offers seamless `FormControl`, `FormGroup`, `FormArray` Replacement<br>
 ✅ Allows Typed Forms! <br>
 ✅ Provides Reactive Queries <br>
 ✅ Provides Helpful Methods
@@ -41,7 +41,7 @@ Let's take a look at all the neat things we provide:
 
 ## Types
 
-Each `AbstractControl` takes a generic that serves as the `type` for each method Angular and this library exposes:
+Each `AbstractControl` takes a generic, which serves as the `type` for any method exposed by Angular or this library:
 
 Use it with a `FormControl`:
 
@@ -97,7 +97,7 @@ control.valueChanges$.subscribe(value => {
 
 ### `valueChanges$`
 
-Observe the control's value. Unlike the behavior of the built-in `valueChanges` observable, it emits the current `rawValue` **immediately**. ( which means you'll also get the values of the `disabled` controls)
+Observes the control's value. Unlike the behavior of the built-in `valueChanges` observable, it emits the current `rawValue` **immediately** (which means you'll also get the values of `disabled` controls).
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
@@ -108,7 +108,7 @@ control.valueChanges$.subscribe(value => ...);
 
 ### `disabledChanges$`
 
-Observe the control's `disable` status.
+Observes the control's `disable` status.
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
@@ -119,7 +119,7 @@ control.disabledChanges$.subscribe(isDisabled => ...);
 
 ### `enabledChanges$`
 
-Observe the control's `enable` status.
+Observes the control's `enable` status.
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
@@ -130,7 +130,7 @@ control.enabledChanges$.subscribe(isEnabled => ...);
 
 ### `statusChanges$`
 
-Observe the control's `status`.
+Observes the control's `status`.
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
@@ -139,11 +139,11 @@ const control = new FormControl<string>();
 control.statusChanges$.subscribe(status => ...);
 ```
 
-The `status` is typed as `ControlState`.
+The `status` is typed as `ControlState` (valid, invalid, pending or disabled).
 
 ### `touchChanges$`
 
-Observe the control's `touched` status.
+Observes the control's `touched` status.
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
@@ -152,11 +152,11 @@ const control = new FormControl<string>();
 control.touchChanges$.subscribe(isTouched => ...);
 ```
 
-This emits **only** when `markAsTouched` or `markAsUnTouched` has been called.
+This emits a value **only** when `markAsTouched`, or `markAsUnTouched`, has been called.
 
 ### `dirtyChanges$`
 
-Observe the control's `dirty` status.
+Observes the control's `dirty` status.
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
@@ -165,24 +165,13 @@ const control = new FormControl<string>();
 control.dirtyChanges$.subscribe(isDirty => ...);
 ```
 
-This emits **only** when `markAsDirty` or `markAsPristine` has been called.
+This emits a value **only** when `markAsDirty`, or `markAsPristine`, has been called.
 
 ### Methods
 
-### `connect()`
-
-Subscribes to the given source observable, and calls `patchValue` when emits.
-
-```ts
-import { FormControl } from '@ngneat/reactive-forms';
-
-const control = new FormControl<string>();
-control.connect(query.select('formValue'));
-```
-
 ### `select()`
 
-Select a `slice` of the form's state.
+Selects a `slice` of the form's state based on the given predicate.
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
@@ -193,7 +182,7 @@ control.select(state => state.name).subscribe(name => ...)
 
 ### `setValue()`
 
-In addition to the built-in method, it also takes an `observable`.
+In addition to the built-in method functionality, it can also take an `observable`.
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
@@ -204,7 +193,7 @@ control.setValue(query.select('formValue'));
 
 ### `patchValue()`
 
-In addition to the built-in method, it also takes an `observable` or a `callback` function.
+In addition to the built-in method functionality, it can take an `observable` or a `callback` function.
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
@@ -242,7 +231,7 @@ control.enabledWhile(query.select('isEnable'));
 
 ### `mergeValidators()`
 
-Unlike the built-in `setValidator` method, it'll persist any existing validators.
+Unlike the built-in `setValidator()` method, it persists any existing validators.
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
@@ -254,7 +243,7 @@ control.mergeAsyncValidators(...);
 
 ### `markAllAsDirty()`
 
-Mark all the controls as `dirty`.
+Marks all the group's controls as `dirty`.
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
@@ -265,47 +254,56 @@ control.markAllAsDirty();
 
 ### `validateOn()`
 
-Takes an observable that emits an `error-like` response and call `setErrors()` with the response.
+Takes an observable that emits a response, which is either `null` or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors). The control's `setErrors()` method is called whenever the source emits.
 
 ```ts
-import { FormControl } from '@ngneat/reactive-forms';
+const passwordValidator = combineLatest([
+  this.signup.select(state => state.password),
+  this.signup.select(state => state.repeatPassword)
+]).pipe(
+  map(([password, repeat]) => {
+    return password === repeat
+      ? null
+      : {
+          isEqual: false
+        };
+  })
+);
 
-const control = new FormControl<string>();
-const error$ = source.pipe(map(condition => ({
-  condition ? { someError: true } : null
-})));
-
-control.validateOn(error$);
+this.signup.validateOn(passwordValidator);
 ```
 
 ### `hasErrorAndTouched()`
 
-A sugar method to use in the template:
+A syntactic sugar method to be used in the template:
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>('', Validators.required);
+this.control = new FormControl<string>('', Validators.required);
+```
 
-// In the HTML *ngIf
-control.hasErrorAndTouched('required');
+```html
+<span *ngIf="control.hasErrorAndTouched('required')"></span>
 ```
 
 ### `hasErrorAndDirty()`
 
-A sugar method to use in the template:
+A syntactic sugar method to be used in the template:
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>('', Validators.required);
-// In the HTML *ngIf
-control.hasErrorAndDirty('required');
+this.control = new FormControl<string>('', Validators.required);
+```
+
+```html
+<span *ngIf="control.hasErrorAndDirty('required')"></span>
 ```
 
 ### `setEnable()`
 
-Set whether the control is `enabled`.
+Sets whether the control is `enabled`.
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
@@ -317,7 +315,7 @@ control.setEnable(false);
 
 ### `setDisable`
 
-Set whether the control is `disabled`.
+Sets whether the control is `disabled`.
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
@@ -329,14 +327,39 @@ control.setDisable(false);
 
 ### `getControl()`
 
-A `typed` method to obtain a reference to a specific control.
+A `typed` method which obtains a reference to a specific control.
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
 
 const group = new FormGroup<Person>(...);
-group.getControl('name');
-group.getControl('nested', 'field');
+const nameControl = group.getControl('name');
+const nestedFieldControl = group.getControl('nested', 'field');
+```
+
+There is no need to infer it! (i.e: `as FormControl`)
+
+## Errors Methods
+
+Each `AbstractControl` takes a second generic which serves as the type of the errors:
+
+```ts
+type MyErrors = { isEqual: false };
+
+const control = new FormControl<string, MyErrors>();
+control.getError('isEqual'); // keyof MyErrors
+control.hasError('isEqual'); // keyof MyErrors
+
+// error type is MyErrors['isEqual']
+const error = control.getError('isEqual'); // keyof MyErrors
+```
+
+The library provides a type for the built-in Angular validators types:
+
+```ts
+import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string, NgValidatorsErrors>();
 ```
 
 ## ESLint Rule

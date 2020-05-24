@@ -4,7 +4,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import { AbstractControl, ControlOptions, ControlState, ValidatorFn } from './types';
+import { AbstractControl, ControlOptions, ControlState, ValidatorFn, ControlPath } from './types';
 import { coerceArray, isNil } from './utils';
 
 function getControlValue<T>(control: AbstractControl<T>): T {
@@ -112,20 +112,12 @@ export function validateControlOn<T>(control: AbstractControl<T>, validation: Ob
   });
 }
 
-export function hasErrorAndTouched<T>(
-  control: AbstractControl<T>,
-  error: string,
-  path?: Array<string | number> | string
-): boolean {
+export function hasErrorAndTouched<T>(control: AbstractControl<T>, error: string, path?: ControlPath): boolean {
   const hasError = control.hasError(error, !path || path.length === 0 ? undefined : path);
   return hasError && control.touched;
 }
 
-export function hasErrorAndDirty<T>(
-  control: AbstractControl<T>,
-  error: string,
-  path?: Array<string | number> | string
-): boolean {
+export function hasErrorAndDirty<T>(control: AbstractControl<T>, error: string, path?: ControlPath): boolean {
   const hasError = control.hasError(error, !path || path.length === 0 ? undefined : path);
   return hasError && control.dirty;
 }
@@ -133,14 +125,6 @@ export function hasErrorAndDirty<T>(
 export function markAllDirty<T>(control: FormArray<T> | FormGroup<T>): void {
   control.markAsDirty({ onlySelf: true });
   (control as any)._forEachChild(control => control.markAllAsDirty());
-}
-
-export function connectControl<T>(
-  control: AbstractControl<T>,
-  observable: Observable<T>,
-  options?: ControlOptions
-): Subscription {
-  return observable.subscribe(value => control.patchValue(value, options));
 }
 
 export function selectControlValue$<T, R>(

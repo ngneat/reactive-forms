@@ -43,12 +43,6 @@ describe('FormControl', () => {
     expect(spy).toHaveBeenCalledWith('DISABLED');
   });
 
-  it('should connect$', () => {
-    const control = new FormControl<string>();
-    control.connect(of('value'));
-    expect(control.value).toEqual('value');
-  });
-
   it('should select$', () => {
     const control = new FormControl<string>();
     const spy = jest.fn();

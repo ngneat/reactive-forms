@@ -2,7 +2,6 @@ import { FormGroup as NgFormGroup } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import {
-  connectControl,
   controlDisabled$,
   controlDisabledWhile,
   controlEnabled$,
@@ -24,15 +23,17 @@ import {
   AbstractControlOptions,
   AsyncValidatorFn,
   ControlOptions,
-  ExtendedAbstractControl,
   ExtractStrings,
-  LimitedControlOptions,
+  ControlEventOptions,
   ValidationErrors,
-  ValidatorFn
+  ValidatorFn,
+  ControlType,
+  EmitEvent,
+  ControlPath
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
-export class FormGroup<T = any, E extends object = ValidationErrors> extends NgFormGroup {
+export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   value: T;
   errors: ValidationErrors<E> | null;
 
@@ -56,10 +57,6 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     super(controls, validatorOrOpts, asyncValidator);
   }
 
-  connect(observable: Observable<Partial<T>>, options?: ControlOptions) {
-    return connectControl(this, observable, options);
-  }
-
   select<R>(mapFn: (state: T) => R): Observable<R> {
     return selectControlValue$(this, mapFn);
   }
@@ -68,24 +65,24 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return super.getRawValue();
   }
 
-  getControl<P1 extends keyof T>(prop1: P1): ExtendedAbstractControl<T[P1]>;
-  getControl<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): ExtendedAbstractControl<T[P1][P2]>;
+  getControl<P1 extends keyof T>(prop1: P1): ControlType<T[P1]>;
+  getControl<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): ControlType<T[P1][P2]>;
   getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
     prop1: P1,
     prop2: P2,
     prop3: P3
-  ): ExtendedAbstractControl<T[P1][P2][P3]>;
+  ): ControlType<T[P1][P2][P3]>;
   getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2], P4 extends keyof T[P1][P2][P3]>(
     prop1: P1,
     prop2: P2,
     prop3: P3,
     prop4: P4
-  ): ExtendedAbstractControl<T[P1][P2][P3][P4]>;
+  ): ControlType<T[P1][P2][P3][P4]>;
   getControl(...names: any): any {
     return this.get(names.join('.'));
   }
 
-  addControl<K extends ExtractStrings<T>>(name: K, control: ExtendedAbstractControl<T[K]>): void {
+  addControl<K extends ExtractStrings<T>>(name: K, control: ControlType<T[K]>): void {
     super.addControl(name, control);
   }
 
@@ -97,13 +94,13 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return super.contains(controlName);
   }
 
-  setControl<K extends ExtractStrings<T>>(name: K, control: ExtendedAbstractControl<T[K]>): void {
+  setControl<K extends ExtractStrings<T>>(name: K, control: ControlType<T[K]>): void {
     super.setControl(name, control);
   }
 
-  setValue(valueOrObservable: Observable<T>, options?: LimitedControlOptions): Subscription;
-  setValue(valueOrObservable: T, options?: LimitedControlOptions): void;
-  setValue(valueOrObservable: T | Observable<T>, options?: LimitedControlOptions): Subscription | void {
+  setValue(valueOrObservable: Observable<T>, options?: ControlEventOptions): Subscription;
+  setValue(valueOrObservable: T, options?: ControlEventOptions): void;
+  setValue(valueOrObservable: T | Observable<T>, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
     } else {
@@ -111,12 +108,12 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     }
   }
 
-  patchValue(valueOrObservable: Observable<Partial<T>>, options?: LimitedControlOptions): Subscription;
-  patchValue(valueOrObservable: Partial<T>, options?: LimitedControlOptions): void;
+  patchValue(valueOrObservable: Observable<Partial<T>>, options?: ControlEventOptions): Subscription;
+  patchValue(valueOrObservable: Partial<T>, options?: ControlEventOptions): void;
   patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
   patchValue(
     valueOrObservable: Partial<T> | Observable<Partial<T>> | ((state: T) => T),
-    options?: LimitedControlOptions
+    options?: ControlEventOptions
   ): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
@@ -170,7 +167,7 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     markAllDirty(this);
   }
 
-  reset(formState?: T, options?: LimitedControlOptions): void {
+  reset(formState?: T, options?: ControlEventOptions): void {
     super.reset(formState, options);
   }
 
@@ -188,16 +185,16 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return validateControlOn(this, observableValidation);
   }
 
-  hasError<K extends ExtractStrings<E>>(errorCode: K, path?: Array<string | number> | string) {
+  hasError(errorCode: ExtractStrings<E>, path?: ControlPath) {
     return super.hasError(errorCode, path);
   }
 
-  setErrors(errors: ValidationErrors | null, opts: { emitEvent?: boolean } = {}) {
+  setErrors(errors: Partial<E> | null, opts: EmitEvent = {}) {
     return super.setErrors(errors, opts);
   }
 
-  getError(errorCode: ExtractStrings<E>, path?: Array<string | number> | string) {
-    return super.getError(errorCode, path);
+  getError<K extends ExtractStrings<E>>(errorCode: K, path?: ControlPath): E[K] | null {
+    return super.getError(errorCode, path) as E[K] | null;
   }
 
   hasErrorAndTouched<P1 extends keyof T>(error: ExtractStrings<E>, prop1?: P1): boolean;
@@ -244,11 +241,11 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return hasErrorAndDirty(this, error, ...path);
   }
 
-  setEnable(enable = true, opts?: LimitedControlOptions) {
+  setEnable(enable = true, opts?: ControlEventOptions) {
     enableControl(this, enable, opts);
   }
 
-  setDisable(disable = true, opts?: LimitedControlOptions) {
+  setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
   }
 }

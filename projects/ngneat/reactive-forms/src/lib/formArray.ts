@@ -2,7 +2,6 @@ import { FormArray as NgFormArray } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import {
-  connectControl,
   controlDisabled$,
   controlDisabledWhile,
   controlEnabled$,
@@ -22,15 +21,17 @@ import {
   AbstractControlOptions,
   AsyncValidatorFn,
   ControlOptions,
-  ExtendedAbstractControl,
   ExtractStrings,
-  LimitedControlOptions,
+  ControlEventOptions,
   ValidationErrors,
-  ValidatorFn
+  ValidatorFn,
+  ControlType,
+  ControlPath,
+  EmitEvent
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
-export class FormArray<T = any, E extends object = ValidationErrors> extends NgFormArray {
+export class FormArray<T = any, E extends object = any> extends NgFormArray {
   value: T[];
   errors: ValidationErrors<E> | null;
 
@@ -54,10 +55,6 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     super(controls, validatorOrOpts, asyncValidator);
   }
 
-  connect(observable: Observable<T[]>, options?: ControlOptions) {
-    return connectControl(this, observable, options);
-  }
-
   select<R>(mapFn: (state: T[]) => R): Observable<R> {
     return this.valueChanges$.pipe(map(mapFn), distinctUntilChanged());
   }
@@ -66,13 +63,13 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     return super.getRawValue();
   }
 
-  at(index: number): ExtendedAbstractControl<T> {
-    return super.at(index) as ExtendedAbstractControl<T>;
+  at(index: number): ControlType<T> {
+    return super.at(index) as ControlType<T>;
   }
 
-  setValue(valueOrObservable: Observable<T[]>, options?: LimitedControlOptions): Subscription;
-  setValue(valueOrObservable: T[], options?: LimitedControlOptions): void;
-  setValue(valueOrObservable: T[] | Observable<T[]>, options?: LimitedControlOptions): Subscription | void {
+  setValue(valueOrObservable: Observable<T[]>, options?: ControlEventOptions): Subscription;
+  setValue(valueOrObservable: T[], options?: ControlEventOptions): void;
+  setValue(valueOrObservable: T[] | Observable<T[]>, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
     } else {
@@ -80,12 +77,12 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     }
   }
 
-  patchValue(valueOrObservable: Observable<T[]>, options?: LimitedControlOptions): Subscription;
-  patchValue(valueOrObservable: T[], options?: LimitedControlOptions): void;
+  patchValue(valueOrObservable: Observable<T[]>, options?: ControlEventOptions): Subscription;
+  patchValue(valueOrObservable: T[], options?: ControlEventOptions): void;
   patchValue(valueOrObservable: (state: T[]) => T[], options?: ControlOptions): void;
   patchValue(
     valueOrObservable: T[] | Observable<T[]> | ((state: T[]) => T[]),
-    options?: LimitedControlOptions
+    options?: ControlEventOptions
   ): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
@@ -98,15 +95,15 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     }
   }
 
-  push(control: AbstractControl<T>): void {
+  push(control: ControlType<T>): void {
     return super.push(control);
   }
 
-  insert(index: number, control: AbstractControl<T>): void {
+  insert(index: number, control: ControlType<T>): void {
     return super.insert(index, control);
   }
 
-  setControl(index: number, control: AbstractControl<T>): void {
+  setControl(index: number, control: ControlType<T>): void {
     return super.setControl(index, control);
   }
 
@@ -151,7 +148,7 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     markAllDirty(this);
   }
 
-  reset(value?: T[], options?: LimitedControlOptions): void {
+  reset(value?: T[], options?: ControlEventOptions): void {
     super.reset(value, options);
   }
 
@@ -171,19 +168,19 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     });
   }
 
-  hasError<K extends ExtractStrings<E>>(errorCode: K, path?: Array<string | number> | string) {
+  hasError(errorCode: ExtractStrings<E>, path?: ControlPath) {
     return super.hasError(errorCode, path);
   }
 
-  setErrors(errors: ValidationErrors | null, opts: { emitEvent?: boolean } = {}) {
+  setErrors(errors: Partial<E> | null, opts: EmitEvent = {}) {
     return super.setErrors(errors, opts);
   }
 
-  getError(errorCode: ExtractStrings<E>, path?: Array<string | number> | string) {
-    return super.getError(errorCode, path);
+  getError<K extends ExtractStrings<E>>(errorCode: K, path?: ControlPath) {
+    return super.getError(errorCode, path) as E[K] | null;
   }
 
-  hasErrorAndTouched(errorCode: ExtractStrings<E>, path?: Array<string | number> | string): boolean {
+  hasErrorAndTouched(errorCode: ExtractStrings<E>, path?: ControlPath): boolean {
     return hasErrorAndTouched(this, errorCode, path);
   }
 
@@ -191,11 +188,11 @@ export class FormArray<T = any, E extends object = ValidationErrors> extends NgF
     return hasErrorAndDirty(this, errorCode, path);
   }
 
-  setEnable(enable = true, opts?: LimitedControlOptions) {
+  setEnable(enable = true, opts?: ControlEventOptions) {
     enableControl(this, enable, opts);
   }
 
-  setDisable(disable = true, opts?: LimitedControlOptions) {
+  setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
   }
 }

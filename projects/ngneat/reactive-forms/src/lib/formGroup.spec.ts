@@ -70,12 +70,6 @@ describe('FormGroup', () => {
     expect(spy).toHaveBeenCalledWith('DISABLED');
   });
 
-  it('should connect$', () => {
-    const control = createGroup();
-    control.connect(of({ name: 'changed' }));
-    expect(control.value).toEqual({ name: 'changed', phone: { num: null, prefix: null } });
-  });
-
   it('should select$', () => {
     const control = createGroup();
     const spy = jest.fn();
