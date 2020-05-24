@@ -35,6 +35,7 @@ import { coerceArray, isFunction } from './utils';
 export class FormControl<T = any, E extends object = any> extends NgFormControl {
   value: T;
   errors: ValidationErrors<E> | null;
+  asyncValidator: AsyncValidatorFn<T, E>;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -50,7 +51,7 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
 
   constructor(
     formState?: OrBoxedValue<T>,
-    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
+    validatorOrOpts?: ValidatorFn<T, Partial<E>> | ValidatorFn<T, Partial<E>>[] | AbstractControlOptions<T, E> | null,
     asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
   ) {
     super(formState, validatorOrOpts, asyncValidator);
@@ -130,12 +131,12 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: ValidatorFn<T> | ValidatorFn<T>[] | null): void {
+  setValidators(newValidator: ValidatorFn<T, Partial<E>> | ValidatorFn<T, Partial<E>>[] | null): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }
 
-  setAsyncValidators(newValidator: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null): void {
+  setAsyncValidators(newValidator: AsyncValidatorFn<T, Partial<E>> | AsyncValidatorFn<T, Partial<E>>[] | null): void {
     super.setAsyncValidators(newValidator);
     super.updateValueAndValidity();
   }

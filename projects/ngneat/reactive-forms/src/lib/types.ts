@@ -4,12 +4,12 @@ import { FormGroup } from './formGroup';
 import { FormControl } from './formControl';
 import { FormArray } from './formArray';
 
-export interface ValidatorFn<T> {
-  (control: AbstractControl<T>): ValidationErrors | null;
+export interface ValidatorFn<T, E extends object = any> {
+  (control: AbstractControl<T>): ValidationErrors<E> | null;
 }
 
-export interface AsyncValidatorFn<T> {
-  (control: AbstractControl<T>): Promise<ValidationErrors | null> | Observable<ValidationErrors | null>;
+export interface AsyncValidatorFn<T, E extends object = any> {
+  (control: AbstractControl<T>): Promise<ValidationErrors<E> | null> | Observable<ValidationErrors<E> | null>;
 }
 
 export interface ControlOptions {
@@ -23,9 +23,9 @@ export type ControlEventOptions = Pick<ControlOptions, 'emitEvent' | 'onlySelf'>
 export type OnlySelf = Pick<ControlOptions, 'onlySelf'>;
 export type EmitEvent = Pick<ControlOptions, 'emitEvent'>;
 
-export interface AbstractControlOptions<T> {
-  validators?: ValidatorFn<T> | ValidatorFn<T>[] | null;
-  asyncValidators?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null;
+export interface AbstractControlOptions<T, E extends object = any> {
+  validators?: ValidatorFn<T, Partial<E>> | ValidatorFn<T, Partial<E>>[] | null;
+  asyncValidators?: AsyncValidatorFn<T, Partial<E>> | AsyncValidatorFn<T, Partial<E>>[] | null;
   updateOn?: 'change' | 'blur' | 'submit';
 }
 

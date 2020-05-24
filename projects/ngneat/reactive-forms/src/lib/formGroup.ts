@@ -50,8 +50,12 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
 
   constructor(
     public controls: { [K in keyof T]: ControlType<T[K]> },
-    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
-    asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
+    validatorOrOpts?:
+      | ValidatorFn<T, Partial<E>>
+      | ValidatorFn<T, Partial<E>>[]
+      | AbstractControlOptions<T, Partial<E>>
+      | null,
+    asyncValidator?: AsyncValidatorFn<T, Partial<E>> | AsyncValidatorFn<T, Partial<E>>[] | null
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }
