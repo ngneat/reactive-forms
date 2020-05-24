@@ -1,6 +1,7 @@
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '../formControl';
+import { Errors, pattern, required, requiredAsync, patternAsync, errors } from './mocks.spec';
 
 test('control value should be of type string', () => {
   const control = new FormControl<string>('a string');
@@ -57,7 +58,52 @@ test('control disableWhile should return subscription', () => {
 
 test('control reset should accept type of string', () => {
   const control = new FormControl<string>('a string');
-  expectTypeOf(control.reset)
-    .parameter(0)
-    .toBeString();
+  control.reset('string');
+  control.reset({ value: 'string', disabled: true });
+});
+
+test('should be able to construct with validators', () => {
+  new FormControl<string, Errors>('a string', required);
+});
+
+test('should be able to set validators', () => {
+  const control = new FormControl<string, Errors>('string');
+  control.setValidators(pattern);
+  control.setValidators([required, pattern]);
+});
+
+test('should be able to set async validators', () => {
+  const control = new FormControl<string, Errors>();
+  control.setAsyncValidators([requiredAsync, patternAsync]);
+});
+
+test('should be able check if has errors', () => {
+  const control = new FormControl<string, Errors>();
+  control.hasError('required');
+  control.hasError('pattern');
+});
+
+test('should be able to set errors', () => {
+  const control = new FormControl<string, Errors>();
+  control.setErrors(errors);
+});
+
+test('should be able to get errors', () => {
+  const control = new FormControl<string, Errors>();
+  expectTypeOf(control.getError('required')).toBeBoolean();
+  expectTypeOf(control.getError('pattern')).toMatchTypeOf(errors.pattern);
+});
+
+test('should be able to call hasErrorAndTouched', () => {
+  const control = new FormControl<string, Errors>();
+  control.hasErrorAndTouched('required');
+  control.hasErrorAndTouched('pattern');
+  expectTypeOf(control.hasErrorAndTouched).returns.toBeBoolean();
+});
+
+test('should be able to call hasErrorAndDirty', () => {
+  const control = new FormControl<string, Errors>();
+  control.hasErrorAndDirty('required');
+  control.hasErrorAndDirty('pattern');
+  expectTypeOf(control.hasErrorAndDirty).returns.toBeBoolean();
 });

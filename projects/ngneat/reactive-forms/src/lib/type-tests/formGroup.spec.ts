@@ -1,16 +1,12 @@
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subscription } from 'rxjs';
+import { FormArray } from '../formArray';
 import { FormControl } from '../formControl';
 import { FormGroup } from '../formGroup';
-
-interface User {
-  id: string;
-  name: string;
-}
-const user: User = { id: '1', name: 'Itay' };
+import { User, user, Errors, pattern, required, requiredAsync, patternAsync, errors } from './mocks.spec';
 
 test('control should be constructed with abstract controls', () => {
-  expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl<string>() });
+  expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl() });
 });
 
 test('control should be constructed with null', () => {
@@ -35,6 +31,11 @@ test('control toucheChanges$ should be of type stream of boolean', () => {
 test('control dirtyChanges$ should be of type stream of boolean', () => {
   const control = new FormGroup<User>(null);
   expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
+});
+
+test('get control should accept a type of given generic keys', () => {
+  const control = new FormGroup<User>(null);
+  expectTypeOf(control.getControl('id') as FormControl).toEqualTypeOf(new FormControl());
 });
 
 test('control select parameter should be of type stream of given type', () => {
@@ -68,4 +69,46 @@ test('control reset should accept type of User', () => {
   expectTypeOf(control.reset)
     .parameter(0)
     .toBeObject();
+});
+
+test('should be able to set validators', () => {
+  const control = new FormGroup<User, Errors>(null);
+  control.setValidators(pattern);
+  control.setValidators([required, pattern]);
+});
+
+test('should be able to set async validators', () => {
+  const control = new FormGroup<User, Errors>(null);
+  control.setAsyncValidators([requiredAsync, patternAsync]);
+});
+
+test('should be able check if has errors', () => {
+  const control = new FormGroup<User, Errors>(null);
+  control.hasError('required');
+  control.hasError('pattern');
+});
+
+test('should be able to set errors', () => {
+  const control = new FormGroup<User, Errors>(null);
+  control.setErrors(errors);
+});
+
+test('should be able to get errors', () => {
+  const control = new FormGroup<User, Errors>(null);
+  expectTypeOf(control.getError('required')).toBeBoolean();
+  expectTypeOf(control.getError('pattern')).toMatchTypeOf(errors.pattern);
+});
+
+test('should be able to call hasErrorAndTouched', () => {
+  const control = new FormGroup<User, Errors>(null);
+  control.hasErrorAndTouched('required');
+  control.hasErrorAndTouched('pattern');
+  expectTypeOf(control.hasErrorAndTouched).returns.toBeBoolean();
+});
+
+test('should be able to call hasErrorAndDirty', () => {
+  const control = new FormGroup<User, Errors>(null);
+  control.hasErrorAndDirty('required');
+  control.hasErrorAndDirty('pattern');
+  expectTypeOf(control.hasErrorAndDirty).returns.toBeBoolean();
 });

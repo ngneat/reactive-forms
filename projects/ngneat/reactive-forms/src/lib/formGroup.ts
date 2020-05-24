@@ -23,15 +23,16 @@ import {
   AbstractControlOptions,
   AsyncValidatorFn,
   ControlOptions,
-  ExtendedAbstractControl,
   ExtractStrings,
-  LimitedControlOptions,
+  ControlEventOptions,
   ValidationErrors,
-  ValidatorFn
+  ValidatorFn,
+  ControlType,
+  EmitEvent
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
-export class FormGroup<T = any, E extends object = ValidationErrors> extends NgFormGroup {
+export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   value: T;
   errors: ValidationErrors<E> | null;
 
@@ -49,8 +50,12 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
 
   constructor(
     public controls: { [K in keyof T]: AbstractControl<T[K]> },
-    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
-    asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
+    validatorOrOpts?:
+      | ValidatorFn<T, Partial<E>>
+      | ValidatorFn<T, Partial<E>>[]
+      | AbstractControlOptions<T, Partial<E>>
+      | null,
+    asyncValidator?: AsyncValidatorFn<T, Partial<E>> | AsyncValidatorFn<T, Partial<E>>[] | null
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }
@@ -63,24 +68,35 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return super.getRawValue();
   }
 
-  getControl<P1 extends keyof T>(prop1: P1): ExtendedAbstractControl<T[P1]>;
-  getControl<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): ExtendedAbstractControl<T[P1][P2]>;
+  get<K1 extends keyof T>(path?: [K1]): ControlType<T[K1]>;
+  get<K1 extends keyof T, K2 extends keyof T[K1]>(path?: [K1, K2]): ControlType<T[K1][K2]>;
+  get<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
+    errorCode: ExtractStrings<E>,
+    path?: [K1, K2, K3]
+  ): ControlType<T[K1][K2][K3]>;
+  get(path?: string): AbstractControl<any>;
+  get(path: any) {
+    return super.get(path);
+  }
+
+  getControl<P1 extends keyof T>(prop1: P1): ControlType<T[P1]>;
+  getControl<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): ControlType<T[P1][P2]>;
   getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
     prop1: P1,
     prop2: P2,
     prop3: P3
-  ): ExtendedAbstractControl<T[P1][P2][P3]>;
+  ): ControlType<T[P1][P2][P3]>;
   getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2], P4 extends keyof T[P1][P2][P3]>(
     prop1: P1,
     prop2: P2,
     prop3: P3,
     prop4: P4
-  ): ExtendedAbstractControl<T[P1][P2][P3][P4]>;
+  ): ControlType<T[P1][P2][P3][P4]>;
   getControl(...names: any): any {
     return this.get(names.join('.'));
   }
 
-  addControl<K extends ExtractStrings<T>>(name: K, control: ExtendedAbstractControl<T[K]>): void {
+  addControl<K extends ExtractStrings<T>>(name: K, control: ControlType<T[K]>): void {
     super.addControl(name, control);
   }
 
@@ -92,13 +108,13 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return super.contains(controlName);
   }
 
-  setControl<K extends ExtractStrings<T>>(name: K, control: ExtendedAbstractControl<T[K]>): void {
+  setControl<K extends ExtractStrings<T>>(name: K, control: ControlType<T[K]>): void {
     super.setControl(name, control);
   }
 
-  setValue(valueOrObservable: Observable<T>, options?: LimitedControlOptions): Subscription;
-  setValue(valueOrObservable: T, options?: LimitedControlOptions): void;
-  setValue(valueOrObservable: T | Observable<T>, options?: LimitedControlOptions): Subscription | void {
+  setValue(valueOrObservable: Observable<T>, options?: ControlEventOptions): Subscription;
+  setValue(valueOrObservable: T, options?: ControlEventOptions): void;
+  setValue(valueOrObservable: T | Observable<T>, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
     } else {
@@ -106,12 +122,12 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     }
   }
 
-  patchValue(valueOrObservable: Observable<Partial<T>>, options?: LimitedControlOptions): Subscription;
-  patchValue(valueOrObservable: Partial<T>, options?: LimitedControlOptions): void;
+  patchValue(valueOrObservable: Observable<Partial<T>>, options?: ControlEventOptions): Subscription;
+  patchValue(valueOrObservable: Partial<T>, options?: ControlEventOptions): void;
   patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
   patchValue(
     valueOrObservable: Partial<T> | Observable<Partial<T>> | ((state: T) => T),
-    options?: LimitedControlOptions
+    options?: ControlEventOptions
   ): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
@@ -128,7 +144,7 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return controlDisabledWhile(this, observable, options);
   }
 
-  enableWhile(observable: Observable<boolean>, options?: ControlOptions) {
+  enabledWhile(observable: Observable<boolean>, options?: ControlOptions) {
     return controlEnabledWhile(this, observable, options);
   }
 
@@ -165,7 +181,7 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     markAllDirty(this);
   }
 
-  reset(formState?: T, options?: LimitedControlOptions): void {
+  reset(formState?: T, options?: ControlEventOptions): void {
     super.reset(formState, options);
   }
 
@@ -183,16 +199,30 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return validateControlOn(this, observableValidation);
   }
 
-  hasError<K extends ExtractStrings<E>>(errorCode: K, path?: Array<string | number> | string) {
+  hasError<K1 extends keyof T>(errorCode: ExtractStrings<E>, path?: [K1]): boolean;
+  hasError<K1 extends keyof T, K2 extends keyof T[K1]>(errorCode: ExtractStrings<E>, path?: [K1, K2]): boolean;
+  hasError<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
+    errorCode: ExtractStrings<E>,
+    path?: [K1, K2, K3]
+  ): boolean;
+  hasError(errorCode: ExtractStrings<E>, path?: string): boolean;
+  hasError(errorCode: ExtractStrings<E>, path?: any): boolean {
     return super.hasError(errorCode, path);
   }
 
-  setErrors(errors: ValidationErrors | null, opts: { emitEvent?: boolean } = {}) {
+  setErrors(errors: Partial<E> | null, opts: EmitEvent = {}) {
     return super.setErrors(errors, opts);
   }
 
-  getError(errorCode: ExtractStrings<E>, path?: Array<string | number> | string) {
-    return super.getError(errorCode, path);
+  getError<K extends keyof E, K1 extends keyof T>(errorCode: K, path?: [K1]): E[K] | null;
+  getError<K extends keyof E, K1 extends keyof T, K2 extends keyof T[K1]>(errorCode: K, path?: [K1, K2]): E[K] | null;
+  getError<K extends keyof E, K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
+    errorCode: K,
+    path?: [K1, K2, K3]
+  ): E[K] | null;
+  getError<K extends keyof E>(errorCode: K, path?: string): E[K] | null;
+  getError<K extends keyof E>(errorCode: K, path?: any): E[K] | null {
+    return super.getError(errorCode as any, path) as E[K] | null;
   }
 
   hasErrorAndTouched<P1 extends keyof T>(error: ExtractStrings<E>, prop1?: P1): boolean;
@@ -239,11 +269,11 @@ export class FormGroup<T = any, E extends object = ValidationErrors> extends NgF
     return hasErrorAndDirty(this, error, ...path);
   }
 
-  setEnable(enable = true, opts?: LimitedControlOptions) {
+  setEnable(enable = true, opts?: ControlEventOptions) {
     enableControl(this, enable, opts);
   }
 
-  setDisable(disable = true, opts?: LimitedControlOptions) {
+  setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
   }
 }

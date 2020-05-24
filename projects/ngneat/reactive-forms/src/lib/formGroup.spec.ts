@@ -1,6 +1,8 @@
 import { of, Subject } from 'rxjs';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
+import { Validators } from '@angular/forms';
+import { NgValidatorsErrors } from './types';
 
 type Person = {
   name: string;
@@ -13,6 +15,19 @@ type Person = {
 const errorFn = group => {
   return { isInvalid: true };
 };
+
+const g = new FormGroup<Person, NgValidatorsErrors>({
+  name: new FormControl(),
+  phone: new FormGroup({
+    num: new FormControl(null, Validators.required),
+    prefix: new FormControl()
+  })
+});
+
+g.hasError('required', ['phone', 'num']);
+const err = g.getError('maxlength', ['phone', 'prefix']);
+const control = g.get(['phone', 'num']);
+const control2 = g.get('any');
 
 const createGroup = (withError = false) => {
   return new FormGroup<Person>(
@@ -183,7 +198,7 @@ describe('FormGroup', () => {
     const control = createGroup();
 
     const subject = new Subject<boolean>();
-    control.enableWhile(subject);
+    control.enabledWhile(subject);
     expect(control.enabled).toBeTruthy();
     subject.next(false);
     expect(control.enabled).toBeFalsy();

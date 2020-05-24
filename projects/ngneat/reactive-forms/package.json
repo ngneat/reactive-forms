@@ -1,15 +1,14 @@
 {
   "name": "@ngneat/reactive-forms",
+  "description": "(Angular Reactive) Forms with Benefits",
   "version": "1.0.0",
-  "peerDependencies": {
-    "@angular/common": "^9.1.7",
-    "@angular/core": "^9.1.7",
-    "tslib": "^1.10.0"
-  },
   "keywords": [
     "angular",
     "angular 2",
-    "reactive-forms"
+    "reactive-forms",
+    "typed forms",
+    "reactive forms",
+    "angular reactive forms"
   ],
   "license": "MIT",
   "publishConfig": {

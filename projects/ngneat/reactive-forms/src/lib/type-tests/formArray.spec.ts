@@ -1,13 +1,12 @@
 import { expectTypeOf } from 'expect-type';
+import { error } from 'ng-packagr/lib/utils/log';
 import { Observable, of, Subscription } from 'rxjs';
+import { enableControl, disableControl } from '../control-actions';
 import { FormArray } from '../formArray';
 import { FormControl } from '../formControl';
-
-interface User {
-  id: string;
-  name: string;
-}
-const user: User = { id: '1', name: 'Itay' };
+import { FormGroup } from '../formGroup';
+import { ValidatorFn, AsyncValidatorFn, ExtractStrings, ControlPath, EmitEvent, ControlEventOptions } from '../types';
+import { User, user, Errors, required, pattern, patternAsync, requiredAsync, errors } from './mocks.spec';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormArray).toBeConstructibleWith([new FormControl<User>()]);
@@ -59,9 +58,70 @@ test('control disableWhile should return subscription', () => {
   expectTypeOf(control.disabledWhile).returns.toMatchTypeOf(new Subscription());
 });
 
-test('control reset should accept type of User[]', () => {
+test('control be able to reset should with type of User[]', () => {
   const control = new FormArray<User>([]);
-  expectTypeOf(control.reset)
+  control.reset([user]);
+});
+
+test('should be able to push control of type User', () => {
+  const control = new FormArray<User>([]);
+  expectTypeOf(control.push)
     .parameter(0)
-    .toBeArray();
+    .toMatchTypeOf(new FormGroup<User>(null));
+});
+
+test('should be able to insert control of type User as index', () => {
+  const control = new FormArray<User>([]);
+  expectTypeOf(control.insert)
+    .parameter(1)
+    .toMatchTypeOf(new FormGroup<User>(null));
+});
+
+test('should be able to set control of type User as index', () => {
+  const control = new FormArray<User>([]);
+  expectTypeOf(control.setControl)
+    .parameter(1)
+    .toMatchTypeOf(new FormGroup<User>(null));
+});
+
+test('should be able to set validators', () => {
+  const control = new FormArray<User, Errors>([]);
+  control.setValidators(pattern);
+  control.setValidators([required, pattern]);
+});
+
+test('should be able to set async validators', () => {
+  const control = new FormArray<User, Errors>([]);
+  control.setAsyncValidators([requiredAsync, patternAsync]);
+});
+
+test('should be able check if has errors', () => {
+  const control = new FormArray<User, Errors>([]);
+  control.hasError('required');
+  control.hasError('pattern');
+});
+
+test('should be able to set errors', () => {
+  const control = new FormArray<User, Errors>([]);
+  control.setErrors(errors);
+});
+
+test('should be able to get errors', () => {
+  const control = new FormArray<User, Errors>([]);
+  expectTypeOf(control.getError('required')).toBeBoolean();
+  expectTypeOf(control.getError('pattern')).toMatchTypeOf(errors.pattern);
+});
+
+test('should be able to call hasErrorAndTouched', () => {
+  const control = new FormArray<User, Errors>([]);
+  control.hasErrorAndTouched('required');
+  control.hasErrorAndTouched('pattern');
+  expectTypeOf(control.hasErrorAndTouched).returns.toBeBoolean();
+});
+
+test('should be able to call hasErrorAndDirty', () => {
+  const control = new FormArray<User, Errors>([]);
+  control.hasErrorAndDirty('required');
+  control.hasErrorAndDirty('pattern');
+  expectTypeOf(control.hasErrorAndDirty).returns.toBeBoolean();
 });

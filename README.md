@@ -4,11 +4,12 @@
 
 <br />
 
+![Test](https://github.com/ngneat/reactive-forms/workflows/Test/badge.svg?branch=master)
 [![MIT](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat-square)]()
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 [![ngneat](https://img.shields.io/badge/@-ngneat-383636?style=flat-square&labelColor=8f68d4)](https://github.com/ngneat/)
 [![spectator](https://img.shields.io/badge/tested%20with-spectator-2196F3.svg?style=flat-square)]()
 
@@ -36,6 +37,8 @@ Let's take a look at all the neat things we provide:
 - [Types](#types)
 - [Queries](#queries)
 - [Methods](#methods)
+- [Errors Type](#errors-type)
+- [Form Builder](#form-builder)
 - [ESLint Rule](#eslint-rule)
 - [Schematics](#schematics)
 
@@ -178,7 +181,7 @@ import { FormGroup } from '@ngneat/reactive-forms';
 
 const control = new FormGroup<Person>(...);
 control.select(state => state.name).subscribe(name => ...)
-``` 
+```
 
 ### `setValue()`
 
@@ -254,17 +257,23 @@ control.markAllAsDirty();
 
 ### `validateOn()`
 
-Takes an observable that emits a response, which is either null or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors) by default, but this can be overriden via the `AbstractControl`'s second generic). The control's `setErrors()` method is called whenever the source emits.
+Takes an observable that emits a response, which is either `null` or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors). The control's `setErrors()` method is called whenever the source emits.
 
 ```ts
-import { FormControl } from '@ngneat/reactive-forms';
+const passwordValidator = combineLatest([
+  this.signup.select(state => state.password),
+  this.signup.select(state => state.repeatPassword)
+]).pipe(
+  map(([password, repeat]) => {
+    return password === repeat
+      ? null
+      : {
+          isEqual: false
+        };
+  })
+);
 
-const control = new FormControl<string>();
-const error$ = source.pipe(map(condition => ({
-  condition ? { someError: true } : null
-})));
-
-control.validateOn(error$);
+this.signup.validateOn(passwordValidator);
 ```
 
 ### `hasErrorAndTouched()`
@@ -280,7 +289,6 @@ this.control = new FormControl<string>('', Validators.required);
 ```html
 <span *ngIf="control.hasErrorAndTouched('required')"></span>
 ```
-
 
 ### `hasErrorAndDirty()`
 
@@ -328,8 +336,63 @@ A `typed` method which obtains a reference to a specific control.
 import { FormGroup } from '@ngneat/reactive-forms';
 
 const group = new FormGroup<Person>(...);
-group.getControl('name');
-group.getControl('nested', 'field');
+const nameControl = group.getControl('name');
+const nestedFieldControl = group.getControl('nested', 'field');
+```
+
+There is no need to infer it! (i.e: `as FormControl`)
+
+### Extras
+
+The **array** path variation of `hasError`, `getError`, and `get()` is now typed:
+
+```ts
+group.get(['phone', 'num']);
+group.hasError('required', ['phone', 'num']);
+group.getError('required', ['phone', 'num']);
+```
+
+## Errors Type
+
+Each `AbstractControl` takes a second generic which serves as the type of the errors:
+
+```ts
+type MyErrors = { isEqual: false };
+
+const control = new FormControl<string, MyErrors>();
+control.getError('isEqual'); // keyof MyErrors
+control.hasError('isEqual'); // keyof MyErrors
+
+// error type is MyErrors['isEqual']
+const error = control.getError('isEqual'); // keyof MyErrors
+```
+
+The library provides a type for the built-in Angular validators types:
+
+```ts
+import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string, NgValidatorsErrors>();
+```
+
+## Form Builder
+
+We also introduce a typed version of `FormBuilder` which returns a typed `FormGroup`, `FormControl` and `FormArray` with all our sweet additions:
+
+```ts
+import { FormBuilder } from '@ngneat/reactive-forms';
+
+const fb = new FormBuilder();
+// Returns a FormGroup<{name: string, id: number}>
+const group = fb.group({ name: 'ngneat', id: 1 });
+
+interface User {
+  userName: string;
+  email: string;
+}
+
+// We'll get an error because "id" does not exist in type `User`
+const userGroup: FormGroup<User> = fb.group({ id: 1, userName: 'User', email: 'Email' });
 ```
 
 ## ESLint Rule
@@ -346,6 +409,16 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://www.netbasal.com"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4" width="100px;" alt=""/><br /><sub><b>Netanel Basal</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=NetanelBasal" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=NetanelBasal" title="Documentation">📖</a> <a href="#ideas-NetanelBasal" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-NetanelBasal" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://github.com/Coly010"><img src="https://avatars2.githubusercontent.com/u/12140467?v=4" width="100px;" alt=""/><br /><sub><b>Colum Ferry</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=Coly010" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=Coly010" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/danzrou"><img src="https://avatars3.githubusercontent.com/u/6433766?v=4" width="100px;" alt=""/><br /><sub><b>Dan Roujinsky</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=danzrou" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=danzrou" title="Documentation">📖</a> <a href="#ideas-danzrou" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt=""/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=theblushingcrow" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
+</table>
+
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 

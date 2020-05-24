@@ -98,7 +98,7 @@ describe('FormArray', () => {
     const control = createArray();
 
     const subject = new Subject<boolean>();
-    control.enableWhile(subject);
+    control.enabledWhile(subject);
     expect(control.enabled).toBeTruthy();
     subject.next(false);
     expect(control.enabled).toBeFalsy();

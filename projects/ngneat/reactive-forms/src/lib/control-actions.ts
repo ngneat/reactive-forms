@@ -4,7 +4,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import { AbstractControl, ControlOptions, ControlState, ValidatorFn } from './types';
+import { AbstractControl, ControlOptions, ControlState, ValidatorFn, ControlPath } from './types';
 import { coerceArray, isNil } from './utils';
 
 function getControlValue<T>(control: AbstractControl<T>): T {
@@ -112,20 +112,12 @@ export function validateControlOn<T>(control: AbstractControl<T>, validation: Ob
   });
 }
 
-export function hasErrorAndTouched<T>(
-  control: AbstractControl<T>,
-  error: string,
-  path?: Array<string | number> | string
-): boolean {
+export function hasErrorAndTouched<T>(control: AbstractControl<T>, error: string, path?: ControlPath): boolean {
   const hasError = control.hasError(error, !path || path.length === 0 ? undefined : path);
   return hasError && control.touched;
 }
 
-export function hasErrorAndDirty<T>(
-  control: AbstractControl<T>,
-  error: string,
-  path?: Array<string | number> | string
-): boolean {
+export function hasErrorAndDirty<T>(control: AbstractControl<T>, error: string, path?: ControlPath): boolean {
   const hasError = control.hasError(error, !path || path.length === 0 ? undefined : path);
   return hasError && control.dirty;
 }

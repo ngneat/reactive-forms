@@ -8,5 +8,5 @@ module.exports = {
     '^.+\\.ts?$': 'ts-jest'
   },
   collectCoverage: true,
-  modulePathIgnorePatterns: ['mocks.spec.ts']
+  modulePathIgnorePatterns: ['mocks.spec.ts', 'type-tests']
 };
