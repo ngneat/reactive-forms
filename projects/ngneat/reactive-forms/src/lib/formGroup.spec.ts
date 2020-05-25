@@ -14,9 +14,10 @@ type Person = {
 };
 
 type T = { name: string; street: number; ids: string[] };
+
 const c = new FormGroup<T>({
   name: new FormControl(),
-  street: new FormControl(),
+  street: new FormControl(null),
   ids: new FormArray([])
 });
 
