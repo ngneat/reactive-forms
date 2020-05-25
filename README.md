@@ -147,7 +147,7 @@ const control = new FormControl('');
 control.statusChanges$.subscribe(status => ...);
 ```
 
-The `status` is typed as `ControlState` (valid, invalid, pending or disabled).
+The `status` is `typed` as `ControlState` (valid, invalid, pending or disabled).
 
 ### `touchChanges$`
 
@@ -273,7 +273,7 @@ control.markAllAsDirty();
 
 ### `validateOn()`
 
-Takes an observable that emits a response, which is either `null` or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors). The control's `setErrors()` method is called whenever the source emits.
+Takes an observable that emits a response, which is either `null` or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors)). The control's `setErrors()` method is called whenever the source emits.
 
 ```ts
 const passwordValidator = combineLatest([
@@ -356,11 +356,11 @@ const nameControl = group.getControl('name');
 const nestedFieldControl = group.getControl('nested', 'field');
 ```
 
-There is no need to infer it! (i.e: `as FormControl`)
+There is no need to infer it! (i.e. no need to add `as FormControl`)
 
 ### Control Path
 
-The **array** path variation of `hasError`, `getError`, and `get()` is now typed:
+The **array** path variation of `hasError`, `getError`, and `get()` is now `typed`:
 
 ```ts
 group.get(['phone', 'num']);
@@ -370,7 +370,7 @@ group.getError('required', ['phone', 'num']);
 
 ## Control Errors
 
-Each `AbstractControl` takes a second generic which serves as the type of the errors:
+Each `AbstractControl` takes a second generic, which serves as the type of the errors:
 
 ```ts
 type MyErrors = { isEqual: false };
@@ -393,7 +393,7 @@ const control = new FormControl<string, NgValidatorsErrors>();
 
 ## Control Validators
 
-The library exposes a **typed** version of the built-in Angular validators. In the following example we'll get a type error because `Validator.required` doesn't return the correct type:
+The library exposes a **`typed`** version of the built-in Angular validators. In the following example we'll get a type error because `Validator.required` doesn't return the correct type:
 
 ```ts
 import { FormControl, Validators } from '@ngneat/reactive-forms';
@@ -403,7 +403,7 @@ new FormControl<string, { isEqual: false }>('', Validators.required);
 
 ## ControlValueAccessor
 
-The library exposes a typed version of `ControlValueAccessor` which already implements `registerOnChange` and `registerOnTouched` under the hood:
+The library exposes a `typed` version of `ControlValueAccessor`, which already implements `registerOnChange` and `registerOnTouched` under the hood:
 
 ```ts
 import { ControlValueAccessor } from '@ngneat/reactive-forms';
@@ -432,7 +432,7 @@ Note that you can also use it as `interface`.
 
 ## Form Builder
 
-We also introduce a typed version of `FormBuilder` which returns a typed `FormGroup`, `FormControl` and `FormArray` with all our sweet additions:
+We also introduce a `typed` version of `FormBuilder` which returns a `typed` `FormGroup`, `FormControl` and `FormArray` with all our sweet additions:
 
 ```ts
 import { FormBuilder } from '@ngneat/reactive-forms';
