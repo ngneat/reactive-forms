@@ -87,8 +87,8 @@ export type ControlType<T> = [T] extends [ExtractAny<T>]
   ? FormControl<any> | FormGroup<any> | FormArray<any>
   : [T] extends [Control<infer Type>]
   ? FormControl<Type>
+  : [T] extends [Array<infer ItemType>]
+  ? FormArray<ItemType>
   : [T] extends [object]
   ? FormGroup<T>
-  : [T] extends [Array<infer Item>]
-  ? FormArray<Item>
   : FormControl<T>;

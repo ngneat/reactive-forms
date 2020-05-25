@@ -17,7 +17,6 @@ import {
   mergeControlValidators
 } from './control-actions';
 import {
-  AbstractControl,
   AbstractControlOptions,
   AsyncValidatorFn,
   ControlOptions,
@@ -27,12 +26,17 @@ import {
   ValidatorFn,
   ControlType,
   ControlPath,
-  EmitEvent
+  EmitEvent,
+  OnlySelf,
+  ControlState
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
 export class FormArray<T = any, E extends object = any> extends NgFormArray {
   value: T[];
+  valueChanges: Observable<T[]>;
+  status: ControlState;
+  statusChanges: Observable<ControlState>;
   errors: ValidationErrors<E> | null;
   asyncValidator: AsyncValidatorFn<T[], E> | null;
 
@@ -49,7 +53,7 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   errorChanges$ = controlErrorChanges$<T[], E>(this);
 
   constructor(
-    public controls: AbstractControl<T>[],
+    public controls: Array<ControlType<T>>,
     validatorOrOpts?:
       | ValidatorFn<T[], Partial<E>>
       | ValidatorFn<T[], Partial<E>>[]
@@ -129,22 +133,22 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     this.updateValueAndValidity();
   }
 
-  markAsTouched(opts?: { onlySelf?: boolean }): void {
+  markAsTouched(opts?: OnlySelf): void {
     super.markAsTouched(opts);
     this.touchChanges.next(true);
   }
 
-  markAsUntouched(opts?: { onlySelf?: boolean }): void {
+  markAsUntouched(opts?: OnlySelf): void {
     super.markAsUntouched(opts);
     this.touchChanges.next(false);
   }
 
-  markAsPristine(opts?: { onlySelf?: boolean }): void {
+  markAsPristine(opts?: OnlySelf): void {
     super.markAsPristine(opts);
     this.dirtyChanges.next(false);
   }
 
-  markAsDirty(opts?: { onlySelf?: boolean }): void {
+  markAsDirty(opts?: OnlySelf): void {
     super.markAsDirty(opts);
     this.dirtyChanges.next(true);
   }
@@ -191,7 +195,7 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     return hasErrorAndTouched(this, errorCode, path);
   }
 
-  hasErrorAndDirty(errorCode: ExtractStrings<E>, path?: Array<string | number> | string): boolean {
+  hasErrorAndDirty(errorCode: ExtractStrings<E>, path?: ControlPath): boolean {
     return hasErrorAndDirty(this, errorCode, path);
   }
 

@@ -18,6 +18,7 @@ var ruleTester = new RuleTester({ parserOptions: { sourceType: 'module' } });
 ruleTester.run('no-angular-forms-imports', rule, {
   valid: [
     { code: "import { FormGroup } from '@ngneat/reactive-forms';" },
+    { code: "import { FormBuilder } from '@ngneat/reactive-forms';" },
     { code: "import { ControlValueAccessor } from '@angular/forms';" }
   ],
 
@@ -25,6 +26,24 @@ ruleTester.run('no-angular-forms-imports', rule, {
     {
       code: "import { FormGroup } from '@angular/forms';",
       output: "import { FormGroup } from '@ngneat/reactive-forms';",
+      errors: [
+        {
+          messageId: 'avoidImport'
+        }
+      ]
+    },
+    {
+      code: "import { FormBuilder } from '@angular/forms';",
+      output: "import { FormBuilder } from '@ngneat/reactive-forms';",
+      errors: [
+        {
+          messageId: 'avoidImport'
+        }
+      ]
+    },
+    {
+      code: "import { FormArray, FormBuilder } from '@angular/forms';",
+      output: "import { FormArray, FormBuilder } from '@ngneat/reactive-forms';",
       errors: [
         {
           messageId: 'avoidImport'
