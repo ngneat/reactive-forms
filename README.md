@@ -105,7 +105,7 @@ Observes the control's value. Unlike the behavior of the built-in `valueChanges`
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>();
+const control = new FormControl('');
 control.valueChanges$.subscribe(value => ...);
 ```
 
@@ -116,7 +116,7 @@ Observes the control's `disable` status.
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>();
+const control = new FormControl('');
 control.disabledChanges$.subscribe(isDisabled => ...);
 ```
 
@@ -127,7 +127,7 @@ Observes the control's `enable` status.
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>();
+const control = new FormControl('');
 control.enabledChanges$.subscribe(isEnabled => ...);
 ```
 
@@ -138,7 +138,7 @@ Observes the control's `status`.
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>();
+const control = new FormControl('');
 control.statusChanges$.subscribe(status => ...);
 ```
 
@@ -151,7 +151,7 @@ Observes the control's `touched` status.
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>();
+const control = new FormControl('');
 control.touchChanges$.subscribe(isTouched => ...);
 ```
 
@@ -164,11 +164,22 @@ Observes the control's `dirty` status.
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>();
+const control = new FormControl('');
 control.dirtyChanges$.subscribe(isDirty => ...);
 ```
 
 This emits a value **only** when `markAsDirty`, or `markAsPristine`, has been called.
+
+### `errorsChanges$`
+
+Observes the control's `erros`.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl('');
+control.errorsChanges$.subscribe(errors => ...);
+```
 
 ### Methods
 
@@ -217,7 +228,7 @@ Takes an observable that emits a boolean indicating whether to `disable` the con
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>();
+const control = new FormControl('');
 control.disabledWhile(query.select('isDisabled'));
 ```
 
@@ -228,7 +239,7 @@ Takes an observable that emits a `boolean` indicating whether to `enable` the co
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>();
+const control = new FormControl('');
 control.enabledWhile(query.select('isEnable'));
 ```
 
@@ -239,7 +250,7 @@ Unlike the built-in `setValidator()` method, it persists any existing validators
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>();
+const control = new FormControl('');
 control.mergeValidators(Validators.minLength(2));
 control.mergeAsyncValidators(...);
 ```
@@ -283,7 +294,7 @@ A syntactic sugar method to be used in the template:
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-this.control = new FormControl<string>('', Validators.required);
+this.control = new FormControl('', Validators.required);
 ```
 
 ```html
@@ -297,7 +308,7 @@ A syntactic sugar method to be used in the template:
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-this.control = new FormControl<string>('', Validators.required);
+this.control = new FormControl('', Validators.required);
 ```
 
 ```html
@@ -311,7 +322,7 @@ Sets whether the control is `enabled`.
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>();
+const control = new FormControl('');
 control.setEnable();
 control.setEnable(false);
 ```
@@ -323,7 +334,7 @@ Sets whether the control is `disabled`.
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>();
+const control = new FormControl('');
 control.setDisable();
 control.setDisable(false);
 ```
