@@ -20,20 +20,25 @@ import {
 import {
   AbstractControlOptions,
   AsyncValidatorFn,
-  ControlOptions,
-  ExtractStrings,
   ControlEventOptions,
+  ControlOptions,
+  EmitEvent,
+  ExtractStrings,
+  OnlySelf,
+  OrBoxedValue,
   ValidationErrors,
   ValidatorFn,
-  BoxedValue,
-  OnlySelf,
-  EmitEvent
+  ControlState
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
 export class FormControl<T = any, E extends object = any> extends NgFormControl {
   value: T;
   errors: ValidationErrors<E> | null;
+  asyncValidator: AsyncValidatorFn<T, E>;
+  valueChanges: Observable<T>;
+  status: ControlState;
+  statusChanges: Observable<ControlState>;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -48,9 +53,9 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   errorChanges$ = controlErrorChanges$<T, E>(this);
 
   constructor(
-    formState?: T | BoxedValue<T>,
-    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
-    asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
+    formState?: OrBoxedValue<T>,
+    validatorOrOpts?: ValidatorFn<T, E> | ValidatorFn<T, E>[] | AbstractControlOptions<T, E> | null,
+    asyncValidator?: AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[] | null
   ) {
     super(formState, validatorOrOpts, asyncValidator);
   }
@@ -92,11 +97,11 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: ValidatorFn<T> | ValidatorFn<T>[]) {
+  mergeValidators(validators: ValidatorFn<T, E> | ValidatorFn<T, E>[]) {
     mergeControlValidators(this, validators);
   }
 
-  mergeAsyncValidators(validators: AsyncValidatorFn<T> | AsyncValidatorFn<T>[]) {
+  mergeAsyncValidators(validators: AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[]) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity();
   }
@@ -125,16 +130,16 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     this.markAsDirty({ onlySelf: true });
   }
 
-  reset(formState?: T | BoxedValue<T>, options?: ControlEventOptions): void {
+  reset(formState?: OrBoxedValue<T>, options?: ControlEventOptions): void {
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: ValidatorFn<T> | ValidatorFn<T>[] | null): void {
+  setValidators(newValidator: ValidatorFn<T, Partial<E>> | ValidatorFn<T, Partial<E>>[] | null): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }
 
-  setAsyncValidators(newValidator: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null): void {
+  setAsyncValidators(newValidator: AsyncValidatorFn<T, Partial<E>> | AsyncValidatorFn<T, Partial<E>>[] | null): void {
     super.setAsyncValidators(newValidator);
     super.updateValueAndValidity();
   }

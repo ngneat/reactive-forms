@@ -1,6 +1,18 @@
-import { Validators } from '@angular/forms';
 import { of, Subject } from 'rxjs';
 import { FormControl } from './formControl';
+import { NgValidatorsErrors } from './types';
+import { Validators } from './validators';
+
+const validatorExample = new FormControl<string, NgValidatorsErrors>('', {
+  validators(control: FormControl<string>) {
+    return {
+      maxlength: {
+        actualLength: 2,
+        requiredLength: 3
+      }
+    };
+  }
+});
 
 describe('FormControl', () => {
   it('should valueChanges$', () => {

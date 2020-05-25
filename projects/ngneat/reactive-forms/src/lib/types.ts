@@ -1,15 +1,27 @@
-import { AbstractControl as AngularAbstractControl } from '@angular/forms';
+import { AbstractControl as AngularAbstractControl, Validator as NgValidator } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormGroup } from './formGroup';
 import { FormControl } from './formControl';
 import { FormArray } from './formArray';
 
-export interface ValidatorFn<T> {
-  (control: AbstractControl<T>): ValidationErrors | null;
+export interface Validator<T = any, E extends object = any> extends NgValidator {
+  validate(control: AbstractControl<T>): ValidationErrors<Partial<E>> | null;
 }
 
-export interface AsyncValidatorFn<T> {
-  (control: AbstractControl<T>): Promise<ValidationErrors | null> | Observable<ValidationErrors | null>;
+export interface ValidatorFn<T = any, E extends object = any> {
+  (control: AbstractControl<T>): ValidationErrors<Partial<E>> | null;
+}
+
+export interface AsyncValidatorFn<T = any, E extends object = any> {
+  (control: AbstractControl<T>):
+    | Promise<ValidationErrors<Partial<E>> | null>
+    | Observable<ValidationErrors<Partial<E>> | null>;
+}
+
+export interface AbstractControlOptions<T = any, E extends object = any> {
+  validators?: ValidatorFn<T, Partial<E>> | ValidatorFn<T, Partial<E>>[] | null;
+  asyncValidators?: AsyncValidatorFn<T, Partial<E>> | AsyncValidatorFn<T, Partial<E>>[] | null;
+  updateOn?: 'change' | 'blur' | 'submit';
 }
 
 export interface ControlOptions {
@@ -23,17 +35,11 @@ export type ControlEventOptions = Pick<ControlOptions, 'emitEvent' | 'onlySelf'>
 export type OnlySelf = Pick<ControlOptions, 'onlySelf'>;
 export type EmitEvent = Pick<ControlOptions, 'emitEvent'>;
 
-export interface AbstractControlOptions<T> {
-  validators?: ValidatorFn<T> | ValidatorFn<T>[] | null;
-  asyncValidators?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null;
-  updateOn?: 'change' | 'blur' | 'submit';
-}
-
 export type ControlPath = Array<string | number> | string;
 
 export type ControlState = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED';
 
-export interface AbstractControl<T> extends AngularAbstractControl {
+export interface AbstractControl<T = any> extends AngularAbstractControl {
   value: T;
   validator: ValidatorFn<T> | null;
   asyncValidator: AsyncValidatorFn<T> | null;
@@ -60,6 +66,7 @@ export interface NgValidatorsErrors {
 }
 
 export type BoxedValue<T> = { value: T; disabled: boolean };
+export type OrBoxedValue<T> = T | BoxedValue<T>;
 export type ValidationErrors<T extends object = any> = T;
 
 const uniqueKey = Symbol();
@@ -73,8 +80,8 @@ export type ControlType<T> = [T] extends [ExtractAny<T>]
   ? FormControl<any> | FormGroup<any> | FormArray<any>
   : [T] extends [Control<infer Type>]
   ? FormControl<Type>
+  : [T] extends [Array<infer ItemType>]
+  ? FormArray<ItemType>
   : [T] extends [object]
   ? FormGroup<T>
-  : [T] extends [Array<infer Item>]
-  ? FormArray<Item>
   : FormControl<T>;

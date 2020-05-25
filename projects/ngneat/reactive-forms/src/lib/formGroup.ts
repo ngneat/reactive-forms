@@ -22,20 +22,24 @@ import {
   AbstractControl,
   AbstractControlOptions,
   AsyncValidatorFn,
-  ControlOptions,
-  ExtractStrings,
   ControlEventOptions,
-  ValidationErrors,
-  ValidatorFn,
+  ControlOptions,
   ControlType,
   EmitEvent,
-  ControlPath
+  ExtractStrings,
+  ValidationErrors,
+  ValidatorFn,
+  ControlState,
+  OnlySelf
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
 export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   value: T;
   errors: ValidationErrors<E> | null;
+  valueChanges: Observable<T>;
+  status: ControlState;
+  statusChanges: Observable<ControlState>;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -50,9 +54,9 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   errorChanges$ = controlErrorChanges$<T, E>(this);
 
   constructor(
-    public controls: { [K in keyof T]: AbstractControl<T[K]> },
-    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
-    asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
+    public controls: { [K in keyof T]: ControlType<T[K]> },
+    validatorOrOpts?: ValidatorFn<T, E> | ValidatorFn<T, E>[] | AbstractControlOptions<T, E> | null,
+    asyncValidator?: AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[] | null
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }
@@ -63,6 +67,17 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
 
   getRawValue(): T {
     return super.getRawValue();
+  }
+
+  get<K1 extends keyof T>(path?: [K1]): ControlType<T[K1]>;
+  get<K1 extends keyof T, K2 extends keyof T[K1]>(path?: [K1, K2]): ControlType<T[K1][K2]>;
+  get<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
+    errorCode: ExtractStrings<E>,
+    path?: [K1, K2, K3]
+  ): ControlType<T[K1][K2][K3]>;
+  get(path?: string): AbstractControl<any>;
+  get(path: any) {
+    return super.get(path);
   }
 
   getControl<P1 extends keyof T>(prop1: P1): ControlType<T[P1]>;
@@ -134,31 +149,31 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: ValidatorFn<T> | ValidatorFn<T>[]) {
+  mergeValidators(validators: ValidatorFn<T, E> | ValidatorFn<T, E>[]) {
     mergeControlValidators(this, validators);
   }
 
-  mergeAsyncValidators(validators: AsyncValidatorFn<T> | AsyncValidatorFn<T>[]) {
+  mergeAsyncValidators(validators: AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[]) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity();
   }
 
-  markAsTouched(opts?: { onlySelf?: boolean }): void {
+  markAsTouched(opts?: OnlySelf): void {
     super.markAsTouched(opts);
     this.touchChanges.next(true);
   }
 
-  markAsUntouched(opts?: { onlySelf?: boolean }): void {
+  markAsUntouched(opts?: OnlySelf): void {
     super.markAsUntouched(opts);
     this.touchChanges.next(false);
   }
 
-  markAsPristine(opts?: { onlySelf?: boolean }): void {
+  markAsPristine(opts?: OnlySelf): void {
     super.markAsPristine(opts);
     this.dirtyChanges.next(false);
   }
 
-  markAsDirty(opts?: { onlySelf?: boolean }): void {
+  markAsDirty(opts?: OnlySelf): void {
     super.markAsDirty(opts);
     this.dirtyChanges.next(true);
   }
