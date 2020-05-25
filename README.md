@@ -26,7 +26,10 @@ Let's take a look at all the neat things we provide:
 ✅ Offers seamless `FormControl`, `FormGroup`, `FormArray` Replacement<br>
 ✅ Allows Typed Forms! <br>
 ✅ Provides Reactive Queries <br>
-✅ Provides Helpful Methods
+✅ Provides Helpful Methods <br>
+✅ Typed and DRY `ControlValueAccessor` <br>
+✅ Typed Validators
+✅ Typed `FormBuilder`
 
 ```
 👉 npm install @ngneat/reactive-forms
