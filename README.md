@@ -34,17 +34,17 @@ Let's take a look at all the neat things we provide:
 
 ## Table of Contents
 
-- [Types](#types)
-- [Queries](#queries)
-- [Methods](#methods)
-- [Errors](#errors)
-- [Validators](#errors-type)
+- [Control Type](#control-type)
+- [Control Queries](#control-queries)
+- [Control Methods](#control-methods)
+- [Control Errors](#control-errors)
+- [Control Validators](#control-validators)
 - [ControlValueAccessor](#control-value-accessor)
 - [Form Builder](#form-builder)
 - [ESLint Rule](#eslint-rule)
 - [Schematics](#schematics)
 
-## Types
+## Control Type
 
 Each `AbstractControl` takes a generic, which serves as the `type` for any method exposed by Angular or this library:
 
@@ -98,7 +98,7 @@ control.valueChanges$.subscribe(value => {
 });
 ```
 
-## Queries
+## Control Queries
 
 ### `valueChanges$`
 
@@ -355,7 +355,7 @@ const nestedFieldControl = group.getControl('nested', 'field');
 
 There is no need to infer it! (i.e: `as FormControl`)
 
-### Extras
+### Control Path
 
 The **array** path variation of `hasError`, `getError`, and `get()` is now typed:
 
@@ -365,7 +365,7 @@ group.hasError('required', ['phone', 'num']);
 group.getError('required', ['phone', 'num']);
 ```
 
-## Errors
+## Control Errors
 
 Each `AbstractControl` takes a second generic which serves as the type of the errors:
 
@@ -388,7 +388,7 @@ import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
 const control = new FormControl<string, NgValidatorsErrors>();
 ```
 
-## Validators
+## Control Validators
 
 The library exposes a **typed** version of the built-in Angular validators. In the following example we'll get a type error because `Validator.required` doesn't return the correct type:
 
