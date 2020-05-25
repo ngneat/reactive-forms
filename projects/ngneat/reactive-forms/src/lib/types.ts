@@ -1,20 +1,24 @@
-import { AbstractControl as AngularAbstractControl } from '@angular/forms';
+import { AbstractControl as AngularAbstractControl, Validator as NgValidator } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormGroup } from './formGroup';
 import { FormControl } from './formControl';
 import { FormArray } from './formArray';
 
-export interface ValidatorFn<T, E extends object = any> {
+export interface Validator<T = any, E extends object = any> extends NgValidator {
+  validate(control: AbstractControl<T>): ValidationErrors<Partial<E>> | null;
+}
+
+export interface ValidatorFn<T = any, E extends object = any> {
   (control: AbstractControl<T>): ValidationErrors<Partial<E>> | null;
 }
 
-export interface AsyncValidatorFn<T, E extends object = any> {
+export interface AsyncValidatorFn<T = any, E extends object = any> {
   (control: AbstractControl<T>):
     | Promise<ValidationErrors<Partial<E>> | null>
     | Observable<ValidationErrors<Partial<E>> | null>;
 }
 
-export interface AbstractControlOptions<T, E extends object = any> {
+export interface AbstractControlOptions<T = any, E extends object = any> {
   validators?: ValidatorFn<T, Partial<E>> | ValidatorFn<T, Partial<E>>[] | null;
   asyncValidators?: AsyncValidatorFn<T, Partial<E>> | AsyncValidatorFn<T, Partial<E>>[] | null;
   updateOn?: 'change' | 'blur' | 'submit';
@@ -35,7 +39,7 @@ export type ControlPath = Array<string | number> | string;
 
 export type ControlState = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED';
 
-export interface AbstractControl<T> extends AngularAbstractControl {
+export interface AbstractControl<T = any> extends AngularAbstractControl {
   value: T;
   validator: ValidatorFn<T> | null;
   asyncValidator: AsyncValidatorFn<T> | null;

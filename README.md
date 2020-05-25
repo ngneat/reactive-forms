@@ -37,7 +37,9 @@ Let's take a look at all the neat things we provide:
 - [Types](#types)
 - [Queries](#queries)
 - [Methods](#methods)
-- [Errors Type](#errors-type)
+- [Errors](#errors)
+- [Validators](#errors-type)
+- [ControlValueAccessor](#control-value-accessor)
 - [Form Builder](#form-builder)
 - [ESLint Rule](#eslint-rule)
 - [Schematics](#schematics)
@@ -363,7 +365,7 @@ group.hasError('required', ['phone', 'num']);
 group.getError('required', ['phone', 'num']);
 ```
 
-## Errors Type
+## Errors
 
 Each `AbstractControl` takes a second generic which serves as the type of the errors:
 
@@ -385,6 +387,45 @@ import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
 
 const control = new FormControl<string, NgValidatorsErrors>();
 ```
+
+## Validators
+
+The library exposes a **typed** version of the built-in Angular validators. In the following example we'll get a type error because `Validator.required` doesn't return the correct type:
+
+```ts
+import { FormControl, Validators } from '@ngneat/reactive-forms';
+
+new FormControl<string, { isEqual: false }>('', Validators.required);
+```
+
+## ControlValueAccessor
+
+The library exposes a typed version of `ControlValueAccessor` which already implements `registerOnChange` and `registerOnTouched` under the hood:
+
+```ts
+import { ControlValueAccessor } from '@ngneat/reactive-forms';
+
+@Component({
+  selector: 'my-checkbox',
+  host: { '(change)': 'onChange($event.target.checked)', '(blur)': 'onTouched()' },
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: MyCheckboxComponent,
+      multi: true
+    }
+  ]
+})
+export class MyCheckboxComponent extends ControlValueAccessor<boolean> {
+  writeValue(value) {
+    // value is typed a boolean
+  }
+
+  // `this.onChange`, and `this.onTouched` are already here!
+}
+```
+
+Note that you can also use it as `interface`.
 
 ## Form Builder
 
