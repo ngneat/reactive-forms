@@ -183,8 +183,6 @@ const control = new FormControl('');
 control.errorsChanges$.subscribe(errors => ...);
 ```
 
-### Methods
-
 ### `select()`
 
 Selects a `slice` of the form's state based on the given predicate.
@@ -195,6 +193,8 @@ import { FormGroup } from '@ngneat/reactive-forms';
 const control = new FormGroup<Person>(...);
 control.select(state => state.name).subscribe(name => ...)
 ```
+
+## Control Methods
 
 ### `setValue()`
 
@@ -329,7 +329,7 @@ control.setEnable();
 control.setEnable(false);
 ```
 
-### `setDisable`
+### `setDisable()`
 
 Sets whether the control is `disabled`.
 
