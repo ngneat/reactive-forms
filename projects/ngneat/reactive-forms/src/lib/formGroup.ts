@@ -29,7 +29,8 @@ import {
   ExtractStrings,
   ValidationErrors,
   ValidatorFn,
-  ControlState
+  ControlState,
+  OnlySelf
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
@@ -157,22 +158,22 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     this.updateValueAndValidity();
   }
 
-  markAsTouched(opts?: { onlySelf?: boolean }): void {
+  markAsTouched(opts?: OnlySelf): void {
     super.markAsTouched(opts);
     this.touchChanges.next(true);
   }
 
-  markAsUntouched(opts?: { onlySelf?: boolean }): void {
+  markAsUntouched(opts?: OnlySelf): void {
     super.markAsUntouched(opts);
     this.touchChanges.next(false);
   }
 
-  markAsPristine(opts?: { onlySelf?: boolean }): void {
+  markAsPristine(opts?: OnlySelf): void {
     super.markAsPristine(opts);
     this.dirtyChanges.next(false);
   }
 
-  markAsDirty(opts?: { onlySelf?: boolean }): void {
+  markAsDirty(opts?: OnlySelf): void {
     super.markAsDirty(opts);
     this.dirtyChanges.next(true);
   }
