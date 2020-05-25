@@ -344,13 +344,38 @@ There is no need to infer it! (i.e: `as FormControl`)
 
 ### Extras
 
-The **array** path variation of `hasError`, `getError`, and `get()` is now typed:
+* The **array** path variation of `hasError`, `getError`, and `get()` is now typed:
 
 ```ts
 group.get(['phone', 'num']);
 group.hasError('required', ['phone', 'num']);
 group.getError('required', ['phone', 'num']);
 ```
+
+* We provide a typed version of `ControlValueAccessor` which already implements `registerOnChange` and `registerOnTouched` under the hood:
+
+```ts
+import { ControlValueAccessor } from '@ngneat/reactive-forms';
+
+@Component({
+  selector: 'my-form',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR, 
+      useExisting: forwardRef(() => MyFormComponent)
+    }
+  ]
+})
+export class MyFormComponent extends ControlValueAccessor<string> {
+  value: string;
+
+  writeValue(value: string) {
+    this.value = value;
+  }
+  
+  // registerOnChange registerOnTouched, onChange, onTouched are already here!
+}
+``` 
 
 ## Errors Type
 
