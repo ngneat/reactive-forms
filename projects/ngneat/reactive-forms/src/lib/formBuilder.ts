@@ -3,7 +3,7 @@ import { FormBuilder as NgFormBuilder } from '@angular/forms';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, OrBoxedValue, ValidatorFn } from './types';
+import { AbstractControlOptions, AsyncValidatorFn, ControlType, OrBoxedValue, ValidatorFn } from './types';
 
 function isAbstractControlOptions<T>(
   options: AbstractControlOptions<T> | { [key: string]: any }
@@ -15,24 +15,18 @@ function isAbstractControlOptions<T>(
   );
 }
 
-export type FbControlConfig<T = any, E extends object = any> =
-  | AbstractControl<T>
-  | [
-      OrBoxedValue<T>,
-      ValidatorFn<T, E> | ValidatorFn<T, E>[] | null,
-      AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[] | null
-    ]
-  | [OrBoxedValue<T>, ValidatorFn<T, E> | ValidatorFn<T, E>[] | AbstractControlOptions<T, E> | null]
+export type FbControlConfig<T = any> =
+  | ControlType<T>
+  | [OrBoxedValue<T>, ValidatorFn<T> | ValidatorFn<T>[] | null, AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null]
+  | [OrBoxedValue<T>, ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null]
   | [T | OrBoxedValue<T>]
   | OrBoxedValue<T>
   | T;
 
-export type FbGroupConfig<T = any, E extends object = any> = { [key in keyof T]: FbControlConfig<T[key]> };
-
 @Injectable({ providedIn: 'root' })
 export class FormBuilder extends NgFormBuilder {
-  group<T extends object, E extends object = any, GroupConfig extends FbGroupConfig<T, E> = FbGroupConfig<T, E>>(
-    controlsConfig: GroupConfig,
+  group<T extends object, E extends object = any>(
+    controlsConfig: { [K in keyof T]: FbControlConfig<T[K]> },
     options?:
       | AbstractControlOptions<T, E>
       | {
@@ -71,7 +65,7 @@ export class FormBuilder extends NgFormBuilder {
   }
 
   array<T, E extends object = any>(
-    controlsConfig: FbControlConfig<T, E>[],
+    controlsConfig: FbControlConfig<T>[],
     validatorOrOpts?: ValidatorFn<T[], E> | ValidatorFn<T[], E>[] | AbstractControlOptions<T[], E> | null,
     asyncValidator?: AsyncValidatorFn<T[], E> | AsyncValidatorFn<T[], E>[] | null
   ): FormArray<T, E> {
