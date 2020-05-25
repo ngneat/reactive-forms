@@ -454,7 +454,20 @@ const userGroup: FormGroup<User> = fb.group({ id: 1, userName: 'User', email: 'E
 
 ## ESLint Rule
 
-We provide a special lint rule that forbids the imports of any token we expose, such as, `FormControl`, `FormGroup`, `FormBuilder`, and `FormArray` from `@angular/forms`.
+We provide a special lint rule that forbids the imports of any token we expose, such as the following:
+`AbstractControl`,
+`AsyncValidatorFn`,
+`ControlValueAccessor`,
+`FormArray`,
+`FormBuilder`,
+`FormControl`,
+`FormGroup`,
+`NgValidatorsErrors`,
+`ValidatorFn`,
+`Validators`,
+`Validator`
+from `@angular/forms`.
+
 Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/master/projects/ngneat/eslint-plugin-reactive-forms).
 
 ## Schematics

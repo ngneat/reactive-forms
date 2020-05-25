@@ -27,7 +27,18 @@ module.exports = {
     // variables should be defined here
     const source = context.getSourceCode();
     const searchTerm = '@angular/forms';
-    const acceptedFormTypes = ['FormControl', 'FormArray', 'FormGroup', 'FormBuilder'];
+    const acceptedFormTypes = [
+      'AbstractControl',
+      'AsyncValidatorFn',
+      'ControlValueAccessor',
+      'FormArray',
+      'FormBuilder',
+      'FormControl',
+      'FormGroup',
+      'ValidatorFn',
+      'Validators',
+      'Validator'
+    ];
 
     //----------------------------------------------------------------------
     // Helpers
