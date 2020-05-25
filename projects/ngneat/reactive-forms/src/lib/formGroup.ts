@@ -28,13 +28,17 @@ import {
   EmitEvent,
   ExtractStrings,
   ValidationErrors,
-  ValidatorFn
+  ValidatorFn,
+  ControlState
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
 export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   value: T;
   errors: ValidationErrors<E> | null;
+  valueChanges: Observable<T>;
+  status: ControlState;
+  statusChanges: Observable<ControlState>;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();

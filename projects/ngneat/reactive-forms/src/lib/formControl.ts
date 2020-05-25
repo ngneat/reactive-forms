@@ -20,7 +20,6 @@ import {
 import {
   AbstractControlOptions,
   AsyncValidatorFn,
-  BoxedValue,
   ControlEventOptions,
   ControlOptions,
   EmitEvent,
@@ -28,7 +27,8 @@ import {
   OnlySelf,
   OrBoxedValue,
   ValidationErrors,
-  ValidatorFn
+  ValidatorFn,
+  ControlState
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
@@ -36,6 +36,9 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   value: T;
   errors: ValidationErrors<E> | null;
   asyncValidator: AsyncValidatorFn<T, E>;
+  valueChanges: Observable<T>;
+  status: ControlState;
+  statusChanges: Observable<ControlState>;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
