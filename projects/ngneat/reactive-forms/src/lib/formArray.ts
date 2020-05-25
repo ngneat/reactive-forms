@@ -17,7 +17,6 @@ import {
   mergeControlValidators
 } from './control-actions';
 import {
-  AbstractControl,
   AbstractControlOptions,
   AsyncValidatorFn,
   ControlOptions,
