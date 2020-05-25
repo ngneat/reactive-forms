@@ -28,7 +28,7 @@ Let's take a look at all the neat things we provide:
 ✅ Provides Reactive Queries <br>
 ✅ Provides Helpful Methods <br>
 ✅ Typed and DRY `ControlValueAccessor` <br>
-✅ Typed Validators
+✅ Typed Validators <br>
 ✅ Typed `FormBuilder`
 
 ```
