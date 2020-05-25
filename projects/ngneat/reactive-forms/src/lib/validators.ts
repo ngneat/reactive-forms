@@ -14,30 +14,39 @@ export class Validators extends NgValidators {
     return super.email(control) as ValidationErrors<{ email: NgValidatorsErrors['email'] }> | null;
   }
 
-  static min(min: number) {
-    return super.min(min) as ValidatorFn<{ min: NgValidatorsErrors['min'] }>;
+  static min<T = any>(min: number) {
+    return super.min(min) as ValidatorFn<T, { min: NgValidatorsErrors['min'] }>;
   }
 
-  static max(max: number) {
-    return super.max(max) as ValidatorFn<{ max: NgValidatorsErrors['max'] }>;
+  static max<T = any>(max: number) {
+    return super.max(max) as ValidatorFn<T, { max: NgValidatorsErrors['max'] }>;
   }
 
-  static minLength(minLength: number) {
-    return super.minLength(minLength) as ValidatorFn<{
-      minlength: NgValidatorsErrors['minlength'];
-    }>;
+  static minLength<T = any>(minLength: number) {
+    return super.minLength(minLength) as ValidatorFn<
+      T,
+      {
+        minlength: NgValidatorsErrors['minlength'];
+      }
+    >;
   }
 
-  static maxLength(maxLength: number) {
-    return super.maxLength(maxLength) as ValidatorFn<{
-      maxlength: NgValidatorsErrors['maxlength'];
-    }>;
+  static maxLength<T = any>(maxLength: number) {
+    return super.maxLength(maxLength) as ValidatorFn<
+      T,
+      {
+        maxlength: NgValidatorsErrors['maxlength'];
+      }
+    >;
   }
 
-  static pattern(pattern: string | RegExp) {
-    return super.pattern(pattern) as ValidatorFn<{
-      pattern: NgValidatorsErrors['pattern'];
-    }>;
+  static pattern<T = any>(pattern: string | RegExp) {
+    return super.pattern(pattern) as ValidatorFn<
+      T,
+      {
+        pattern: NgValidatorsErrors['pattern'];
+      }
+    >;
   }
 
   static compose(validators: null): null;
