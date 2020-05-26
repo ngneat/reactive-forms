@@ -24,10 +24,14 @@ function getRelevantImports(sourceFile: ts.Node, importSigns: string[], host: Tr
           if (!c.elements) return;
           let counter = 0;
           const changes = [];
-          c.elements.forEach(importSignNode => {
+          c.elements.forEach((importSignNode, i) => {
             if (importSigns.includes(importSignNode.name.text)) {
+              const nextElem = c.elements[i + 1];
+              const prevElem = c.elements[i - 1];
+              const startPos = prevElem ? prevElem.end : importSignNode.pos;
+              let endPos = i === counter && nextElem ? nextElem.pos : importSignNode.end;
               existingImports.push(importSignNode.name.text);
-              changes.push(new RemoveChange(path, importSignNode.pos, importSignNode.end));
+              changes.push(new RemoveChange(path, startPos, endPos));
               counter++;
             }
           });
@@ -67,6 +71,7 @@ export default function(options: SchemaOptions): Rule {
         'ValidatorFn',
         'AsyncValidatorFn',
         'ControlValueAccessor',
+        'FormBuilder',
         'Validator',
         'Validators'
       ];
