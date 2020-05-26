@@ -1,0 +1,11 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "migrate": {
+      "aliases": ["m"],
+      "factory": "./migrate/",
+      "schema": "./migrate/schema.json",
+      "description": "A migration script from Angular's reactive-forms"
+    }
+  }
+}
