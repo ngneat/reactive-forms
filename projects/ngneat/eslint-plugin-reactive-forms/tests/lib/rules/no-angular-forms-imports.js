@@ -14,7 +14,7 @@ var rule = require('../../../lib/rules/no-angular-forms-imports'),
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester({ parserOptions: { sourceType: 'module' } });
+var ruleTester = new RuleTester({ parserOptions: { sourceType: 'module', ecmaVersion: 2015 } });
 ruleTester.run('no-angular-forms-imports', rule, {
   valid: [
     { code: "import { FormGroup } from '@ngneat/reactive-forms';" },

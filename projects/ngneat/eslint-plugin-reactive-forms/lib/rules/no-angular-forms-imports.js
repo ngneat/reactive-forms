@@ -59,6 +59,11 @@ module.exports = {
       };
     }
 
+    function replaceImports(fixer, node) {
+      const replacer = replaceAngularFormImport(node);
+      return fixer.replaceText(node, replacer);
+    }
+
     function checkAngularFormImport(node) {
       const importText = source.getText(node);
       if (importText.includes(searchTerm)) {
@@ -104,12 +109,12 @@ module.exports = {
             messageId: 'avoidImport',
             suggest: [
               {
-                messageId: 'useReactiveForms'
+                messageId: 'useReactiveForms',
+                fix: fixer => replaceImports(fixer, node)
               }
             ],
             fix(fixer) {
-              const replacer = replaceAngularFormImport(node);
-              return fixer.replaceText(node, replacer);
+              return replaceImports(fixer, node);
             }
           });
         }
