@@ -17,8 +17,9 @@
     "hooks:pre-commit": "node hooks/pre-commit.js",
     "commit": "git-cz",
     "release:first": "npm run release -- --first-release",
-    "build:lib": "ng build @ngneat/reactive-forms",
-    "release": "cd projects/ngneat/reactive-forms && standard-version --infile ../../../CHANGELOG.md"
+    "build:lib": "ng build @ngneat/reactive-forms --prod && npm run schematics:build && npm run copy",
+    "release": "cd projects/ngneat/reactive-forms && standard-version --infile ../../../CHANGELOG.md",
+    "copy": "npm run schematics:copy && cp -r README.md dist/ngneat/reactive-forms"
   },
   "private": true,
   "dependencies": {

@@ -8,8 +8,8 @@ import { AbstractControl, ControlOptions, ControlState, ValidatorFn, ControlPath
 import { coerceArray, isNil } from './utils';
 
 function getControlValue<T>(control: AbstractControl<T>): T {
-  if (control instanceof FormGroup || control instanceof FormArray) {
-    return control.getRawValue();
+  if ((control as any).getRawValue) {
+    return (control as any).getRawValue();
   }
   return control.value;
 }

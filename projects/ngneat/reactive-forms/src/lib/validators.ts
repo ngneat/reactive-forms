@@ -3,27 +3,27 @@ import { ValidatorFn, ValidationErrors, AsyncValidatorFn, NgValidatorsErrors } f
 
 export class Validators extends NgValidators {
   static required(control: AbstractControl) {
-    return super.required(control) as ValidationErrors<{ required: NgValidatorsErrors['required'] }> | null;
+    return NgValidators.required(control) as ValidationErrors<{ required: NgValidatorsErrors['required'] }> | null;
   }
 
   static requiredTrue(control: AbstractControl) {
-    return super.requiredTrue(control) as ValidationErrors<{ required: NgValidatorsErrors['required'] }> | null;
+    return NgValidators.requiredTrue(control) as ValidationErrors<{ required: NgValidatorsErrors['required'] }> | null;
   }
 
   static email(control: AbstractControl) {
-    return super.email(control) as ValidationErrors<{ email: NgValidatorsErrors['email'] }> | null;
+    return NgValidators.email(control) as ValidationErrors<{ email: NgValidatorsErrors['email'] }> | null;
   }
 
   static min<T = any>(min: number) {
-    return super.min(min) as ValidatorFn<T, { min: NgValidatorsErrors['min'] }>;
+    return NgValidators.min(min) as ValidatorFn<T, { min: NgValidatorsErrors['min'] }>;
   }
 
   static max<T = any>(max: number) {
-    return super.max(max) as ValidatorFn<T, { max: NgValidatorsErrors['max'] }>;
+    return NgValidators.max(max) as ValidatorFn<T, { max: NgValidatorsErrors['max'] }>;
   }
 
   static minLength<T = any>(minLength: number) {
-    return super.minLength(minLength) as ValidatorFn<
+    return NgValidators.minLength(minLength) as ValidatorFn<
       T,
       {
         minlength: NgValidatorsErrors['minlength'];
@@ -32,7 +32,7 @@ export class Validators extends NgValidators {
   }
 
   static maxLength<T = any>(maxLength: number) {
-    return super.maxLength(maxLength) as ValidatorFn<
+    return NgValidators.maxLength(maxLength) as ValidatorFn<
       T,
       {
         maxlength: NgValidatorsErrors['maxlength'];
@@ -41,7 +41,7 @@ export class Validators extends NgValidators {
   }
 
   static pattern<T = any>(pattern: string | RegExp) {
-    return super.pattern(pattern) as ValidatorFn<
+    return NgValidators.pattern(pattern) as ValidatorFn<
       T,
       {
         pattern: NgValidatorsErrors['pattern'];
@@ -52,10 +52,10 @@ export class Validators extends NgValidators {
   static compose(validators: null): null;
   static compose<E extends object = any>(validators: (ValidatorFn | null | undefined)[]): ValidatorFn<E> | null;
   static compose<E extends object = any>(validators: (ValidatorFn | null | undefined)[] | null): ValidatorFn<E> | null {
-    return super.compose(validators) as ValidatorFn<E> | null;
+    return NgValidators.compose(validators) as ValidatorFn<E> | null;
   }
 
   static composeAsync<E extends object = any>(validators: (AsyncValidatorFn | null)[]) {
-    return super.composeAsync(validators) as AsyncValidatorFn<E> | null;
+    return NgValidators.composeAsync(validators) as AsyncValidatorFn<E> | null;
   }
 }
