@@ -59,7 +59,10 @@
       "profile": "https://github.com/itayod",
       "contributions": [
         "code",
-        "ideas"
+        "ideas",
+        "doc",
+        "test",
+        "tool"
       ]
     }
   ],

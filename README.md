@@ -459,6 +459,18 @@ Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/mast
 
 ## Schematics
 
+### Migrate
+
+#### Overview:
+
+A script that iterate all your `ts` files and replace entities coming from `@angular/reactive-forms` with `@ngneat/reactive-forms`.
+
+#### Command:
+
+`ng g @ngneat/reactive-forms:migrate`
+
+> Further information about the script can be found [here](https://github.com/ngneat/reactive-forms/tree/master/schematics/src/migrate/migration.md).
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -472,13 +484,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Coly010"><img src="https://avatars2.githubusercontent.com/u/12140467?v=4" width="100px;" alt=""/><br /><sub><b>Colum Ferry</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=Coly010" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=Coly010" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/danzrou"><img src="https://avatars3.githubusercontent.com/u/6433766?v=4" width="100px;" alt=""/><br /><sub><b>Dan Roujinsky</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=danzrou" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=danzrou" title="Documentation">📖</a> <a href="#ideas-danzrou" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt=""/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=theblushingcrow" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Documentation">📖</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Tests">⚠️</a> <a href="#tool-itayod" title="Tools">🔧</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
