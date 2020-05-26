@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsReactiveFormsMigrate",
+  "title": "Migration Script from Angular",
+  "type": "object",
+  "properties": {
+    "path": {
+      "description": "The path to the source root directory.",
+      "x-prompt": "Which folder is your project's source root?",
+      "type": "string",
+      "default": "./src/app"
+    }
+  },
+  "required": []
+}
