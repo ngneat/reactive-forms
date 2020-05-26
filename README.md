@@ -85,8 +85,10 @@ const profileForm = new FormGroup<Profile>({
   })
 });
 
-profileForm.setValue(new Profile()); // typed as Profile
-profileForm.patchValue(new Profile()); // typed as Partial<Profile>
+// typed as Profile
+profileForm.setValue(new Profile());
+// typed as Partial<Profile>
+profileForm.patchValue(new Profile());
 ```
 
 Use it with a `FormArray`:
@@ -177,7 +179,7 @@ This emits a value **only** when `markAsDirty`, or `markAsPristine`, has been ca
 
 ### `errorsChanges$`
 
-Observes the control's `erros`.
+Observes the control's `errors`.
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
@@ -245,7 +247,7 @@ Takes an observable that emits a `boolean` indicating whether to `enable` the co
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.enabledWhile(query.select('isEnable'));
+control.enabledWhile(query.select('isEnabled'));
 ```
 
 ### `mergeValidators()`
@@ -255,7 +257,7 @@ Unlike the built-in `setValidator()` method, it persists any existing validators
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl('');
+const control = new FormControl('', Validators.required);
 control.mergeValidators(Validators.minLength(2));
 control.mergeAsyncValidators(...);
 ```
@@ -360,7 +362,7 @@ There is no need to infer it! (i.e. no need to add `as FormControl`)
 
 ### Control Path
 
-The **array** path variation of `hasError`, `getError`, and `get()` is now `typed`:
+The **array** path variation of `hasError()`, `getError()`, and `get()` is now `typed`:
 
 ```ts
 group.get(['phone', 'num']);
@@ -452,7 +454,7 @@ const userGroup: FormGroup<User> = fb.group({ id: 1, userName: 'User', email: 'E
 
 ## ESLint Rule
 
-We provide a special lint rule that forbids the imports of `FormControl`, `FormGroup`, `FormBuilder` and `FormArray` from `@angular/forms`.
+We provide a special lint rule that forbids the imports of any token we expose, such as, `FormControl`, `FormGroup`, `FormBuilder`, and `FormArray` from `@angular/forms`.
 Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/master/projects/ngneat/eslint-plugin-reactive-forms).
 
 ## Schematics
