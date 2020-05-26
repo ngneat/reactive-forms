@@ -3,7 +3,7 @@ import { FormBuilder as NgFormBuilder } from '@angular/forms';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, OrBoxedValue, ValidatorFn } from './types';
+import { AbstractControlOptions, AsyncValidatorFn, ControlType, OrBoxedValue, ValidatorFn } from './types';
 
 function isAbstractControlOptions<T>(
   options: AbstractControlOptions<T> | { [key: string]: any }
@@ -16,32 +16,30 @@ function isAbstractControlOptions<T>(
 }
 
 export type FbControlConfig<T = any> =
-  | AbstractControl<T>
+  | ControlType<T>
   | [OrBoxedValue<T>, ValidatorFn<T> | ValidatorFn<T>[] | null, AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null]
   | [OrBoxedValue<T>, ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null]
   | [T | OrBoxedValue<T>]
   | OrBoxedValue<T>
   | T;
 
-export type FbGroupConfig<T = any> = { [key in keyof T]: FbControlConfig<T[key]> };
-
 @Injectable({ providedIn: 'root' })
 export class FormBuilder extends NgFormBuilder {
-  group<T extends object, GroupConfig extends FbGroupConfig<T> = FbGroupConfig<T>>(
-    controlsConfig: GroupConfig,
+  group<T extends object, E extends object = any>(
+    controlsConfig: { [K in keyof T]: FbControlConfig<T[K]> },
     options?:
-      | AbstractControlOptions<T>
+      | AbstractControlOptions<T, E>
       | {
-          validator?: ValidatorFn<T> | ValidatorFn<T>[];
-          asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[];
+          validator?: ValidatorFn<T, E> | ValidatorFn<T, E>[];
+          asyncValidator?: AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[];
         }
       | null
-  ): FormGroup<T> {
+  ): FormGroup<T, E> {
     const controls = (this as any)._reduceControls(controlsConfig);
 
-    let validators: ValidatorFn<T> | ValidatorFn<T>[] | null = null;
-    let asyncValidators: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null = null;
-    let updateOn: AbstractControlOptions<T>['updateOn'] | undefined;
+    let validators: ValidatorFn | ValidatorFn[] | null = null;
+    let asyncValidators: AsyncValidatorFn | AsyncValidatorFn[] | null = null;
+    let updateOn: AbstractControlOptions['updateOn'] | undefined;
 
     if (options != null) {
       if (isAbstractControlOptions(options)) {
@@ -58,20 +56,20 @@ export class FormBuilder extends NgFormBuilder {
     return new FormGroup(controls, { asyncValidators, updateOn, validators });
   }
 
-  control<T = any>(
-    formState: T,
-    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
-    asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
-  ): FormControl<T> {
-    return new FormControl<T>(formState, validatorOrOpts, asyncValidator);
+  control<T, E extends object = any>(
+    formState: OrBoxedValue<T>,
+    validatorOrOpts?: ValidatorFn<T, E> | ValidatorFn<T, E>[] | AbstractControlOptions<T, E> | null,
+    asyncValidator?: AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[] | null
+  ): FormControl<T, E> {
+    return new FormControl(formState, validatorOrOpts, asyncValidator);
   }
 
-  array<T>(
+  array<T, E extends object = any>(
     controlsConfig: FbControlConfig<T>[],
-    validatorOrOpts?: ValidatorFn<T[]> | ValidatorFn<T[]>[] | AbstractControlOptions<T[]> | null,
-    asyncValidator?: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[] | null
-  ): FormArray<T> {
+    validatorOrOpts?: ValidatorFn<T[], E> | ValidatorFn<T[], E>[] | AbstractControlOptions<T[], E> | null,
+    asyncValidator?: AsyncValidatorFn<T[], E> | AsyncValidatorFn<T[], E>[] | null
+  ): FormArray<T, E> {
     const controls = controlsConfig.map(c => (this as any)._createControl(c));
-    return new FormArray<T>(controls, validatorOrOpts, asyncValidator);
+    return new FormArray(controls, validatorOrOpts, asyncValidator);
   }
 }
