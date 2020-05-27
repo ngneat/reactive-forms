@@ -19,7 +19,8 @@
     "release:first": "npm run release -- --first-release",
     "build:lib": "ng build @ngneat/reactive-forms --prod && npm run schematics:build && npm run copy",
     "release": "cd projects/ngneat/reactive-forms && standard-version --infile ../../../CHANGELOG.md",
-    "copy": "npm run schematics:copy && cp -r README.md dist/ngneat/reactive-forms"
+    "copy": "npm run schematics:copy && cp -r README.md dist/ngneat/reactive-forms",
+    "lint:playground": "eslint ./src --ext .ts"
   },
   "private": true,
   "dependencies": {
@@ -48,11 +49,13 @@
     "@ngneat/spectator": "^4.11.1",
     "@types/jest": "25.2.2",
     "@types/node": "^12.11.1",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
     "all-contributors-cli": "^6.8.1",
     "codelyzer": "^5.1.2",
     "cross-env": "^5.2.0",
+    "eslint": "^6.8.0",
     "expect-type": "^0.7.4",
-    "eslint": "^3.9.1",
     "git-cz": "^3.2.1",
     "husky": "^3.0.1",
     "jasmine-core": "~3.5.0",
