@@ -21,8 +21,6 @@ function compareErrors(a: ValidationErrors | null, b: ValidationErrors | null) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
-type getControlType<T> = T extends AbstractControl<infer U> ? U : unknown;
-
 export function controlValueChanges$<T>(control: AbstractControl<T>): Observable<T> {
   return merge(
     defer(() => of(getControlValue(control))),
@@ -60,7 +58,7 @@ export function controlStatusChanges$<T>(control: AbstractControl<T>): Observabl
   );
 }
 
-export function controlErrorChanges$<T, E = ValidationErrors>(control: AbstractControl<T>): Observable<E | null> {
+export function controlErrorChanges$<E>(control: AbstractControl): Observable<E | null> {
   return merge(
     defer(() => of(control.errors as E)),
     control.valueChanges.pipe(
@@ -98,9 +96,9 @@ export function controlEnabledWhile<T>(
   return observable.subscribe(isEnabled => enableControl(control, isEnabled, opts));
 }
 
-export function mergeControlValidators<T, Control extends AbstractControl<T>, Validator extends ValidatorFn<T>>(
+export function mergeControlValidators<T, Control extends AbstractControl<T>, Validator extends ValidatorFn>(
   control: Control,
-  validators: ValidatorFn<getControlType<Control>> | ValidatorFn<getControlType<Control>>[]
+  validators: ValidatorFn | ValidatorFn[]
 ): void {
   control.setValidators([control.validator, ...coerceArray(validators)]);
   control.updateValueAndValidity();

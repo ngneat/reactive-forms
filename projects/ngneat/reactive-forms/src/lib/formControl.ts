@@ -26,7 +26,6 @@ import {
   ExtractStrings,
   OnlySelf,
   OrBoxedValue,
-  ValidationErrors,
   ValidatorFn,
   ControlState
 } from './types';
@@ -34,8 +33,8 @@ import { coerceArray, isFunction } from './utils';
 
 export class FormControl<T = any, E extends object = any> extends NgFormControl {
   value: T;
-  errors: ValidationErrors<E> | null;
-  asyncValidator: AsyncValidatorFn<T, E>;
+  errors: E | null;
+  asyncValidator: AsyncValidatorFn<E>;
   valueChanges: Observable<T>;
   status: ControlState;
   statusChanges: Observable<ControlState>;
@@ -50,12 +49,12 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   disabledChanges$ = controlDisabled$(this);
   enabledChanges$ = controlEnabled$(this);
   statusChanges$ = controlStatusChanges$(this);
-  errorChanges$ = controlErrorChanges$<T, E>(this);
+  errorChanges$ = controlErrorChanges$<E>(this);
 
   constructor(
     formState?: OrBoxedValue<T>,
-    validatorOrOpts?: ValidatorFn<T, E> | ValidatorFn<T, E>[] | AbstractControlOptions<T, E> | null,
-    asyncValidator?: AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[] | null
+    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions,
+    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
   ) {
     super(formState, validatorOrOpts, asyncValidator);
   }
@@ -97,11 +96,11 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: ValidatorFn<T, E> | ValidatorFn<T, E>[]) {
+  mergeValidators(validators: ValidatorFn | ValidatorFn[]) {
     mergeControlValidators(this, validators);
   }
 
-  mergeAsyncValidators(validators: AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[]) {
+  mergeAsyncValidators(validators: AsyncValidatorFn | AsyncValidatorFn[]) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity();
   }
@@ -134,12 +133,12 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: ValidatorFn<T, Partial<E>> | ValidatorFn<T, Partial<E>>[] | null): void {
+  setValidators(newValidator: ValidatorFn | ValidatorFn[] | null): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }
 
-  setAsyncValidators(newValidator: AsyncValidatorFn<T, Partial<E>> | AsyncValidatorFn<T, Partial<E>>[] | null): void {
+  setAsyncValidators(newValidator: AsyncValidatorFn | AsyncValidatorFn[] | null): void {
     super.setAsyncValidators(newValidator);
     super.updateValueAndValidity();
   }

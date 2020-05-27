@@ -1,9 +1,9 @@
-import {expectTypeOf} from 'expect-type';
-import {Observable, of, Subscription} from 'rxjs';
-import {FormArray} from '../formArray';
-import {FormControl} from '../formControl';
-import {FormGroup} from '../formGroup';
-import {User, user, Errors, required, pattern, patternAsync, requiredAsync, errors} from './mocks.spec';
+import { expectTypeOf } from 'expect-type';
+import { Observable, of, Subscription } from 'rxjs';
+import { FormArray } from '../formArray';
+import { FormControl } from '../formControl';
+import { FormGroup } from '../formGroup';
+import { User, user, Errors, required, pattern, patternAsync, requiredAsync, errors } from './mocks.spec';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormArray).toBeConstructibleWith([new FormControl<User>()]);
@@ -64,21 +64,21 @@ test('should be able to push control of type User', () => {
   const control = new FormArray<User>([]);
   expectTypeOf(control.push)
     .parameter(0)
-    .toMatchTypeOf(new FormGroup<User>(null));
+    .toEqualTypeOf<FormGroup<User, any> | FormControl<User, any>>();
 });
 
 test('should be able to insert control of type User as index', () => {
   const control = new FormArray<User>([]);
   expectTypeOf(control.insert)
     .parameter(1)
-    .toMatchTypeOf(new FormGroup<User>(null));
+    .toEqualTypeOf<FormGroup<User, any> | FormControl<User, any>>();
 });
 
 test('should be able to set control of type User as index', () => {
   const control = new FormArray<User>([]);
   expectTypeOf(control.setControl)
     .parameter(1)
-    .toMatchTypeOf(new FormGroup<User>(null));
+    .toEqualTypeOf<FormGroup<User, any> | FormControl<User, any>>();
 });
 
 test('should be able to set validators', () => {

@@ -28,7 +28,6 @@ Let's take a look at all the neat things we provide:
 ✅ Provides Reactive Queries <br>
 ✅ Provides Helpful Methods <br>
 ✅ Typed and DRY `ControlValueAccessor` <br>
-✅ Typed Validators <br>
 ✅ Typed `FormBuilder`
 
 ```
@@ -41,7 +40,6 @@ Let's take a look at all the neat things we provide:
 - [Control Queries](#control-queries)
 - [Control Methods](#control-methods)
 - [Control Errors](#control-errors)
-- [Control Validators](#control-validators)
 - [ControlValueAccessor](#control-value-accessor)
 - [Form Builder](#form-builder)
 - [ESLint Rule](#eslint-rule)
@@ -358,8 +356,6 @@ const nameControl = group.getControl('name');
 const nestedFieldControl = group.getControl('nested', 'field');
 ```
 
-There is no need to infer it! (i.e. no need to add `as FormControl`)
-
 ### Control Path
 
 The **array** path variation of `hasError()`, `getError()`, and `get()` is now `typed`:
@@ -391,16 +387,6 @@ The library provides a type for the built-in Angular validators types:
 import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
 
 const control = new FormControl<string, NgValidatorsErrors>();
-```
-
-## Control Validators
-
-The library exposes a **`typed`** version of the built-in Angular validators. In the following example we'll get a type error because `Validator.required` doesn't return the correct type:
-
-```ts
-import { FormControl, Validators } from '@ngneat/reactive-forms';
-
-new FormControl<string, { isEqual: false }>('', Validators.required);
 ```
 
 ## ControlValueAccessor

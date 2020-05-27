@@ -3,6 +3,7 @@ import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '../formControl';
 import { FormGroup } from '../formGroup';
 import { Errors, errors, pattern, patternAsync, required, requiredAsync, User, user } from './mocks.spec';
+import { Validators } from '../validators';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl() });
@@ -112,9 +113,24 @@ test('should be able to call hasErrorAndDirty', () => {
   expectTypeOf(control.hasErrorAndDirty).returns.toBeBoolean();
 });
 
-// test('should be able to create group containing form controls with type of Array', () => {
-//   const list = ['a', 'b', 'c'];
-//   const form = new FormGroup({
-//     view: new FormControl(list),
-//   });
-// })
+test('should be able to create group containing form controls with type of Array', () => {
+  const list = ['a', 'b', 'c'];
+  const form = new FormGroup({
+    view: new FormControl(list)
+  });
+});
+
+test('should be able to support array of validators', () => {
+  const c = new FormControl('', [Validators.minLength(2)]);
+  // TODO: support typing for array of validators
+  const control = new FormControl('a string', [Validators.required, Validators.email]);
+
+  const form = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    child: new FormControl('', Validators.required)
+  });
+
+  const form2 = new FormGroup({
+    name: new FormControl('', Validators.compose([Validators.required, Validators.minLength(2)]))
+  });
+});

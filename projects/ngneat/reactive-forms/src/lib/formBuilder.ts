@@ -17,8 +17,8 @@ function isAbstractControlOptions<T>(
 
 export type FbControlConfig<T = any> =
   | ControlType<T>
-  | [OrBoxedValue<T>, ValidatorFn<T> | ValidatorFn<T>[] | null, AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null]
-  | [OrBoxedValue<T>, ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null]
+  | [OrBoxedValue<T>, ValidatorFn | ValidatorFn[] | null, AsyncValidatorFn | AsyncValidatorFn[] | null]
+  | [OrBoxedValue<T>, ValidatorFn | ValidatorFn[] | AbstractControlOptions<T> | null]
   | [T | OrBoxedValue<T>]
   | OrBoxedValue<T>
   | T;
@@ -28,10 +28,10 @@ export class FormBuilder extends NgFormBuilder {
   group<T extends object, E extends object = any>(
     controlsConfig: { [K in keyof T]: FbControlConfig<T[K]> },
     options?:
-      | AbstractControlOptions<T, E>
+      | AbstractControlOptions
       | {
-          validator?: ValidatorFn<T, E> | ValidatorFn<T, E>[];
-          asyncValidator?: AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[];
+          validator?: ValidatorFn | ValidatorFn[];
+          asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[];
         }
       | null
   ): FormGroup<T, E> {
@@ -58,16 +58,16 @@ export class FormBuilder extends NgFormBuilder {
 
   control<T, E extends object = any>(
     formState: OrBoxedValue<T>,
-    validatorOrOpts?: ValidatorFn<T, E> | ValidatorFn<T, E>[] | AbstractControlOptions<T, E> | null,
-    asyncValidator?: AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[] | null
+    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
+    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
   ): FormControl<T, E> {
     return new FormControl(formState, validatorOrOpts, asyncValidator);
   }
 
   array<T, E extends object = any>(
     controlsConfig: FbControlConfig<T>[],
-    validatorOrOpts?: ValidatorFn<T[], E> | ValidatorFn<T[], E>[] | AbstractControlOptions<T[], E> | null,
-    asyncValidator?: AsyncValidatorFn<T[], E> | AsyncValidatorFn<T[], E>[] | null
+    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
+    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
   ): FormArray<T, E> {
     const controls = controlsConfig.map(c => (this as any)._createControl(c));
     return new FormArray(controls, validatorOrOpts, asyncValidator);
