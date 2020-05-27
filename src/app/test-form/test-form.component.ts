@@ -1,5 +1,6 @@
-import { FormControl, FormGroup } from '@angular/forms';
-import { OnInit, Component } from '@angular/core';
+import { Component } from '@angular/core';
+
+import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 
 @Component({
   selector: 'app-test-form',
@@ -9,12 +10,6 @@ import { OnInit, Component } from '@angular/core';
     </form>
   `
 })
-export class TestFormComponent implements OnInit {
-  group: FormGroup;
-
-  constructor() {}
-
-  ngOnInit() {
-    this.group = new FormGroup({ input: new FormControl('') });
-  }
+export class TestFormComponent {
+  group = new FormGroup({ input: new FormControl('') });
 }
