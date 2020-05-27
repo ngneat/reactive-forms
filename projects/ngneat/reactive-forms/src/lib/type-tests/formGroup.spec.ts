@@ -111,3 +111,10 @@ test('should be able to call hasErrorAndDirty', () => {
   control.hasErrorAndDirty('pattern');
   expectTypeOf(control.hasErrorAndDirty).returns.toBeBoolean();
 });
+
+// test('should be able to create group containing form controls with type of Array', () => {
+//   const list = ['a', 'b', 'c'];
+//   const form = new FormGroup({
+//     view: new FormControl(list),
+//   });
+// })

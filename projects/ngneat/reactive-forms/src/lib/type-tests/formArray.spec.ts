@@ -1,12 +1,9 @@
-import { expectTypeOf } from 'expect-type';
-import { error } from 'ng-packagr/lib/utils/log';
-import { Observable, of, Subscription } from 'rxjs';
-import { enableControl, disableControl } from '../control-actions';
-import { FormArray } from '../formArray';
-import { FormControl } from '../formControl';
-import { FormGroup } from '../formGroup';
-import { ValidatorFn, AsyncValidatorFn, ExtractStrings, ControlPath, EmitEvent, ControlEventOptions } from '../types';
-import { User, user, Errors, required, pattern, patternAsync, requiredAsync, errors } from './mocks.spec';
+import {expectTypeOf} from 'expect-type';
+import {Observable, of, Subscription} from 'rxjs';
+import {FormArray} from '../formArray';
+import {FormControl} from '../formControl';
+import {FormGroup} from '../formGroup';
+import {User, user, Errors, required, pattern, patternAsync, requiredAsync, errors} from './mocks.spec';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormArray).toBeConstructibleWith([new FormControl<User>()]);
