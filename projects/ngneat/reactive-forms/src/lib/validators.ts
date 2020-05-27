@@ -43,10 +43,10 @@ export class Validators extends NgValidators {
   static compose(validators: null): null;
   static compose<E extends object = any>(validators: (ValidatorFn | null | undefined)[]): ValidatorFn<E> | null;
   static compose<E extends object = any>(validators: (ValidatorFn | null | undefined)[] | null): ValidatorFn<E> | null {
-    return super.compose(validators) as ValidatorFn<E> | null;
+    return NgValidators.compose(validators) as ValidatorFn<E> | null;
   }
 
   static composeAsync<E extends object = any>(validators: (AsyncValidatorFn<E> | null)[]) {
-    return super.composeAsync(validators) as AsyncValidatorFn<E> | null;
+    return NgValidators.composeAsync(validators) as AsyncValidatorFn<E> | null;
   }
 }
