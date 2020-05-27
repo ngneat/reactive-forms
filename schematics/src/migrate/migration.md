@@ -1,6 +1,8 @@
-# Reactive Forms Migration script
+# Reactive Forms Migration Script
 
-`ng g @ngneat/reactive-forms:migrate`
+```sh
+ng g @ngneat/reactive-forms:migrate
+```
 
 ## What will be done?
 
@@ -9,10 +11,13 @@ First you will ask to provide the script your source root (`./src/app` is the de
 ### Examples:
 
 #### Before:
+
 ```typescript
 import { FormControl, FormGroup, FormArray, FormBuilder } from '@angular/forms';
 ```
+
 #### After:
+
 ```typescript
 import { FormControl, FormGroup, FormArray, FormBuilder } from '@ngneat/reactive-forms';
 ```
