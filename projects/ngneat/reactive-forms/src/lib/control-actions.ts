@@ -11,6 +11,7 @@ function getControlValue<T>(control: AbstractControl<T>): T {
   if ((control as any).getRawValue) {
     return (control as any).getRawValue();
   }
+
   return control.value;
 }
 
@@ -18,6 +19,7 @@ function compareErrors(a: ValidationErrors | null, b: ValidationErrors | null) {
   if (isNil(a) || isNil(b)) {
     return a === b;
   }
+
   return JSON.stringify(a) === JSON.stringify(b);
 }
 

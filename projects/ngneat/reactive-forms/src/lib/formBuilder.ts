@@ -3,7 +3,7 @@ import { FormBuilder as NgFormBuilder } from '@angular/forms';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import { AbstractControlOptions, AsyncValidatorFn, ControlType, OrBoxedValue, ValidatorFn } from './types';
+import { AbstractControlOptions, AsyncValidatorFn, AbstractControl, OrBoxedValue, ValidatorFn } from './types';
 
 function isAbstractControlOptions<T>(
   options: AbstractControlOptions<T> | { [key: string]: any }
@@ -16,7 +16,7 @@ function isAbstractControlOptions<T>(
 }
 
 export type FbControlConfig<T = any> =
-  | ControlType<T>
+  | AbstractControl<T>
   | [OrBoxedValue<T>, ValidatorFn | ValidatorFn[] | null, AsyncValidatorFn | AsyncValidatorFn[] | null]
   | [OrBoxedValue<T>, ValidatorFn | ValidatorFn[] | AbstractControlOptions<T> | null]
   | [T | OrBoxedValue<T>]

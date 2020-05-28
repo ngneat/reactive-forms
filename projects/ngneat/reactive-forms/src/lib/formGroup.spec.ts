@@ -25,6 +25,13 @@ const errorFn = group => {
   return { isInvalid: true };
 };
 
+const t = new FormGroup({
+  name: new FormControl(''),
+  street: new FormControl(null)
+});
+
+const a = t.get(['name']).setValue('');
+
 const g = new FormGroup<Person, NgValidatorsErrors>({
   name: new FormControl(),
   phone: new FormGroup({

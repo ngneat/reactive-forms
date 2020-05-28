@@ -19,12 +19,11 @@ import {
   validateControlOn
 } from './control-actions';
 import {
-  AbstractControl,
   AbstractControlOptions,
   AsyncValidatorFn,
   ControlEventOptions,
   ControlOptions,
-  ControlType,
+  AbstractControl,
   EmitEvent,
   ExtractStrings,
   ValidatorFn,
@@ -46,14 +45,14 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   touchChanges$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
   dirtyChanges$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  valueChanges$ = controlValueChanges$(this);
-  disabledChanges$ = controlDisabled$(this);
-  enabledChanges$ = controlEnabled$(this);
-  statusChanges$ = controlStatusChanges$(this);
+  valueChanges$ = controlValueChanges$<T>(this);
+  disabledChanges$ = controlDisabled$<T>(this);
+  enabledChanges$ = controlEnabled$<T>(this);
+  statusChanges$ = controlStatusChanges$<T>(this);
   errorChanges$ = controlErrorChanges$<E>(this);
 
   constructor(
-    public controls: { [K in keyof T]: ControlType<T[K]> },
+    public controls: { [K in keyof T]: AbstractControl<T[K]> },
     validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
     asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
   ) {
@@ -68,35 +67,35 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     return super.getRawValue();
   }
 
-  get<K1 extends keyof T>(path?: [K1]): ControlType<T[K1]>;
-  get<K1 extends keyof T, K2 extends keyof T[K1]>(path?: [K1, K2]): ControlType<T[K1][K2]>;
+  get<K1 extends keyof T>(path?: [K1]): AbstractControl<T[K1]>;
+  get<K1 extends keyof T, K2 extends keyof T[K1]>(path?: [K1, K2]): AbstractControl<T[K1][K2]>;
   get<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
     errorCode: ExtractStrings<E>,
     path?: [K1, K2, K3]
-  ): ControlType<T[K1][K2][K3]>;
-  get(path?: string): AbstractControl<any>;
+  ): AbstractControl<T[K1][K2][K3]>;
+  get(path?: string): AbstractControl;
   get(path: any) {
     return super.get(path);
   }
 
-  getControl<P1 extends keyof T>(prop1: P1): ControlType<T[P1]>;
-  getControl<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): ControlType<T[P1][P2]>;
+  getControl<P1 extends keyof T>(prop1: P1): AbstractControl<T[P1]>;
+  getControl<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): AbstractControl<T[P1][P2]>;
   getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
     prop1: P1,
     prop2: P2,
     prop3: P3
-  ): ControlType<T[P1][P2][P3]>;
+  ): AbstractControl<T[P1][P2][P3]>;
   getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2], P4 extends keyof T[P1][P2][P3]>(
     prop1: P1,
     prop2: P2,
     prop3: P3,
     prop4: P4
-  ): ControlType<T[P1][P2][P3][P4]>;
+  ): AbstractControl<T[P1][P2][P3][P4]>;
   getControl(...names: any): any {
     return this.get(names.join('.'));
   }
 
-  addControl<K extends ExtractStrings<T>>(name: K, control: ControlType<T[K]>): void {
+  addControl<K extends ExtractStrings<T>>(name: K, control: AbstractControl<T[K]>): void {
     super.addControl(name, control);
   }
 
@@ -108,13 +107,13 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     return super.contains(controlName);
   }
 
-  setControl<K extends ExtractStrings<T>>(name: K, control: ControlType<T[K]>): void {
+  setControl<K extends ExtractStrings<T>>(name: K, control: AbstractControl<T[K]>): void {
     super.setControl(name, control);
   }
 
   setValue(valueOrObservable: Observable<T>, options?: ControlEventOptions): Subscription;
   setValue(valueOrObservable: T, options?: ControlEventOptions): void;
-  setValue(valueOrObservable: T | Observable<T>, options?: ControlEventOptions): Subscription | void {
+  setValue(valueOrObservable: any, options?: ControlEventOptions): any {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
     } else {
@@ -125,10 +124,7 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   patchValue(valueOrObservable: Observable<Partial<T>>, options?: ControlEventOptions): Subscription;
   patchValue(valueOrObservable: Partial<T>, options?: ControlEventOptions): void;
   patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
-  patchValue(
-    valueOrObservable: Partial<T> | Observable<Partial<T>> | ((state: T) => T),
-    options?: ControlEventOptions
-  ): Subscription | void {
+  patchValue(valueOrObservable: any, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
     } else {

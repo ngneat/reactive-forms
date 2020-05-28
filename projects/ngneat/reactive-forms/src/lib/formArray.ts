@@ -23,7 +23,7 @@ import {
   ExtractStrings,
   ControlEventOptions,
   ValidatorFn,
-  ControlType,
+  AbstractControl,
   ControlPath,
   EmitEvent,
   OnlySelf,
@@ -45,14 +45,14 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   touchChanges$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
   dirtyChanges$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  valueChanges$ = controlValueChanges$(this);
+  valueChanges$ = controlValueChanges$<T[]>(this);
   disabledChanges$ = controlDisabled$(this);
   enabledChanges$ = controlEnabled$(this);
   statusChanges$ = controlStatusChanges$(this);
   errorChanges$ = controlErrorChanges$<E>(this);
 
   constructor(
-    public controls: Array<ControlType<T>>,
+    public controls: Array<AbstractControl<T>>,
     validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
     asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
   ) {
@@ -67,8 +67,8 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     return super.getRawValue();
   }
 
-  at(index: number): ControlType<T> {
-    return super.at(index) as ControlType<T>;
+  at(index: number): AbstractControl<T> {
+    return super.at(index) as AbstractControl<T>;
   }
 
   setValue(valueOrObservable: Observable<T[]>, options?: ControlEventOptions): Subscription;
@@ -99,15 +99,15 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     }
   }
 
-  push(control: ControlType<T>): void {
+  push(control: AbstractControl<T>): void {
     return super.push(control);
   }
 
-  insert(index: number, control: ControlType<T>): void {
+  insert(index: number, control: AbstractControl<T>): void {
     return super.insert(index, control);
   }
 
-  setControl(index: number, control: ControlType<T>): void {
+  setControl(index: number, control: AbstractControl<T>): void {
     return super.setControl(index, control);
   }
 

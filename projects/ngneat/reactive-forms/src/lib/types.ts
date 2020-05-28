@@ -1,8 +1,5 @@
 import { AbstractControl as AngularAbstractControl, Validator as NgValidator } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { FormGroup } from './formGroup';
-import { FormControl } from './formControl';
-import { FormArray } from './formArray';
 
 export interface Validator<E extends object = any> extends NgValidator {
   validate(control: AbstractControl): Partial<E> | null;
@@ -39,7 +36,9 @@ export type ControlState = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED';
 
 export interface AbstractControl<T = any> extends AngularAbstractControl {
   value: T;
+
   setValue(value: T, options?: ControlOptions): void;
+
   patchValue(value: Partial<T>, options?: ControlOptions): void;
 }
 
@@ -57,20 +56,3 @@ export interface NgValidatorsErrors {
 
 export type BoxedValue<T> = { value: T; disabled: boolean };
 export type OrBoxedValue<T> = T | BoxedValue<T>;
-
-const uniqueKey = Symbol();
-interface UniqToken {
-  [uniqueKey]: never;
-}
-type ExtractAny<T> = T extends Extract<T, string & number & boolean & object & null & undefined> ? any : never;
-export type Control<T extends object> = T & UniqToken;
-
-export type ControlType<T> = [T] extends [ExtractAny<T>]
-  ? FormControl<any> | FormGroup<any> | FormArray<any>
-  : [T] extends [Control<infer Type>]
-  ? FormControl<Type>
-  : [T] extends [Array<infer ItemType>]
-  ? FormArray<ItemType> | FormControl<T>
-  : [T] extends [object]
-  ? FormGroup<T> | FormControl<T>
-  : FormControl<T>;

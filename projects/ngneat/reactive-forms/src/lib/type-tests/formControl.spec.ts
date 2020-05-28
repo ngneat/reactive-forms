@@ -4,7 +4,7 @@ import { FormControl } from '../formControl';
 import { Errors, pattern, required, requiredAsync, patternAsync, errors } from './mocks.spec';
 
 test('control value should be of type string', () => {
-  const control = new FormControl<string>('a string');
+  const control = new FormControl('a string');
   expectTypeOf(control.value).toBeString();
 });
 
@@ -14,28 +14,28 @@ test('control value should be of type string when initial with empty value', () 
 });
 
 test('control valueChanges$ should be of type stream of string', () => {
-  const control = new FormControl<string>('a string');
+  const control = new FormControl('a string');
   expectTypeOf(control.valueChanges$).toMatchTypeOf(new Observable<string>());
 });
 
 test('control toucheChanges$ should be of type stream of boolean', () => {
-  const control = new FormControl<string>('a string');
+  const control = new FormControl('a string');
   expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
 });
 
 test('control dirtyChanges$ should be of type stream of boolean', () => {
-  const control = new FormControl<string>('a string');
+  const control = new FormControl('a string');
   expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
 });
 
 test('control select parameter should be of type stream of given type', () => {
-  const control = new FormControl<string>('a string');
+  const control = new FormControl('a string');
   const cb = (value: string) => parseInt(value);
   expectTypeOf(control.select<number>(cb)).toEqualTypeOf(new Observable<string>());
 });
 
 test('control setValue should accept value of type string or stream of string', () => {
-  const control = new FormControl<string>('a string');
+  const control = new FormControl('a string');
   expectTypeOf(control.setValue)
     .parameter(0)
     .toEqualTypeOf('another string');
@@ -43,7 +43,7 @@ test('control setValue should accept value of type string or stream of string', 
 });
 
 test('control patchValue should accept value of type string or stream of string', () => {
-  const control = new FormControl<string>('a string');
+  const control = new FormControl('a string');
   expectTypeOf(control.patchValue)
     .parameter(0)
     .toEqualTypeOf('another string');
@@ -51,13 +51,13 @@ test('control patchValue should accept value of type string or stream of string'
 });
 
 test('control disableWhile should return subscription', () => {
-  const control = new FormControl<string>('a string');
+  const control = new FormControl('a string');
   expectTypeOf(control.disabledWhile).returns.not.toBeAny();
   expectTypeOf(control.disabledWhile).returns.toMatchTypeOf(new Subscription());
 });
 
 test('control reset should accept type of string', () => {
-  const control = new FormControl<string>('a string');
+  const control = new FormControl('a string');
   control.reset('string');
   control.reset({ value: 'string', disabled: true });
 });
