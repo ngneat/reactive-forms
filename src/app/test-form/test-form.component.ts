@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 
 @Component({
@@ -11,5 +10,5 @@ import { FormControl, FormGroup } from '@ngneat/reactive-forms';
   `
 })
 export class TestFormComponent {
-  group = new FormGroup({ input: new FormControl('') });
+  group = new FormGroup<any>({ input: new FormControl<any>('') });
 }

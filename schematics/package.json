@@ -15,6 +15,7 @@
   "dependencies": {
     "@angular-devkit/core": "^9.1.6",
     "@angular-devkit/schematics": "^9.1.6",
+    "@phenomnomnominal/tsquery": "^4.1.0",
     "glob": "^7.1.6",
     "typescript": "~3.8.2"
   },
