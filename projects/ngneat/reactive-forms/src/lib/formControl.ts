@@ -53,8 +53,8 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
 
   constructor(
     formState?: OrBoxedValue<T>,
-    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions,
-    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
+    validatorOrOpts?: ValidatorFn<E> | ValidatorFn[] | AbstractControlOptions,
+    asyncValidator?: AsyncValidatorFn<E> | AsyncValidatorFn[] | null
   ) {
     super(formState, validatorOrOpts, asyncValidator);
   }
@@ -133,7 +133,7 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: ValidatorFn | ValidatorFn[] | null): void {
+  setValidators(newValidator: ValidatorFn<Partial<E>> | ValidatorFn<Partial<E>>[] | null): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }

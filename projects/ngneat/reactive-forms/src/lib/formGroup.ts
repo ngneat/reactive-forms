@@ -54,7 +54,7 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
 
   constructor(
     public controls: { [K in keyof T]: ControlType<T[K]> },
-    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
+    validatorOrOpts?: ValidatorFn<E> | ValidatorFn[] | AbstractControlOptions | null,
     asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
   ) {
     super(controls, validatorOrOpts, asyncValidator);
@@ -68,13 +68,14 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     return super.getRawValue();
   }
 
-  get<K1 extends keyof T>(path?: [K1]): ControlType<T[K1]>;
-  get<K1 extends keyof T, K2 extends keyof T[K1]>(path?: [K1, K2]): ControlType<T[K1][K2]>;
+  get(path: number[]): ControlType<any>;
+  get<K extends keyof T>(path: K): ControlType<T[K]>;
+  get<K1 extends keyof T>(path: [K1]): ControlType<T[K1]>;
+  get<K1 extends keyof T, K2 extends keyof T[K1]>(path: [K1, K2]): ControlType<T[K1][K2]>;
   get<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
     errorCode: ExtractStrings<E>,
-    path?: [K1, K2, K3]
+    path: [K1, K2, K3]
   ): ControlType<T[K1][K2][K3]>;
-  get(path?: string): AbstractControl<any>;
   get(path: any) {
     return super.get(path);
   }

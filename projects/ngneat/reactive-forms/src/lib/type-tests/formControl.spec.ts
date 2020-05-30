@@ -1,3 +1,4 @@
+import { Validators } from '@ngneat/reactive-forms';
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '../formControl';
@@ -6,16 +7,22 @@ import { Errors, pattern, required, requiredAsync, patternAsync, errors } from '
 test('control value should be of type string', () => {
   const control = new FormControl<string>('a string');
   expectTypeOf(control.value).toBeString();
+  const controlWithoutGeneric = new FormControl('a string');
+  expectTypeOf(controlWithoutGeneric.value).toBeString();
 });
 
 test('control value should be of type string when initial with empty value', () => {
   const control = new FormControl<string>();
   expectTypeOf(control.value).toBeString();
+  const controlWithoutGeneric = new FormControl();
+  expectTypeOf(controlWithoutGeneric.value).toBeAny();
 });
 
 test('control valueChanges$ should be of type stream of string', () => {
   const control = new FormControl<string>('a string');
   expectTypeOf(control.valueChanges$).toMatchTypeOf(new Observable<string>());
+  const controlWithoutGeneric = new FormControl('a string');
+  expectTypeOf(controlWithoutGeneric.valueChanges$).toMatchTypeOf(new Observable<string>());
 });
 
 test('control toucheChanges$ should be of type stream of boolean', () => {
@@ -32,14 +39,20 @@ test('control select parameter should be of type stream of given type', () => {
   const control = new FormControl<string>('a string');
   const cb = (value: string) => parseInt(value);
   expectTypeOf(control.select<number>(cb)).toEqualTypeOf(new Observable<string>());
+  const controlWithoutGeneric = new FormControl<string>('a string');
+  expectTypeOf(controlWithoutGeneric.select<number>(cb)).toEqualTypeOf(new Observable<string>());
 });
 
 test('control setValue should accept value of type string or stream of string', () => {
   const control = new FormControl<string>('a string');
   expectTypeOf(control.setValue)
     .parameter(0)
-    .toEqualTypeOf('another string');
+    .toBeString();
   expectTypeOf(control.setValue(of('string'))).toEqualTypeOf(new Subscription());
+  const controlWithoutGeneric = new FormControl<string>('a string');
+  expectTypeOf(controlWithoutGeneric.setValue)
+    .parameter(0)
+    .toBeString();
 });
 
 test('control patchValue should accept value of type string or stream of string', () => {
@@ -63,13 +76,25 @@ test('control reset should accept type of string', () => {
 });
 
 test('should be able to construct with validators', () => {
-  new FormControl<string, Errors>('a string', required);
-});
-
-test('should be able to set validators', () => {
-  const control = new FormControl<string, Errors>('string');
+  const control = new FormControl<string>('string', Validators.required);
+  const control2 = new FormControl<string>('string', [Validators.required, Validators.email]);
   control.setValidators(pattern);
   control.setValidators([required, pattern]);
+});
+
+test('should be able to set any validators without Error type', () => {
+  const control = new FormControl<string>('string');
+  control.setValidators(pattern);
+  control.setValidators([required, pattern]);
+});
+
+test('should be able to set any validators by provided Error type', () => {
+  const control = new FormControl<string, { required: boolean }>('string');
+  expectTypeOf(control.setValidators)
+    .parameter(0)
+    .not.toBeAny();
+  control.setValidators(required);
+  control.setValidators([required]);
 });
 
 test('should be able to set async validators', () => {
@@ -78,9 +103,40 @@ test('should be able to set async validators', () => {
 });
 
 test('should be able check if has errors', () => {
-  const control = new FormControl<string, Errors>();
+  const control = new FormControl<string, Errors>('', required);
+  expectTypeOf(control.hasError)
+    .parameter(0)
+    .not.toBeAny();
+  expectTypeOf(control.hasError)
+    .parameter(0)
+    .toMatchTypeOf('required');
+  expectTypeOf(control.hasError)
+    .parameter(0)
+    .not.toMatchTypeOf(3);
   control.hasError('required');
   control.hasError('pattern');
+  const controlWithoutGeneric = new FormControl(null, required);
+  expectTypeOf(controlWithoutGeneric.hasError)
+    .parameter(0)
+    .not.toBeAny();
+  expectTypeOf(control.hasError)
+    .parameter(0)
+    .toMatchTypeOf('required');
+});
+
+test('validators should not infer value', () => {
+  const control = new FormControl<string, Errors>('', required);
+  expectTypeOf(control.value).toBeString();
+  const controlWithoutGeneric = new FormControl(null, required);
+  expectTypeOf(controlWithoutGeneric.value).toBeAny();
+  expectTypeOf(controlWithoutGeneric.setValue)
+    .parameter(0)
+    .toBeAny();
+  const controlWithoutGeneric2 = new FormControl(null, [required, Validators.min(2), Validators.email]);
+  expectTypeOf(controlWithoutGeneric2.value).toBeAny();
+  expectTypeOf(controlWithoutGeneric2.setValue)
+    .parameter(0)
+    .toBeAny();
 });
 
 test('should be able to set errors', () => {

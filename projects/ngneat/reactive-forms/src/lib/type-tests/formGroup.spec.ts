@@ -2,8 +2,9 @@ import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '../formControl';
 import { FormGroup } from '../formGroup';
-import { Errors, errors, pattern, patternAsync, required, requiredAsync, User, user } from './mocks.spec';
+import { ControlType } from '../types';
 import { Validators } from '../validators';
+import { Errors, errors, pattern, patternAsync, required, requiredAsync, User, user } from './mocks.spec';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl() });
@@ -35,7 +36,7 @@ test('control dirtyChanges$ should be of type stream of boolean', () => {
 
 test('get control should accept a type of given generic keys', () => {
   const control = new FormGroup<User>(null);
-  expectTypeOf(control.getControl('id')).toMatchTypeOf(new FormControl());
+  expectTypeOf(control.getControl('id')).toMatchTypeOf(new FormControl<number>() as ControlType<any>);
 });
 
 test('control select parameter should be of type stream of given type', () => {
@@ -46,10 +47,10 @@ test('control select parameter should be of type stream of given type', () => {
 
 test('control setValue should accept value of type User or stream of User', () => {
   const control = new FormGroup<User>(null);
-  const anotherUser = { id: '2', name: 'Netanel' };
+  const anotherUser = { id: 2, name: 'Netanel' };
   expectTypeOf(control.setValue)
     .parameter(0)
-    .toEqualTypeOf(anotherUser);
+    .not.toBeAny();
   expectTypeOf(control.setValue(of(anotherUser))).toEqualTypeOf(new Subscription());
 });
 
@@ -133,4 +134,21 @@ test('should be able to support array of validators', () => {
   const form2 = new FormGroup({
     name: new FormControl('', Validators.compose([Validators.required, Validators.minLength(2)]))
   });
+});
+
+test('should be to set value to control inside group', () => {
+  const control = new FormGroup<User>({ id: new FormControl<number>() });
+  control.get(['id']).setValue(3);
+  control.get('id').setValue(3);
+  expectTypeOf(control.getControl('id').setValue)
+    .parameter(0)
+    .not.toBeAny();
+});
+
+test('should support nested objects', () => {
+  const control = new FormGroup<{ user: User }>({ user: new FormControl<User>() });
+  expectTypeOf(control.get([0]).value.id).toBeAny();
+  expectTypeOf(control.get('user').value.id).toBeNumber();
+  expectTypeOf(control.get(['user']).value.id).toBeNumber();
+  expectTypeOf(control.get(['user', 'id']).value).toBeNumber();
 });

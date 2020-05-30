@@ -1,16 +1,16 @@
-import { Validators as NgValidators, AbstractControl } from '@angular/forms';
-import { ValidatorFn, NgValidatorsErrors, AsyncValidatorFn } from './types';
+import { Validators as NgValidators } from '@angular/forms';
+import { ValidatorFn, NgValidatorsErrors, AsyncValidatorFn, AbstractControl } from './types';
 
 export class Validators extends NgValidators {
-  static required(control: AbstractControl) {
+  static required<T = any>(control: AbstractControl<T>) {
     return NgValidators.required(control) as { required: NgValidatorsErrors['required'] } | null;
   }
 
-  static requiredTrue(control: AbstractControl) {
+  static requiredTrue<T = any>(control: AbstractControl<T>) {
     return NgValidators.requiredTrue(control) as { required: NgValidatorsErrors['required'] } | null;
   }
 
-  static email(control: AbstractControl) {
+  static email<T = any>(control: AbstractControl<T>) {
     return NgValidators.email(control) as { email: NgValidatorsErrors['email'] } | null;
   }
 

@@ -8,7 +8,7 @@ test('should be able to add group validators', () => {
   const group = fb.group<User, Errors>(
     {
       name: 'Hello',
-      id: ['1', Validators.required]
+      id: [1, Validators.required]
     },
     {
       validator: Validators.required

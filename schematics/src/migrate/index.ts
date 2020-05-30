@@ -1,4 +1,4 @@
-import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import { Rule, SchematicContext, Tree, SchematicsException } from '@angular-devkit/schematics';
 import { tsquery } from '@phenomnomnominal/tsquery';
 import * as fs from 'fs';
 import { readFileSync, writeFileSync } from 'fs';
@@ -72,12 +72,22 @@ function isNodeInsideImport(node: ts.Node): boolean {
 
 function insertAnyGeneric(filePaths: string[], classNames: string[]) {
   for (let path of filePaths) {
-    const sourceText = fs.readFileSync(path, 'utf-8');
-    const ast = tsquery.ast(sourceText);
-    const controls = classNames
-      .reduce<ts.Node[]>((acc, cur) => acc.concat(tsquery(ast, `Identifier[name="${cur}"]`)), [])
-      .filter(node => !isNodeInsideImport(node));
-    controls.forEach(ctrl => insertChange(path, ctrl.getEnd(), '<any>'));
+    let sourceText = fs.readFileSync(path, 'utf-8');
+    classNames.forEach(className => {
+      const query = `Identifier[name="${className}"]`;
+      tsquery(tsquery.ast(sourceText), query).forEach((node, i) => {
+        if (!isNodeInsideImport(node)) {
+          // we need to do it to get the updated position.
+          const n = tsquery(tsquery.ast(sourceText), query)[i];
+          insertChange(path, n.getEnd(), '<any>');
+          sourceText = fs.readFileSync(path, 'utf-8');
+        }
+      });
+    });
+
+    // .reduce<ts.Node[]>((acc, cur) => acc.concat(tsquery(ast, `Identifier[name="${cur}"]`)), [])
+    // .filter(node => !isNodeInsideImport(node));
+    // controls.forEach(ctrl => insertChange(path, ctrl.getEnd(), '<any>'));
   }
 }
 
@@ -100,6 +110,9 @@ export default function(options: SchemaOptions): Rule {
         'Validator',
         'Validators'
       ];
+      if (!tree.exists(options.path)) {
+        throw new SchematicsException(`Could not find path: ${options.path}. Maybe it is misspelled?`);
+      }
       glob(`${options.path}/**/*.ts`, {}, (er, files) => {
         insertAnyGeneric(files, controlClasses);
         replaceImports(files, importSigns, '@ngneat/reactive-forms', tree);
