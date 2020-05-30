@@ -139,7 +139,6 @@ test('should be able to support array of validators', () => {
 test('should be to set value to control inside group', () => {
   const control = new FormGroup<User>({ id: new FormControl<number>() });
   control.get(['id']).setValue(3);
-  control.get('id').setValue(3);
   expectTypeOf(control.getControl('id').setValue)
     .parameter(0)
     .not.toBeAny();
@@ -147,8 +146,6 @@ test('should be to set value to control inside group', () => {
 
 test('should support nested objects', () => {
   const control = new FormGroup<{ user: User }>({ user: new FormControl<User>() });
-  expectTypeOf(control.get([0]).value.id).toBeAny();
-  expectTypeOf(control.get('user').value.id).toBeNumber();
   expectTypeOf(control.get(['user']).value.id).toBeNumber();
   expectTypeOf(control.get(['user', 'id']).value).toBeNumber();
 });

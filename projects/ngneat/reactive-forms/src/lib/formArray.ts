@@ -45,7 +45,7 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   touchChanges$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
   dirtyChanges$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  valueChanges$ = controlValueChanges$(this);
+  valueChanges$ = controlValueChanges$<T[]>(this);
   disabledChanges$ = controlDisabled$(this);
   enabledChanges$ = controlEnabled$(this);
   statusChanges$ = controlStatusChanges$(this);

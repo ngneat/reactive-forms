@@ -84,10 +84,6 @@ function insertAnyGeneric(filePaths: string[], classNames: string[]) {
         }
       });
     });
-
-    // .reduce<ts.Node[]>((acc, cur) => acc.concat(tsquery(ast, `Identifier[name="${cur}"]`)), [])
-    // .filter(node => !isNodeInsideImport(node));
-    // controls.forEach(ctrl => insertChange(path, ctrl.getEnd(), '<any>'));
   }
 }
 

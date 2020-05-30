@@ -45,10 +45,10 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   touchChanges$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
   dirtyChanges$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  valueChanges$ = controlValueChanges$(this);
-  disabledChanges$ = controlDisabled$(this);
-  enabledChanges$ = controlEnabled$(this);
-  statusChanges$ = controlStatusChanges$(this);
+  valueChanges$ = controlValueChanges$<T>(this);
+  disabledChanges$ = controlDisabled$<T>(this);
+  enabledChanges$ = controlEnabled$<T>(this);
+  statusChanges$ = controlStatusChanges$<T>(this);
   errorChanges$ = controlErrorChanges$<E>(this);
 
   constructor(
@@ -65,7 +65,7 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
 
   setValue(valueOrObservable: Observable<T>, options?: ControlOptions): Subscription;
   setValue(valueOrObservable: T, options?: ControlOptions): void;
-  setValue(valueOrObservable: T | Observable<T>, options?: ControlOptions): Subscription | void {
+  setValue(valueOrObservable: any, options?: ControlOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
     } else {
@@ -76,7 +76,7 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   patchValue(valueOrObservable: Observable<T>, options?: ControlOptions): Subscription;
   patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
   patchValue(valueOrObservable: T, options?: ControlOptions): void;
-  patchValue(valueOrObservable: T | Observable<T> | ((state: T) => T), options?: ControlOptions): Subscription | void {
+  patchValue(valueOrObservable: any, options?: ControlOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
     } else {
@@ -133,7 +133,7 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: ValidatorFn<Partial<E>> | ValidatorFn<Partial<E>>[] | null): void {
+  setValidators(newValidator: ValidatorFn<E> | ValidatorFn<E>[] | null): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }
