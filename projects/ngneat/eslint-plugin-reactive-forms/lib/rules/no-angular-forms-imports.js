@@ -27,7 +27,18 @@ module.exports = {
     // variables should be defined here
     const source = context.getSourceCode();
     const searchTerm = '@angular/forms';
-    const acceptedFormTypes = ['FormControl', 'FormArray', 'FormGroup', 'FormBuilder'];
+    const acceptedFormTypes = [
+      'AbstractControl',
+      'AsyncValidatorFn',
+      'ControlValueAccessor',
+      'FormArray',
+      'FormBuilder',
+      'FormControl',
+      'FormGroup',
+      'ValidatorFn',
+      'Validators',
+      'Validator'
+    ];
 
     //----------------------------------------------------------------------
     // Helpers
@@ -46,6 +57,11 @@ module.exports = {
         }
         return this.indexOf(search, start) !== -1;
       };
+    }
+
+    function replaceImports(fixer, node) {
+      const replacer = replaceAngularFormImport(node);
+      return fixer.replaceText(node, replacer);
     }
 
     function checkAngularFormImport(node) {
@@ -93,12 +109,12 @@ module.exports = {
             messageId: 'avoidImport',
             suggest: [
               {
-                messageId: 'useReactiveForms'
+                messageId: 'useReactiveForms',
+                fix: fixer => replaceImports(fixer, node)
               }
             ],
             fix(fixer) {
-              const replacer = replaceAngularFormImport(node);
-              return fixer.replaceText(node, replacer);
+              return replaceImports(fixer, node);
             }
           });
         }

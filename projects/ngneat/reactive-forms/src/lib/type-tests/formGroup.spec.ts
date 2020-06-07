@@ -1,9 +1,10 @@
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subscription } from 'rxjs';
-import { FormArray } from '../formArray';
 import { FormControl } from '../formControl';
 import { FormGroup } from '../formGroup';
-import { User, user, Errors, pattern, required, requiredAsync, patternAsync, errors } from './mocks.spec';
+import { ControlType } from '../types';
+import { Validators } from '../validators';
+import { Errors, errors, pattern, patternAsync, required, requiredAsync, User, user } from './mocks.spec';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl() });
@@ -35,7 +36,7 @@ test('control dirtyChanges$ should be of type stream of boolean', () => {
 
 test('get control should accept a type of given generic keys', () => {
   const control = new FormGroup<User>(null);
-  expectTypeOf(control.getControl('id')).toMatchTypeOf(new FormControl());
+  expectTypeOf(control.getControl('id')).toMatchTypeOf(new FormControl<number>() as ControlType<any>);
 });
 
 test('control select parameter should be of type stream of given type', () => {
@@ -46,10 +47,10 @@ test('control select parameter should be of type stream of given type', () => {
 
 test('control setValue should accept value of type User or stream of User', () => {
   const control = new FormGroup<User>(null);
-  const anotherUser = { id: '2', name: 'Netanel' };
+  const anotherUser = { id: 2, name: 'Netanel' };
   expectTypeOf(control.setValue)
     .parameter(0)
-    .toEqualTypeOf(anotherUser);
+    .not.toBeAny();
   expectTypeOf(control.setValue(of(anotherUser))).toEqualTypeOf(new Subscription());
 });
 
@@ -111,4 +112,40 @@ test('should be able to call hasErrorAndDirty', () => {
   control.hasErrorAndDirty('required');
   control.hasErrorAndDirty('pattern');
   expectTypeOf(control.hasErrorAndDirty).returns.toBeBoolean();
+});
+
+test('should be able to create group containing form controls with type of Array', () => {
+  const list = ['a', 'b', 'c'];
+  const form = new FormGroup({
+    view: new FormControl(list)
+  });
+});
+
+test('should be able to support array of validators', () => {
+  const c = new FormControl('', [Validators.minLength(2)]);
+  // TODO: support typing for array of validators
+  const control = new FormControl('a string', [Validators.required, Validators.email]);
+
+  const form = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    child: new FormControl('', Validators.required)
+  });
+
+  const form2 = new FormGroup({
+    name: new FormControl('', Validators.compose([Validators.required, Validators.minLength(2)]))
+  });
+});
+
+test('should be to set value to control inside group', () => {
+  const control = new FormGroup<User>({ id: new FormControl<number>() });
+  control.get(['id']).setValue(3);
+  expectTypeOf(control.getControl('id').setValue)
+    .parameter(0)
+    .not.toBeAny();
+});
+
+test('should support nested objects', () => {
+  const control = new FormGroup<{ user: User }>({ user: new FormControl<User>() });
+  expectTypeOf(control.get(['user']).value.id).toBeNumber();
+  expectTypeOf(control.get(['user', 'id']).value).toBeNumber();
 });

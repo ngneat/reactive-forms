@@ -17,7 +17,7 @@
 
 How many times have you told yourself "I wish Angular Reactive Forms would support types", or "I really want API to query the form reactively. It missed some methods."
 
-Your wish is my command! This library extends every Angular `AbstractControl`, and provides features that don't exist in the original one. It adds types, reactive queries, and helper methods. The most important thing is that you can start using it today! The only thing that you need to change is the import path. So don't worry, no form refactoring required - we've got you covered; One schematics command (link), and you're done!
+Your wish is my command! This library extends every Angular `AbstractControl`, and provides features that don't exist in the original one. It adds types, reactive queries, and helper methods. The most important thing is that you can start using it today! The only thing that you need to change is the import path. So don't worry, no form refactoring required - we've got you covered; One schematics [command](https://github.com/ngneat/reactive-forms/blob/master/schematics/src/migrate/migration.md), and you're done!
 
 Let's take a look at all the neat things we provide:
 
@@ -28,7 +28,6 @@ Let's take a look at all the neat things we provide:
 ✅ Provides Reactive Queries <br>
 ✅ Provides Helpful Methods <br>
 ✅ Typed and DRY `ControlValueAccessor` <br>
-✅ Typed Validators <br>
 ✅ Typed `FormBuilder`
 
 ```
@@ -41,7 +40,6 @@ Let's take a look at all the neat things we provide:
 - [Control Queries](#control-queries)
 - [Control Methods](#control-methods)
 - [Control Errors](#control-errors)
-- [Control Validators](#control-validators)
 - [ControlValueAccessor](#control-value-accessor)
 - [Form Builder](#form-builder)
 - [ESLint Rule](#eslint-rule)
@@ -85,8 +83,10 @@ const profileForm = new FormGroup<Profile>({
   })
 });
 
-profileForm.setValue(new Profile()); // typed as Profile
-profileForm.patchValue(new Profile()); // typed as Partial<Profile>
+// typed as Profile
+profileForm.setValue(new Profile());
+// typed as Partial<Profile>
+profileForm.patchValue(new Profile());
 ```
 
 Use it with a `FormArray`:
@@ -147,7 +147,7 @@ const control = new FormControl('');
 control.statusChanges$.subscribe(status => ...);
 ```
 
-The `status` is typed as `ControlState` (valid, invalid, pending or disabled).
+The `status` is `typed` as `ControlState` (valid, invalid, pending or disabled).
 
 ### `touchChanges$`
 
@@ -177,7 +177,7 @@ This emits a value **only** when `markAsDirty`, or `markAsPristine`, has been ca
 
 ### `errorsChanges$`
 
-Observes the control's `erros`.
+Observes the control's `errors`.
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
@@ -245,7 +245,7 @@ Takes an observable that emits a `boolean` indicating whether to `enable` the co
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.enabledWhile(query.select('isEnable'));
+control.enabledWhile(query.select('isEnabled'));
 ```
 
 ### `mergeValidators()`
@@ -255,7 +255,7 @@ Unlike the built-in `setValidator()` method, it persists any existing validators
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl('');
+const control = new FormControl('', Validators.required);
 control.mergeValidators(Validators.minLength(2));
 control.mergeAsyncValidators(...);
 ```
@@ -273,7 +273,7 @@ control.markAllAsDirty();
 
 ### `validateOn()`
 
-Takes an observable that emits a response, which is either `null` or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors). The control's `setErrors()` method is called whenever the source emits.
+Takes an observable that emits a response, which is either `null` or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors)). The control's `setErrors()` method is called whenever the source emits.
 
 ```ts
 const passwordValidator = combineLatest([
@@ -356,11 +356,9 @@ const nameControl = group.getControl('name');
 const nestedFieldControl = group.getControl('nested', 'field');
 ```
 
-There is no need to infer it! (i.e: `as FormControl`)
-
 ### Control Path
 
-The **array** path variation of `hasError`, `getError`, and `get()` is now typed:
+The **array** path variation of `hasError()`, `getError()`, and `get()` is now `typed`:
 
 ```ts
 group.get(['phone', 'num']);
@@ -370,7 +368,7 @@ group.getError('required', ['phone', 'num']);
 
 ## Control Errors
 
-Each `AbstractControl` takes a second generic which serves as the type of the errors:
+Each `AbstractControl` takes a second generic, which serves as the type of the errors:
 
 ```ts
 type MyErrors = { isEqual: false };
@@ -391,19 +389,9 @@ import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
 const control = new FormControl<string, NgValidatorsErrors>();
 ```
 
-## Control Validators
-
-The library exposes a **typed** version of the built-in Angular validators. In the following example we'll get a type error because `Validator.required` doesn't return the correct type:
-
-```ts
-import { FormControl, Validators } from '@ngneat/reactive-forms';
-
-new FormControl<string, { isEqual: false }>('', Validators.required);
-```
-
 ## ControlValueAccessor
 
-The library exposes a typed version of `ControlValueAccessor` which already implements `registerOnChange` and `registerOnTouched` under the hood:
+The library exposes a `typed` version of `ControlValueAccessor`, which already implements `registerOnChange` and `registerOnTouched` under the hood:
 
 ```ts
 import { ControlValueAccessor } from '@ngneat/reactive-forms';
@@ -432,7 +420,7 @@ Note that you can also use it as `interface`.
 
 ## Form Builder
 
-We also introduce a typed version of `FormBuilder` which returns a typed `FormGroup`, `FormControl` and `FormArray` with all our sweet additions:
+We also introduce a `typed` version of `FormBuilder` which returns a `typed` `FormGroup`, `FormControl` and `FormArray` with all our sweet additions:
 
 ```ts
 import { FormBuilder } from '@ngneat/reactive-forms';
@@ -452,10 +440,30 @@ const userGroup: FormGroup<User> = fb.group({ id: 1, userName: 'User', email: 'E
 
 ## ESLint Rule
 
-We provide a special lint rule that forbids the imports of `FormControl`, `FormGroup`, `FormBuilder` and `FormArray` from `@angular/forms`.
+We provide a special lint rule that forbids the imports of any token we expose, such as the following:
+`AbstractControl`,
+`AsyncValidatorFn`,
+`ControlValueAccessor`,
+`FormArray`,
+`FormBuilder`,
+`FormControl`,
+`FormGroup`,
+`ValidatorFn`,
+`Validators`,
+`Validator`
+from `@angular/forms`.
+
 Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/master/projects/ngneat/eslint-plugin-reactive-forms).
 
 ## Schematics
+
+The command will replace entities coming from `@angular/reactive-forms` with `@ngneat/reactive-forms`.
+
+```bash
+ng g @ngneat/reactive-forms:migrate
+```
+
+Further information about the script can be found [here](https://github.com/ngneat/reactive-forms/tree/master/schematics/src/migrate/migration.md).
 
 ## Contributors ✨
 
@@ -470,7 +478,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Coly010"><img src="https://avatars2.githubusercontent.com/u/12140467?v=4" width="100px;" alt=""/><br /><sub><b>Colum Ferry</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=Coly010" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=Coly010" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/danzrou"><img src="https://avatars3.githubusercontent.com/u/6433766?v=4" width="100px;" alt=""/><br /><sub><b>Dan Roujinsky</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=danzrou" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=danzrou" title="Documentation">📖</a> <a href="#ideas-danzrou" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt=""/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=theblushingcrow" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Documentation">📖</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Tests">⚠️</a> <a href="#tool-itayod" title="Tools">🔧</a></td>
   </tr>
 </table>
 

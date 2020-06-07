@@ -1,10 +1,10 @@
 import { ControlValueAccessor as NgControlValueAccessor } from '@angular/forms';
 
-export abstract class ControlValueAccessor<T> implements NgControlValueAccessor {
+export abstract class ControlValueAccessor<T = any> implements NgControlValueAccessor {
   abstract writeValue(value: T): void;
 
-  onChange = (value: T | null) => {};
-  onTouched = () => {};
+  onChange? = (value: T | null) => {};
+  onTouched? = () => {};
 
   registerOnChange(fn: (value: T | null) => void): void {
     this.onChange = fn;

@@ -33,6 +33,7 @@ const g = new FormGroup<Person, NgValidatorsErrors>({
   })
 });
 
+
 g.hasError('required', ['phone', 'num']);
 const err = g.getError('maxlength', ['phone', 'prefix']);
 const control = g.get(['phone', 'num']);
