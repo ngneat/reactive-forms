@@ -17,17 +17,17 @@ import {
   mergeControlValidators
 } from './control-actions';
 import {
+  AbstractControl,
   AbstractControlOptions,
   AsyncValidatorFn,
-  ControlOptions,
-  ExtractStrings,
   ControlEventOptions,
-  ValidatorFn,
-  ControlType,
+  ControlOptions,
   ControlPath,
+  ControlState,
   EmitEvent,
+  ExtractStrings,
   OnlySelf,
-  ControlState
+  ValidatorFn
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
@@ -37,7 +37,6 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   status: ControlState;
   statusChanges: Observable<ControlState>;
   errors: E | null;
-  asyncValidator: AsyncValidatorFn | null;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -52,9 +51,9 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   errorChanges$ = controlErrorChanges$<E>(this);
 
   constructor(
-    public controls: Array<ControlType<T>>,
-    validatorOrOpts?: ValidatorFn<E> | ValidatorFn[] | AbstractControlOptions | null,
-    asyncValidator?: AsyncValidatorFn<E> | AsyncValidatorFn[] | null
+    public controls: Array<AbstractControl<T>>,
+    validatorOrOpts?: ValidatorFn<T[]> | ValidatorFn<T[]>[] | AbstractControlOptions<T[]> | null,
+    asyncValidator?: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[] | null
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }
@@ -67,8 +66,8 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     return super.getRawValue();
   }
 
-  at(index: number): ControlType<T> {
-    return super.at(index) as ControlType<T>;
+  at(index: number): AbstractControl<T> {
+    return super.at(index) as AbstractControl<T>;
   }
 
   setValue(valueOrObservable: Observable<T[]>, options?: ControlEventOptions): Subscription;
@@ -99,15 +98,15 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     }
   }
 
-  push(control: ControlType<T>): void {
+  push(control: AbstractControl<T>): void {
     return super.push(control);
   }
 
-  insert(index: number, control: ControlType<T>): void {
+  insert(index: number, control: AbstractControl<T>): void {
     return super.insert(index, control);
   }
 
-  setControl(index: number, control: ControlType<T>): void {
+  setControl(index: number, control: AbstractControl<T>): void {
     return super.setControl(index, control);
   }
 
@@ -119,11 +118,11 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: ValidatorFn | ValidatorFn[]) {
+  mergeValidators(validators: ValidatorFn<T[]> | ValidatorFn<T[]>[]) {
     mergeControlValidators(this, validators);
   }
 
-  mergeAsyncValidators(validators: AsyncValidatorFn | AsyncValidatorFn[]) {
+  mergeAsyncValidators(validators: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[]) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity();
   }
@@ -156,12 +155,12 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     super.reset(value, options);
   }
 
-  setValidators(newValidator: ValidatorFn | ValidatorFn[] | null): void {
+  setValidators(newValidator: ValidatorFn<T[]> | ValidatorFn<T[]>[] | null): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }
 
-  setAsyncValidators(newValidator: AsyncValidatorFn | AsyncValidatorFn[] | null): void {
+  setAsyncValidators(newValidator: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[] | null): void {
     super.setAsyncValidators(newValidator);
     super.updateValueAndValidity();
   }

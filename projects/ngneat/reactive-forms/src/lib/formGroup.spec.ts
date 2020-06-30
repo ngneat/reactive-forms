@@ -33,7 +33,6 @@ const g = new FormGroup<Person, NgValidatorsErrors>({
   })
 });
 
-
 g.hasError('required', ['phone', 'num']);
 const err = g.getError('maxlength', ['phone', 'prefix']);
 const control = g.get(['phone', 'num']);
@@ -51,6 +50,20 @@ const createGroup = (withError = false) => {
     { validators: withError ? errorFn : [] }
   );
 };
+
+const groupTest = new FormGroup<Person>({
+  name: new FormControl(),
+  phone: new FormGroup<Person['phone']>({
+    num: new FormControl(),
+    prefix: new FormControl()
+  })
+});
+
+groupTest.valueChanges$.subscribe(v => v.name);
+const a = groupTest.get(['phone', 'num']);
+
+const control22 = new FormControl('');
+control22.setValue('');
 
 describe('FormGroup', () => {
   it('should valueChanges$', () => {

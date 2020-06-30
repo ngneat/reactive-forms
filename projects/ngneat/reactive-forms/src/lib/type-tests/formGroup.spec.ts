@@ -2,9 +2,9 @@ import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '../formControl';
 import { FormGroup } from '../formGroup';
-import { ControlType } from '../types';
-import { Validators } from '../validators';
+import { AbstractControl } from '../types';
 import { Errors, errors, pattern, patternAsync, required, requiredAsync, User, user } from './mocks.spec';
+import { Validators } from '@angular/forms';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl() });
@@ -36,7 +36,7 @@ test('control dirtyChanges$ should be of type stream of boolean', () => {
 
 test('get control should accept a type of given generic keys', () => {
   const control = new FormGroup<User>(null);
-  expectTypeOf(control.getControl('id')).toMatchTypeOf(new FormControl<number>() as ControlType<any>);
+  expectTypeOf(control.getControl('id')).toMatchTypeOf(new FormControl<number>() as AbstractControl<any>);
 });
 
 test('control select parameter should be of type stream of given type', () => {
@@ -123,7 +123,6 @@ test('should be able to create group containing form controls with type of Array
 
 test('should be able to support array of validators', () => {
   const c = new FormControl('', [Validators.minLength(2)]);
-  // TODO: support typing for array of validators
   const control = new FormControl('a string', [Validators.required, Validators.email]);
 
   const form = new FormGroup({
@@ -134,14 +133,6 @@ test('should be able to support array of validators', () => {
   const form2 = new FormGroup({
     name: new FormControl('', Validators.compose([Validators.required, Validators.minLength(2)]))
   });
-});
-
-test('should be to set value to control inside group', () => {
-  const control = new FormGroup<User>({ id: new FormControl<number>() });
-  control.get(['id']).setValue(3);
-  expectTypeOf(control.getControl('id').setValue)
-    .parameter(0)
-    .not.toBeAny();
 });
 
 test('should support nested objects', () => {

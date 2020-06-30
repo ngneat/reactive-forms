@@ -1,6 +1,7 @@
-import { FormBuilder, Validators } from '@ngneat/reactive-forms';
+import { FormBuilder } from '@ngneat/reactive-forms';
 import { expectTypeOf } from 'expect-type';
 import { Errors, User } from './mocks.spec';
+import { Validators } from '@angular/forms';
 
 const fb = new FormBuilder();
 

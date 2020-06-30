@@ -1,8 +1,8 @@
-import { Validators } from '@ngneat/reactive-forms';
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '../formControl';
 import { Errors, pattern, required, requiredAsync, patternAsync, errors } from './mocks.spec';
+import { Validators } from '@angular/forms';
 
 test('control value should be of type string', () => {
   const control = new FormControl<string>('a string');
