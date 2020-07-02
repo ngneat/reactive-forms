@@ -18,6 +18,7 @@ import {
   selectControlValue$,
   validateControlOn
 } from './control-actions';
+import { FormArray } from './formArray';
 import {
   AbstractControl,
   AbstractControlOptions,
@@ -28,11 +29,14 @@ import {
   EmitEvent,
   ExtractStrings,
   OnlySelf,
-  ValidatorFn
+  ValidatorFn,
+  KeyValueControls,
+  Obj
 } from './types';
 import { coerceArray, isFunction } from './utils';
+import { FormControl } from './formControl';
 
-export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
+export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
   value: T;
   errors: E | null;
   valueChanges: Observable<T>;
@@ -52,7 +56,7 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   errorChanges$ = controlErrorChanges$<E>(this);
 
   constructor(
-    public controls: { [K in keyof T]: AbstractControl<T[K]> },
+    public controls: KeyValueControls<T>,
     validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
     asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
   ) {
@@ -272,3 +276,20 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     disableControl(this, disable, opts);
   }
 }
+
+interface A {
+  a: number;
+  b?: {
+    a: string;
+    c: { a: number }[];
+  };
+  c?: { a: number }[];
+}
+
+const aa = new FormControl<A>({ a: 2, b: { a: 'asda', c: [] } });
+const a = new FormGroup<A>({ a: new FormControl(22), b: new FormControl({ a: '', c: [{ a: 3 }] }) });
+const b = new FormGroup<A>({ a: new FormControl(22), b: new FormControl({ a: '', c: [] }) });
+const c = new FormGroup<A>({
+  a: new FormControl(22),
+  b: new FormGroup({ a: new FormControl('3'), c: new FormArray([]) })
+});

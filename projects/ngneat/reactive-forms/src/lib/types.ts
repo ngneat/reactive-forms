@@ -4,6 +4,9 @@ import {
   ValidationErrors
 } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { FormArray } from './formArray';
+import { FormControl } from './formControl';
+import { FormGroup } from './formGroup';
 
 export type ValidatorFn<T = any> = (control: AbstractControl<T>) => ValidationErrors | null;
 export type AsyncValidatorFn<T = any> = (
@@ -46,3 +49,16 @@ export interface NgValidatorsErrors {
 
 export type BoxedValue<T> = { value: T; disabled: boolean };
 export type OrBoxedValue<T> = T | BoxedValue<T>;
+
+export type Obj = { [key: string]: any };
+type ArrayType<T> = T extends Array<infer R> ? R : any;
+
+export type KeyValueControls<T extends Obj> = {
+  [K in keyof T]: T[K] extends FormControl<T[K]>
+    ? FormControl<T[K]>
+    : T[K] extends FormGroup<T[K]>
+    ? FormGroup<T[K]>
+    : T[K] extends FormArray<ArrayType<T[K]>>
+    ? FormArray<ArrayType<T[K]>>
+    : AbstractControl<T[K]>;
+};
