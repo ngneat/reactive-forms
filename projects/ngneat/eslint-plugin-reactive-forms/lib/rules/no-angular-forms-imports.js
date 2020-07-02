@@ -35,9 +35,7 @@ module.exports = {
       'FormBuilder',
       'FormControl',
       'FormGroup',
-      'ValidatorFn',
-      'Validators',
-      'Validator'
+      'ValidatorFn'
     ];
 
     //----------------------------------------------------------------------
