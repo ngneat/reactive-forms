@@ -1,3 +1,4 @@
+import { FormArray } from '@ngneat/reactive-forms';
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '../formControl';
@@ -12,6 +13,27 @@ test('control should be constructed with abstract controls', () => {
 
 test('control should be constructed with null', () => {
   expectTypeOf(FormGroup).toBeConstructibleWith(null);
+});
+
+test('control should be constructed according to generic type', () => {
+  interface Form {
+    a: number;
+    b?: {
+      a: string;
+      c: number[];
+    };
+    c?: { a: number }[];
+  }
+  const a = new FormGroup<Form>({ a: new FormControl(22), b: new FormControl({ a: '', c: [3] }) });
+  const b = new FormGroup<Form>({
+    a: new FormControl(22),
+    b: new FormGroup({ a: new FormControl('3'), c: new FormArray([new FormControl(2)]) })
+  });
+  const c = new FormGroup<Form>({
+    a: new FormControl(22),
+    b: new FormGroup({ a: new FormControl('3'), c: new FormArray([new FormControl(33)]) }),
+    c: new FormArray([new FormGroup({ a: new FormControl(3) })])
+  });
 });
 
 test('control value should be of type User', () => {
