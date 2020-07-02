@@ -17,7 +17,7 @@
 
 How many times have you told yourself "I wish Angular Reactive Forms would support types", or "I really want API to query the form reactively. It missed some methods."
 
-Your wish is my command! This library extends every Angular `AbstractControl`, and provides features that don't exist in the original one. It adds types, reactive queries, and helper methods. The most important thing is that you can start using it today! The only thing that you need to change is the import path. So don't worry, no form refactoring required - we've got you covered; One schematics [command](https://github.com/ngneat/reactive-forms/blob/master/schematics/src/migrate/migration.md), and you're done!
+Your wish is my command! This library extends every Angular `AbstractControl`, and provides features that don't exist in the original one. It adds types, reactive queries, and helper methods. The most important thing is that you can start using it today! In most cases, the only thing that you need to change is the `import` path. So don't worry, no form refactoring required - we've got you covered; One schematics [command](https://github.com/ngneat/reactive-forms/blob/master/schematics/src/migrate/migration.md), and you're done!
 
 Let's take a look at all the neat things we provide:
 
@@ -346,7 +346,7 @@ control.setDisable(false);
 
 ### `getControl()`
 
-A `typed` method which obtains a reference to a specific control.
+A method with `typed` parameters which obtains a reference to a specific control.
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
