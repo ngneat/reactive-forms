@@ -1,9 +1,6 @@
 import { of, Subject } from 'rxjs';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import { Validators } from '@angular/forms';
-import { NgValidatorsErrors } from './types';
-import { FormArray } from './formArray';
 
 type Person = {
   name: string;
@@ -13,30 +10,9 @@ type Person = {
   };
 };
 
-type T = { name: string; street: number; ids: string[] };
-
-const c = new FormGroup<T>({
-  name: new FormControl(),
-  street: new FormControl(null),
-  ids: new FormArray([])
-});
-
 const errorFn = group => {
   return { isInvalid: true };
 };
-
-const g = new FormGroup<Person, NgValidatorsErrors>({
-  name: new FormControl(),
-  phone: new FormGroup({
-    num: new FormControl(null, Validators.required),
-    prefix: new FormControl()
-  })
-});
-
-g.hasError('required', ['phone', 'num']);
-const err = g.getError('maxlength', ['phone', 'prefix']);
-const control = g.get(['phone', 'num']);
-const control2 = g.get('any');
 
 const createGroup = (withError = false) => {
   return new FormGroup<Person>(
@@ -50,20 +26,6 @@ const createGroup = (withError = false) => {
     { validators: withError ? errorFn : [] }
   );
 };
-
-const groupTest = new FormGroup<Person>({
-  name: new FormControl(),
-  phone: new FormGroup<Person['phone']>({
-    num: new FormControl(),
-    prefix: new FormControl()
-  })
-});
-
-groupTest.valueChanges$.subscribe(v => v.name);
-const a = groupTest.get(['phone', 'num']);
-
-const control22 = new FormControl('');
-control22.setValue('');
 
 describe('FormGroup', () => {
   it('should valueChanges$', () => {

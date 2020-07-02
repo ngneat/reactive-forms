@@ -5,12 +5,12 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-export type ValidatorFn<T> = (control: AbstractControl<T>) => ValidationErrors | null;
-export type AsyncValidatorFn<T> = (
+export type ValidatorFn<T = any> = (control: AbstractControl<T>) => ValidationErrors | null;
+export type AsyncValidatorFn<T = any> = (
   control: AbstractControl<T>
 ) => Promise<ValidationErrors | null> | Observable<ValidationErrors | null>;
 
-export interface AbstractControlOptions<T> extends NgAbstractControlOptions {
+export interface AbstractControlOptions<T = any> extends NgAbstractControlOptions {
   validators?: ValidatorFn<T> | ValidatorFn<T>[] | null;
   asyncValidators?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null;
 }

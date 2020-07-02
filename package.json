@@ -5,9 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "jest --coverage=false && npm run test:type",
+    "test": "jest --coverage=false && npm run test:types",
     "test:watch": "jest --watch --coverage=false",
-    "test:type": "cd projects/ngneat/reactive-forms/src/lib/type-tests && tsc --outDir ./out-tsc",
+    "test:types": "cd projects/ngneat/reactive-forms/src/lib/type-tests && tsc --outDir ./out-tsc",
     "test:lib:headless": "cross-env CI=true npm run test",
     "lint": "ng lint",
     "schematics:watch": "cd ./schematics/ && npm link && cd .. && npm link @ngneat/reactive-forms && npm run build --prefix ./schematics -- --watch",
@@ -39,6 +39,7 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
+    "@phenomnomnominal/tsquery": "^4.1.0",
     "@angular-devkit/build-angular": "~0.901.6",
     "@angular-devkit/build-ng-packagr": "~0.901.6",
     "@angular/cli": "~9.1.6",
@@ -75,8 +76,7 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -e $GIT_PARAMS",
-      "pre-commit": "npm run hooks:pre-commit && lint-staged",
-      "pre-push": "npm run test"
+      "pre-commit": "npm run hooks:pre-commit && lint-staged"
     }
   },
   "config": {

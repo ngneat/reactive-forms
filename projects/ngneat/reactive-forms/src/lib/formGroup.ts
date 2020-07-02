@@ -70,7 +70,6 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   get<K1 extends keyof T>(path?: [K1]): AbstractControl<T[K1]>;
   get<K1 extends keyof T, K2 extends keyof T[K1]>(path?: [K1, K2]): AbstractControl<T[K1][K2]>;
   get<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
-    errorCode: ExtractStrings<E>,
     path?: [K1, K2, K3]
   ): AbstractControl<T[K1][K2][K3]>;
   get(path?: string): AbstractControl;
@@ -177,7 +176,7 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     markAllDirty(this);
   }
 
-  reset(formState?: T, options?: ControlEventOptions): void {
+  reset(formState?: Partial<T>, options?: ControlEventOptions): void {
     super.reset(formState, options);
   }
 

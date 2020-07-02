@@ -102,15 +102,11 @@ export default function(options: SchemaOptions): Rule {
         'ValidatorFn',
         'AsyncValidatorFn',
         'ControlValueAccessor',
-        'FormBuilder',
-        'Validator',
-        'Validators'
+        'FormBuilder'
       ];
-      if (!tree.exists(options.path)) {
-        throw new SchematicsException(`Could not find path: ${options.path}. Maybe it is misspelled?`);
-      }
+
       glob(`${options.path}/**/*.ts`, {}, (er, files) => {
-        insertAnyGeneric(files, controlClasses);
+        // insertAnyGeneric(files, controlClasses);
         replaceImports(files, importSigns, '@ngneat/reactive-forms', tree);
         Object.entries(addChanges).forEach(([filePath, changes]) => (tree = applyChanges(tree, filePath, changes)));
         Object.entries(removeChanges).forEach(([filePath, changes]) => applyChanges(tree, filePath, changes));
