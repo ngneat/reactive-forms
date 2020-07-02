@@ -4,7 +4,7 @@ import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '../formControl';
 import { FormGroup } from '../formGroup';
 import { AbstractControl } from '../types';
-import { Errors, errors, pattern, patternAsync, required, requiredAsync, User, user } from './mocks.spec';
+import { Errors, errors, pattern, patternAsync, required, requiredAsync, User, user, NestedForm } from './mocks.spec';
 import { Validators } from '@angular/forms';
 
 test('control should be constructed with abstract controls', () => {
@@ -16,23 +16,20 @@ test('control should be constructed with null', () => {
 });
 
 test('control should be constructed according to generic type', () => {
-  interface Form {
-    a: number;
-    b?: {
-      a: string;
-      c: number[];
-    };
-    c?: { a: number }[];
-  }
-  const a = new FormGroup<Form>({ a: new FormControl(22), b: new FormControl({ a: '', c: [3] }) });
-  const b = new FormGroup<Form>({
+  const a = new FormGroup<NestedForm>({ a: new FormControl(22), b: new FormControl({ a: '', c: [3] }) });
+  const b = new FormGroup<NestedForm>({
     a: new FormControl(22),
     b: new FormGroup({ a: new FormControl('3'), c: new FormArray([new FormControl(2)]) })
   });
-  const c = new FormGroup<Form>({
+  const c = new FormGroup<NestedForm>({
     a: new FormControl(22),
     b: new FormGroup({ a: new FormControl('3'), c: new FormArray([new FormControl(33)]) }),
     c: new FormArray([new FormGroup({ a: new FormControl(3) })])
+  });
+  const d = new FormGroup<NestedForm>({
+    a: new FormControl(22),
+    b: new FormGroup({ a: new FormControl('3'), c: new FormArray([new FormControl(33)]) }),
+    c: new FormControl([{ a: 3 }])
   });
 });
 

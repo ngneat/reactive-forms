@@ -1,6 +1,6 @@
 import { FormBuilder } from '@ngneat/reactive-forms';
 import { expectTypeOf } from 'expect-type';
-import { Errors, User } from './mocks.spec';
+import { Errors, User, NestedForm } from './mocks.spec';
 import { Validators } from '@angular/forms';
 
 const fb = new FormBuilder();
@@ -15,6 +15,19 @@ test('should be able to add group validators', () => {
       validator: Validators.required
     }
   );
+
+  group.setValidators([Validators.pattern(/\D/)]);
+});
+
+test('should be able to build nested form', () => {
+  const group = fb.group<NestedForm>({
+    a: 4,
+    b: {
+      a: '',
+      c: [1, 2, 3]
+    },
+    c: [{ a: 2 }]
+  });
 
   group.setValidators([Validators.pattern(/\D/)]);
 });

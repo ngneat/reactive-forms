@@ -1,5 +1,14 @@
 import { of } from 'rxjs';
 
+export interface NestedForm {
+  a: number;
+  b?: {
+    a: string;
+    c: number[];
+  };
+  c?: { a: number }[];
+}
+
 export interface User {
   id: number;
   name?: string;
