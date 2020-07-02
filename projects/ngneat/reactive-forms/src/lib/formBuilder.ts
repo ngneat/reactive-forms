@@ -23,10 +23,12 @@ export type FbControlConfig<T = any> =
   | OrBoxedValue<T>
   | T;
 
+export type FbGroupConfig<T = any> = { [key in keyof T]: FbControlConfig<T[key]> };
+
 @Injectable({ providedIn: 'root' })
 export class FormBuilder extends NgFormBuilder {
-  group<T extends object, E extends object = any>(
-    controlsConfig: { [K in keyof T]: FbControlConfig<T[K]> },
+  group<T extends object, E extends object = any, GroupConfig extends FbGroupConfig<T> = FbGroupConfig<T>>(
+    controlsConfig: GroupConfig,
     options?:
       | AbstractControlOptions<T>
       | {

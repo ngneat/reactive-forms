@@ -44,5 +44,5 @@ export interface NgValidatorsErrors {
   max: { max: number; actual: number };
 }
 
-export type BoxedValue<T> = { value: T; disabled: boolean };
+export type BoxedValue<T> = { value: T; disabled?: boolean };
 export type OrBoxedValue<T> = T | BoxedValue<T>;
