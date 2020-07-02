@@ -24,12 +24,11 @@ import {
   AsyncValidatorFn,
   ControlEventOptions,
   ControlOptions,
-  ControlType,
+  ControlState,
   EmitEvent,
   ExtractStrings,
-  ValidatorFn,
-  ControlState,
-  OnlySelf
+  OnlySelf,
+  ValidatorFn
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
@@ -53,9 +52,9 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   errorChanges$ = controlErrorChanges$<E>(this);
 
   constructor(
-    public controls: { [K in keyof T]: ControlType<T[K]> },
-    validatorOrOpts?: ValidatorFn<E> | ValidatorFn[] | AbstractControlOptions | null,
-    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
+    public controls: { [K in keyof T]: AbstractControl<T[K]> },
+    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
+    asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }
@@ -71,7 +70,6 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   get<K1 extends keyof T>(path?: [K1]): AbstractControl<T[K1]>;
   get<K1 extends keyof T, K2 extends keyof T[K1]>(path?: [K1, K2]): AbstractControl<T[K1][K2]>;
   get<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
-    errorCode: ExtractStrings<E>,
     path?: [K1, K2, K3]
   ): AbstractControl<T[K1][K2][K3]>;
   get(path?: string): AbstractControl;
@@ -79,24 +77,24 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     return super.get(path);
   }
 
-  getControl<P1 extends keyof T>(prop1: P1): ControlType<T[P1]>;
-  getControl<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): ControlType<T[P1][P2]>;
+  getControl<P1 extends keyof T>(prop1: P1): AbstractControl<T[P1]>;
+  getControl<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): AbstractControl<T[P1][P2]>;
   getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
     prop1: P1,
     prop2: P2,
     prop3: P3
-  ): ControlType<T[P1][P2][P3]>;
+  ): AbstractControl<T[P1][P2][P3]>;
   getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2], P4 extends keyof T[P1][P2][P3]>(
     prop1: P1,
     prop2: P2,
     prop3: P3,
     prop4: P4
-  ): ControlType<T[P1][P2][P3][P4]>;
+  ): AbstractControl<T[P1][P2][P3][P4]>;
   getControl(...names: any): any {
     return this.get(names.join('.'));
   }
 
-  addControl<K extends ExtractStrings<T>>(name: K, control: ControlType<T[K]>): void {
+  addControl<K extends ExtractStrings<T>>(name: K, control: AbstractControl<T[K]>): void {
     super.addControl(name, control);
   }
 
@@ -108,7 +106,7 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     return super.contains(controlName);
   }
 
-  setControl<K extends ExtractStrings<T>>(name: K, control: ControlType<T[K]>): void {
+  setControl<K extends ExtractStrings<T>>(name: K, control: AbstractControl<T[K]>): void {
     super.setControl(name, control);
   }
 
@@ -145,11 +143,11 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: ValidatorFn | ValidatorFn[]) {
+  mergeValidators(validators: ValidatorFn<T> | ValidatorFn<T>[]) {
     mergeControlValidators(this, validators);
   }
 
-  mergeAsyncValidators(validators: AsyncValidatorFn | AsyncValidatorFn[]) {
+  mergeAsyncValidators(validators: AsyncValidatorFn<T> | AsyncValidatorFn<T>[]) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity();
   }
@@ -178,16 +176,16 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     markAllDirty(this);
   }
 
-  reset(formState?: T, options?: ControlEventOptions): void {
+  reset(formState?: Partial<T>, options?: ControlEventOptions): void {
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: ValidatorFn | ValidatorFn[] | null): void {
+  setValidators(newValidator: ValidatorFn<T> | ValidatorFn<T>[] | null): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }
 
-  setAsyncValidators(newValidator: AsyncValidatorFn | AsyncValidatorFn[] | null): void {
+  setAsyncValidators(newValidator: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null): void {
     super.setAsyncValidators(newValidator);
     super.updateValueAndValidity();
   }

@@ -22,19 +22,19 @@ import {
   AsyncValidatorFn,
   ControlEventOptions,
   ControlOptions,
+  ControlState,
   EmitEvent,
   ExtractStrings,
   OnlySelf,
   OrBoxedValue,
-  ValidatorFn,
-  ControlState
+  ValidatorFn
 } from './types';
 import { coerceArray, isFunction } from './utils';
 
 export class FormControl<T = any, E extends object = any> extends NgFormControl {
   value: T;
   errors: E | null;
-  asyncValidator: AsyncValidatorFn<E>;
+  asyncValidator: AsyncValidatorFn<T>;
   valueChanges: Observable<T>;
   status: ControlState;
   statusChanges: Observable<ControlState>;
@@ -53,8 +53,8 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
 
   constructor(
     formState?: OrBoxedValue<T>,
-    validatorOrOpts?: ValidatorFn<E> | ValidatorFn[] | AbstractControlOptions,
-    asyncValidator?: AsyncValidatorFn<E> | AsyncValidatorFn[] | null
+    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
+    asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
   ) {
     super(formState, validatorOrOpts, asyncValidator);
   }
@@ -96,11 +96,11 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: ValidatorFn | ValidatorFn[]) {
+  mergeValidators(validators: ValidatorFn<T> | ValidatorFn<T>[]) {
     mergeControlValidators(this, validators);
   }
 
-  mergeAsyncValidators(validators: AsyncValidatorFn | AsyncValidatorFn[]) {
+  mergeAsyncValidators(validators: AsyncValidatorFn<T> | AsyncValidatorFn<T>[]) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity();
   }
@@ -133,12 +133,12 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: ValidatorFn<E> | ValidatorFn<E>[] | null): void {
+  setValidators(newValidator: ValidatorFn<T> | ValidatorFn<T>[] | null): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }
 
-  setAsyncValidators(newValidator: AsyncValidatorFn | AsyncValidatorFn[] | null): void {
+  setAsyncValidators(newValidator: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null): void {
     super.setAsyncValidators(newValidator);
     super.updateValueAndValidity();
   }

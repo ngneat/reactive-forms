@@ -96,9 +96,9 @@ export function controlEnabledWhile<T>(
   return observable.subscribe(isEnabled => enableControl(control, isEnabled, opts));
 }
 
-export function mergeControlValidators<T, Control extends AbstractControl<T>, Validator extends ValidatorFn>(
+export function mergeControlValidators<T, Control extends AbstractControl<T>>(
   control: Control,
-  validators: ValidatorFn | ValidatorFn[]
+  validators: ValidatorFn<T> | ValidatorFn<T>[]
 ): void {
   control.setValidators([control.validator, ...coerceArray(validators)]);
   control.updateValueAndValidity();

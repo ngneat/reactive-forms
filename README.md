@@ -17,7 +17,7 @@
 
 How many times have you told yourself "I wish Angular Reactive Forms would support types", or "I really want API to query the form reactively. It missed some methods."
 
-Your wish is my command! This library extends every Angular `AbstractControl`, and provides features that don't exist in the original one. It adds types, reactive queries, and helper methods. The most important thing is that you can start using it today! The only thing that you need to change is the import path. So don't worry, no form refactoring required - we've got you covered; One schematics [command](https://github.com/ngneat/reactive-forms/blob/master/schematics/src/migrate/migration.md), and you're done!
+Your wish is my command! This library extends every Angular `AbstractControl`, and provides features that don't exist in the original one. It adds types, reactive queries, and helper methods. The most important thing is that you can start using it today! In most cases, the only thing that you need to change is the `import` path. So don't worry, no form refactoring required - we've got you covered; One schematics [command](https://github.com/ngneat/reactive-forms/blob/master/schematics/src/migrate/migration.md), and you're done!
 
 Let's take a look at all the neat things we provide:
 
@@ -77,7 +77,7 @@ interface Profile {
 const profileForm = new FormGroup<Profile>({
   firstName: new FormControl(''),
   lastName: new FormControl(''),
-  address: new FormGroup({
+  address: new FormGroup<Profile['address']>({
     street: new FormControl(''),
     city: new FormControl('')
   })
@@ -86,7 +86,7 @@ const profileForm = new FormGroup<Profile>({
 // typed as Profile
 profileForm.setValue(new Profile());
 // typed as Partial<Profile>
-profileForm.patchValue(new Profile());
+profileForm.patchValue({ firstName: 'Netanel' });
 ```
 
 Use it with a `FormArray`:
@@ -346,24 +346,26 @@ control.setDisable(false);
 
 ### `getControl()`
 
-A `typed` method which obtains a reference to a specific control.
+A method with `typed` parameters which obtains a reference to a specific control.
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
 
-const group = new FormGroup<Person>(...);
-const nameControl = group.getControl('name');
-const nestedFieldControl = group.getControl('nested', 'field');
+const group = new FormGroup<Profile>(...);
+const address = group.getControl('name') as FormGroup<Profile['address']>;
+const city = group.getControl('address', 'city') as FormControl<string>;
 ```
+
+Note that the return type should still be inferred.
 
 ### Control Path
 
 The **array** path variation of `hasError()`, `getError()`, and `get()` is now `typed`:
 
 ```ts
-group.get(['phone', 'num']);
-group.hasError('required', ['phone', 'num']);
-group.getError('required', ['phone', 'num']);
+const num = group.get(['phone', 'num']) as FormControl<string>;
+const hasError = group.hasError('required', ['phone', 'num']);
+const getError = group.getError('required', ['phone', 'num']);
 ```
 
 ## Control Errors
@@ -449,8 +451,6 @@ We provide a special lint rule that forbids the imports of any token we expose, 
 `FormControl`,
 `FormGroup`,
 `ValidatorFn`,
-`Validators`,
-`Validator`
 from `@angular/forms`.
 
 Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/master/projects/ngneat/eslint-plugin-reactive-forms).

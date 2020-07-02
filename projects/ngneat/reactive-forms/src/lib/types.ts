@@ -1,22 +1,18 @@
-import { AbstractControl as AngularAbstractControl, Validator as NgValidator } from '@angular/forms';
+import {
+  AbstractControl as NgAbstractControl,
+  AbstractControlOptions as NgAbstractControlOptions,
+  ValidationErrors
+} from '@angular/forms';
 import { Observable } from 'rxjs';
 
-export interface Validator<E extends object = any> extends NgValidator {
-  validate(control: AbstractControl): Partial<E> | null;
-}
+export type ValidatorFn<T = any> = (control: AbstractControl<T>) => ValidationErrors | null;
+export type AsyncValidatorFn<T = any> = (
+  control: AbstractControl<T>
+) => Promise<ValidationErrors | null> | Observable<ValidationErrors | null>;
 
-export interface ValidatorFn<E extends object = any> {
-  (control: AbstractControl): Partial<E> | null;
-}
-
-export interface AsyncValidatorFn<E extends object = any> {
-  (control: AbstractControl): Promise<Partial<E> | null> | Observable<Partial<E> | null>;
-}
-
-export interface AbstractControlOptions<T = any, E extends object = any> {
-  validators?: ValidatorFn<Partial<E>> | ValidatorFn<Partial<E>>[] | null;
-  asyncValidators?: AsyncValidatorFn<E> | AsyncValidatorFn<E>[] | null;
-  updateOn?: 'change' | 'blur' | 'submit';
+export interface AbstractControlOptions<T = any> extends NgAbstractControlOptions {
+  validators?: ValidatorFn<T> | ValidatorFn<T>[] | null;
+  asyncValidators?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null;
 }
 
 export interface ControlOptions {
@@ -29,15 +25,11 @@ export interface ControlOptions {
 export type ControlEventOptions = Pick<ControlOptions, 'emitEvent' | 'onlySelf'>;
 export type OnlySelf = Pick<ControlOptions, 'onlySelf'>;
 export type EmitEvent = Pick<ControlOptions, 'emitEvent'>;
-
 export type ControlPath = Array<string | number> | string;
-
 export type ControlState = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED';
 
-export interface AbstractControl<T = any> extends AngularAbstractControl {
+export interface AbstractControl<T = any> extends NgAbstractControl {
   value: T;
-  setValue(value: T, options?: ControlOptions): void;
-  patchValue(value: Partial<T>, options?: ControlOptions): void;
 }
 
 export type ExtractStrings<T> = Extract<keyof T, string>;
@@ -54,12 +46,3 @@ export interface NgValidatorsErrors {
 
 export type BoxedValue<T> = { value: T; disabled: boolean };
 export type OrBoxedValue<T> = T | BoxedValue<T>;
-
-const uniqueKey = Symbol();
-interface UniqToken {
-  [uniqueKey]: never;
-}
-type ExtractAny<T> = T extends Extract<T, string & number & boolean & object & null & undefined> ? any : never;
-export type Control<T extends object> = T & UniqToken;
-
-export type ControlType<T> = AbstractControl<T>;
