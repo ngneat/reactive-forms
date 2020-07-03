@@ -34,7 +34,7 @@ import { coerceArray, isFunction } from './utils';
 export class FormControl<T = any, E extends object = any> extends NgFormControl {
   value: T;
   errors: E | null;
-  asyncValidator: AsyncValidatorFn<T>;
+  asyncValidator: AsyncValidatorFn<Partial<E>, T>;
   valueChanges: Observable<T>;
   status: ControlState;
   statusChanges: Observable<ControlState>;
@@ -53,8 +53,8 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
 
   constructor(
     formState?: OrBoxedValue<T>,
-    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
-    asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
+    validatorOrOpts?: ValidatorFn<Partial<E>, T> | ValidatorFn<any, T>[] | AbstractControlOptions<T, E> | null,
+    asyncValidator?: AsyncValidatorFn<Partial<E>, T> | AsyncValidatorFn<any, T>[] | null
   ) {
     super(formState, validatorOrOpts, asyncValidator);
   }
@@ -96,11 +96,11 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: ValidatorFn<T> | ValidatorFn<T>[]) {
+  mergeValidators(validators: ValidatorFn<Partial<E>, T> | ValidatorFn<Partial<E>, T>[]) {
     mergeControlValidators(this, validators);
   }
 
-  mergeAsyncValidators(validators: AsyncValidatorFn<T> | AsyncValidatorFn<T>[]) {
+  mergeAsyncValidators(validators: AsyncValidatorFn<Partial<E>, T> | AsyncValidatorFn<any, T>[]) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity();
   }
@@ -133,12 +133,12 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: ValidatorFn<T> | ValidatorFn<T>[] | null): void {
+  setValidators(newValidator: ValidatorFn<Partial<E>, T> | ValidatorFn<Partial<E>, T>[] | null): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }
 
-  setAsyncValidators(newValidator: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null): void {
+  setAsyncValidators(newValidator: AsyncValidatorFn<Partial<E>, T> | AsyncValidatorFn<any, T>[] | null): void {
     super.setAsyncValidators(newValidator);
     super.updateValueAndValidity();
   }

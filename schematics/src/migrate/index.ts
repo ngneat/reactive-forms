@@ -101,6 +101,7 @@ export default function(options: SchemaOptions): Rule {
         'AbstractControl',
         'ValidatorFn',
         'AsyncValidatorFn',
+        'Validators',
         'ControlValueAccessor',
         'FormBuilder'
       ];

@@ -1,8 +1,8 @@
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '../formControl';
+import { Validators } from '../validators';
 import { Errors, pattern, required, requiredAsync, patternAsync, errors } from './mocks.spec';
-import { Validators } from '@angular/forms';
 
 test('control value should be of type string', () => {
   const control = new FormControl<string>('a string');
@@ -127,14 +127,16 @@ test('should be able check if has errors', () => {
 test('validators should not infer value', () => {
   const control = new FormControl<string, Errors>('', required);
   expectTypeOf(control.value).toBeString();
-  const controlWithoutGeneric = new FormControl(null, required);
-  expectTypeOf(controlWithoutGeneric.value).toBeAny();
-  expectTypeOf(controlWithoutGeneric.setValue)
-    .parameter(0)
-    .toBeAny();
-  const controlWithoutGeneric2 = new FormControl(null, [required, Validators.min(2), Validators.email]);
+  const controlWithoutGeneric = new FormControl<string, Errors>('', required);
+  expectTypeOf(controlWithoutGeneric.value).toBeString();
+  const controlWithoutGeneric2 = new FormControl(null, required);
   expectTypeOf(controlWithoutGeneric2.value).toBeAny();
   expectTypeOf(controlWithoutGeneric2.setValue)
+    .parameter(0)
+    .toBeAny();
+  const controlWithoutGeneric3 = new FormControl(null, [required, Validators.min(2), Validators.email]);
+  expectTypeOf(controlWithoutGeneric3.value).toBeAny();
+  expectTypeOf(controlWithoutGeneric3.setValue)
     .parameter(0)
     .toBeAny();
 });
@@ -142,6 +144,12 @@ test('validators should not infer value', () => {
 test('should be able to set errors', () => {
   const control = new FormControl<string, Errors>();
   control.setErrors(errors);
+});
+
+test('should infer errors', () => {
+  const control = new FormControl('', Validators.required);
+  expectTypeOf(control.getError('required')).toBeBoolean();
+  const control2 = new FormControl('', [Validators.required, Validators.pattern('some string')]);
 });
 
 test('should be able to get errors', () => {

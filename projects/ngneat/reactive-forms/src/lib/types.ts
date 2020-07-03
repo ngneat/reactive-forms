@@ -8,14 +8,14 @@ import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
 
-export type ValidatorFn<T = any> = (control: AbstractControl<T>) => ValidationErrors | null;
-export type AsyncValidatorFn<T = any> = (
-  control: AbstractControl<T>
-) => Promise<ValidationErrors | null> | Observable<ValidationErrors | null>;
+export type ValidatorFn<E extends ValidationErrors = any, T = any> = (control: any) => E | null;
+export type AsyncValidatorFn<E extends ValidationErrors = any, T = any> = (
+  control: any
+) => Promise<E | null> | Observable<E | null>;
 
-export interface AbstractControlOptions<T = any> extends NgAbstractControlOptions {
-  validators?: ValidatorFn<T> | ValidatorFn<T>[] | null;
-  asyncValidators?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null;
+export interface AbstractControlOptions<T = any, E extends ValidationErrors = any> extends NgAbstractControlOptions {
+  validators?: ValidatorFn<Partial<E>, T> | ValidatorFn<Partial<E>, T>[] | null;
+  asyncValidators?: AsyncValidatorFn<Partial<E>, T> | AsyncValidatorFn<Partial<E>, T>[] | null;
 }
 
 export interface ControlOptions {
@@ -31,8 +31,9 @@ export type EmitEvent = Pick<ControlOptions, 'emitEvent'>;
 export type ControlPath = Array<string | number> | string;
 export type ControlState = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED';
 
-export interface AbstractControl<T = any> extends NgAbstractControl {
+export interface AbstractControl<T = any, E extends object = any> extends NgAbstractControl {
   value: T;
+  errors: E | null;
 }
 
 export type ExtractStrings<T> = Extract<keyof T, string>;
@@ -53,7 +54,7 @@ export type OrBoxedValue<T> = T | BoxedValue<T>;
 export type Obj = { [key: string]: any };
 type ArrayType<T> = T extends Array<infer R> ? R : any;
 
-export type KeyValueControls<T extends Obj> = {
+export type KeyValueControls<T extends Obj, E = any> = {
   [K in keyof T]: T[K] extends FormControl<T[K]>
     ? FormControl<T[K]>
     : T[K] extends FormGroup<T[K]>

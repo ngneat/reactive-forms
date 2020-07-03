@@ -4,8 +4,8 @@ import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '../formControl';
 import { FormGroup } from '../formGroup';
 import { AbstractControl } from '../types';
+import { Validators } from '../validators';
 import { Errors, errors, pattern, patternAsync, required, requiredAsync, User, user, NestedForm } from './mocks.spec';
-import { Validators } from '@angular/forms';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl() });
@@ -145,8 +145,8 @@ test('should be able to support array of validators', () => {
   const control = new FormControl('a string', [Validators.required, Validators.email]);
 
   const form = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    child: new FormControl('', Validators.required)
+    child: new FormControl('', Validators.required),
+    name: new FormControl('', [Validators.required, Validators.minLength(2)])
   });
 
   const form2 = new FormGroup({
