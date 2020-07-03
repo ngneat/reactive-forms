@@ -20,19 +20,19 @@ test('control value should be of type string when initial with empty value', () 
 
 test('control valueChanges$ should be of type stream of string', () => {
   const control = new FormControl<string>('a string');
-  expectTypeOf(control.valueChanges$).toMatchTypeOf(new Observable<string>());
+  expectTypeOf(control.value$).toMatchTypeOf(new Observable<string>());
   const controlWithoutGeneric = new FormControl('a string');
-  expectTypeOf(controlWithoutGeneric.valueChanges$).toMatchTypeOf(new Observable<string>());
+  expectTypeOf(controlWithoutGeneric.value$).toMatchTypeOf(new Observable<string>());
 });
 
 test('control toucheChanges$ should be of type stream of boolean', () => {
   const control = new FormControl<string>('a string');
-  expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
+  expectTypeOf(control.touch$).toMatchTypeOf(new Observable<boolean>());
 });
 
 test('control dirtyChanges$ should be of type stream of boolean', () => {
   const control = new FormControl<string>('a string');
-  expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
+  expectTypeOf(control.touch$).toMatchTypeOf(new Observable<boolean>());
 });
 
 test('control select parameter should be of type stream of given type', () => {

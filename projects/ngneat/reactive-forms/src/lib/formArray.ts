@@ -41,10 +41,10 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
 
-  touchChanges$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
-  dirtyChanges$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
+  touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
+  dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  valueChanges$ = controlValueChanges$<T[]>(this);
+  value$ = controlValueChanges$<T[]>(this);
   disabledChanges$ = controlDisabled$(this);
   enabledChanges$ = controlEnabled$(this);
   statusChanges$ = controlStatusChanges$(this);
@@ -59,7 +59,7 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   }
 
   select<R>(mapFn: (state: T[]) => R): Observable<R> {
-    return this.valueChanges$.pipe(map(mapFn), distinctUntilChanged());
+    return this.value$.pipe(map(mapFn), distinctUntilChanged());
   }
 
   getRawValue(): T[] {

@@ -39,7 +39,6 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@phenomnomnominal/tsquery": "^4.1.0",
     "@angular-devkit/build-angular": "~0.901.6",
     "@angular-devkit/build-ng-packagr": "~0.901.6",
     "@angular/cli": "~9.1.6",
@@ -48,6 +47,7 @@
     "@commitlint/config-angular": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
     "@ngneat/spectator": "^4.11.1",
+    "@phenomnomnominal/tsquery": "^4.1.0",
     "@types/jest": "25.2.2",
     "@types/node": "^12.11.1",
     "@typescript-eslint/eslint-plugin": "^2.31.0",

@@ -14,7 +14,7 @@ describe('FormArray', () => {
   it('should valueChanges$', () => {
     const control = createArray();
     const spy = jest.fn();
-    control.valueChanges$.subscribe(spy);
+    control.value$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(['', '']);
     control.patchValue(['1', '2']);
     expect(spy).toHaveBeenCalledWith(['1', '2']);
@@ -110,7 +110,7 @@ describe('FormArray', () => {
     const control = createArray();
 
     const spy = jest.fn();
-    control.touchChanges$.subscribe(spy);
+    control.touch$.subscribe(spy);
     control.markAsTouched();
     expect(spy).toHaveBeenCalledWith(true);
     control.markAsUntouched();
@@ -120,7 +120,7 @@ describe('FormArray', () => {
   it('should markAsPristine/Dirty', () => {
     const control = createArray();
     const spy = jest.fn();
-    control.dirtyChanges$.subscribe(spy);
+    control.dirty$.subscribe(spy);
     control.markAllAsDirty();
     expect(spy).toHaveBeenCalledWith(true);
     control.markAsPristine();

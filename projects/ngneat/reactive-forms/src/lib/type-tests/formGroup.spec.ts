@@ -40,17 +40,17 @@ test('control value should be of type User', () => {
 
 test('control valueChanges$ should be of type stream of Users', () => {
   const control = new FormGroup<User>(null);
-  expectTypeOf(control.valueChanges$).toMatchTypeOf(new Observable<User>());
+  expectTypeOf(control.value$).toMatchTypeOf(new Observable<User>());
 });
 
 test('control toucheChanges$ should be of type stream of boolean', () => {
   const control = new FormGroup<User>(null);
-  expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
+  expectTypeOf(control.touch$).toMatchTypeOf(new Observable<boolean>());
 });
 
 test('control dirtyChanges$ should be of type stream of boolean', () => {
   const control = new FormGroup<User>(null);
-  expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
+  expectTypeOf(control.touch$).toMatchTypeOf(new Observable<boolean>());
 });
 
 test('get control should accept a type of given generic keys', () => {

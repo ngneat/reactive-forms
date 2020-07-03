@@ -47,14 +47,14 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
 
-  touchChanges$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
-  dirtyChanges$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
+  touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
+  dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  valueChanges$ = controlValueChanges$<T>(this);
-  disabledChanges$ = controlDisabled$<T>(this);
-  enabledChanges$ = controlEnabled$<T>(this);
-  statusChanges$ = controlStatusChanges$<T>(this);
-  errorChanges$ = controlErrorChanges$<E>(this);
+  value$ = controlValueChanges$<T>(this);
+  disabled$ = controlDisabled$<T>(this);
+  enabled$ = controlEnabled$<T>(this);
+  status$ = controlStatusChanges$<T>(this);
+  errors$ = controlErrorChanges$<E>(this);
 
   constructor(
     public controls: ExtractAbstractControl<KeyValueControls<T>, T>,
@@ -277,20 +277,3 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     disableControl(this, disable, opts);
   }
 }
-
-interface A {
-  a: number;
-  b?: {
-    a: string;
-    c: { a: number }[];
-  };
-  c?: { a: number }[];
-}
-
-const aa = new FormControl<A>({ a: 2, b: { a: 'asda', c: [] } });
-const a = new FormGroup<A>({ a: new FormControl(22), b: new FormControl({ a: '', c: [{ a: 3 }] }) });
-const b = new FormGroup<A>({ a: new FormControl(22), b: new FormControl({ a: '', c: [] }) });
-const c = new FormGroup<A>({
-  a: new FormControl(22),
-  b: new FormGroup({ a: new FormControl('3'), c: new FormArray([]) })
-});

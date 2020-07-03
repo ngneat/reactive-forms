@@ -16,17 +16,17 @@ test('control value should be of type User[]', () => {
 
 test('control valueChanges$ should be of type stream of User[]', () => {
   const control = new FormArray<User>([]);
-  expectTypeOf(control.valueChanges$).toMatchTypeOf(new Observable<User[]>());
+  expectTypeOf(control.value$).toMatchTypeOf(new Observable<User[]>());
 });
 
 test('control toucheChanges$ should be of type stream of boolean', () => {
   const control = new FormArray<User>([]);
-  expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
+  expectTypeOf(control.touch$).toMatchTypeOf(new Observable<boolean>());
 });
 
 test('control dirtyChanges$ should be of type stream of boolean', () => {
   const control = new FormArray<User>([]);
-  expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
+  expectTypeOf(control.touch$).toMatchTypeOf(new Observable<boolean>());
 });
 
 test('control select parameter should be of type stream of given type', () => {
