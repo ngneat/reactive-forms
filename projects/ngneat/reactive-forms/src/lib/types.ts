@@ -62,3 +62,6 @@ export type KeyValueControls<T extends Obj> = {
     ? FormArray<ArrayType<T[K]>>
     : AbstractControl<T[K]>;
 };
+export type ExtractAbstractControl<T, U> = T extends KeyValueControls<any>
+  ? { [K in keyof U]: AbstractControl<U[K]> }
+  : T;

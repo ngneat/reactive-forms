@@ -31,7 +31,8 @@ import {
   OnlySelf,
   ValidatorFn,
   KeyValueControls,
-  Obj
+  Obj,
+  ExtractAbstractControl
 } from './types';
 import { coerceArray, isFunction } from './utils';
 import { FormControl } from './formControl';
@@ -56,7 +57,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   errorChanges$ = controlErrorChanges$<E>(this);
 
   constructor(
-    public controls: KeyValueControls<T>,
+    public controls: ExtractAbstractControl<KeyValueControls<T>, T>,
     validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
     asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
   ) {
