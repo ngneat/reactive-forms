@@ -46,14 +46,14 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
 
-  touchChanges$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
-  dirtyChanges$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
+  touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
+  dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  valueChanges$ = controlValueChanges$<T>(this);
-  disabledChanges$ = controlDisabled$<T>(this);
-  enabledChanges$ = controlEnabled$<T>(this);
-  statusChanges$ = controlStatusChanges$<T>(this);
-  errorChanges$ = controlErrorChanges$<E>(this);
+  value$ = controlValueChanges$<T>(this);
+  disabled$ = controlDisabled$<T>(this);
+  enabled$ = controlEnabled$<T>(this);
+  status$ = controlStatusChanges$<T>(this);
+  errors$ = controlErrorChanges$<E>(this);
 
   constructor(
     public controls: KeyValueControls<T>,
