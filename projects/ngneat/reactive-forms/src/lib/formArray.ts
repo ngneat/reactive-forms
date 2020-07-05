@@ -32,23 +32,23 @@ import {
 import { coerceArray, isFunction } from './utils';
 
 export class FormArray<T = any, E extends object = any> extends NgFormArray {
-  value: T[];
-  valueChanges: Observable<T[]>;
-  status: ControlState;
-  statusChanges: Observable<ControlState>;
-  errors: E | null;
+  readonly value: T[];
+  readonly valueChanges: Observable<T[]>;
+  readonly status: ControlState;
+  readonly statusChanges: Observable<ControlState>;
+  readonly errors: E | null;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
 
-  touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
-  dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
+  readonly touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
+  readonly dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  value$ = controlValueChanges$<T[]>(this);
-  disabledChanges$ = controlDisabled$(this);
-  enabledChanges$ = controlEnabled$(this);
-  statusChanges$ = controlStatusChanges$(this);
-  errorChanges$ = controlErrorChanges$<E>(this);
+  readonly value$ = controlValueChanges$<T[]>(this);
+  readonly disabled$ = controlDisabled$(this);
+  readonly enabled$ = controlEnabled$(this);
+  readonly status$ = controlStatusChanges$(this);
+  readonly errors$ = controlErrorChanges$<E>(this);
 
   constructor(
     public controls: Array<AbstractControl<T>>,

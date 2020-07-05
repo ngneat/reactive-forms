@@ -23,7 +23,7 @@ describe('FormArray', () => {
   it('should disabledChanges$', () => {
     const control = createArray();
     const spy = jest.fn();
-    control.disabledChanges$.subscribe(spy);
+    control.disabled$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(false);
     control.disable();
     expect(spy).toHaveBeenCalledWith(true);
@@ -34,7 +34,7 @@ describe('FormArray', () => {
   it('should enabledChanges$', () => {
     const control = createArray();
     const spy = jest.fn();
-    control.enabledChanges$.subscribe(spy);
+    control.enabled$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(true);
     control.disable();
     expect(spy).toHaveBeenCalledWith(false);
@@ -45,7 +45,7 @@ describe('FormArray', () => {
   it('should statusChanges$', () => {
     const control = createArray();
     const spy = jest.fn();
-    control.statusChanges$.subscribe(spy);
+    control.status$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith('VALID');
     control.disable();
     expect(spy).toHaveBeenCalledWith('DISABLED');
@@ -208,7 +208,7 @@ describe('FormArray', () => {
     const spy = jest.fn();
     const validator = (control: FormArray) => (control.length < 4 ? { minimum: 4 } : null);
     control.setValidators(validator);
-    control.errorChanges$.subscribe(spy);
+    control.errors$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith({ minimum: 4 });
     control.push(new FormControl('Name'));
     control.push(new FormControl('Phone'));

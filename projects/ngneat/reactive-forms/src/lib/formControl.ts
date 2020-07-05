@@ -32,24 +32,24 @@ import {
 import { coerceArray, isFunction } from './utils';
 
 export class FormControl<T = any, E extends object = any> extends NgFormControl {
-  value: T;
-  errors: E | null;
-  asyncValidator: AsyncValidatorFn<T>;
-  valueChanges: Observable<T>;
-  status: ControlState;
-  statusChanges: Observable<ControlState>;
+  readonly value: T;
+  readonly errors: E | null;
+  readonly asyncValidator: AsyncValidatorFn<T>;
+  readonly valueChanges: Observable<T>;
+  readonly status: ControlState;
+  readonly statusChanges: Observable<ControlState>;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
 
-  touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
-  dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
+  readonly touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
+  readonly dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  value$ = controlValueChanges$<T>(this);
-  disabled$ = controlDisabled$<T>(this);
-  enabled$ = controlEnabled$<T>(this);
-  status$ = controlStatusChanges$<T>(this);
-  errors$ = controlErrorChanges$<E>(this);
+  readonly value$ = controlValueChanges$<T>(this);
+  readonly disabled$ = controlDisabled$<T>(this);
+  readonly enabled$ = controlEnabled$<T>(this);
+  readonly status$ = controlStatusChanges$<T>(this);
+  readonly errors$ = controlErrorChanges$<E>(this);
 
   constructor(
     formState?: OrBoxedValue<T>,

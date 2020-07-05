@@ -18,7 +18,6 @@ import {
   selectControlValue$,
   validateControlOn
 } from './control-actions';
-import { FormArray } from './formArray';
 import {
   AbstractControl,
   AbstractControlOptions,
@@ -28,20 +27,19 @@ import {
   ControlState,
   EmitEvent,
   ExtractStrings,
-  OnlySelf,
-  ValidatorFn,
   KeyValueControls,
-  Obj
+  Obj,
+  OnlySelf,
+  ValidatorFn
 } from './types';
 import { coerceArray, isFunction } from './utils';
-import { FormControl } from './formControl';
 
 export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
-  value: T;
-  errors: E | null;
-  valueChanges: Observable<T>;
-  status: ControlState;
-  statusChanges: Observable<ControlState>;
+  readonly value: T;
+  readonly errors: E | null;
+  readonly valueChanges: Observable<T>;
+  readonly status: ControlState;
+  readonly statusChanges: Observable<ControlState>;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -49,11 +47,11 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
   dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  value$ = controlValueChanges$<T>(this);
-  disabled$ = controlDisabled$<T>(this);
-  enabled$ = controlEnabled$<T>(this);
-  status$ = controlStatusChanges$<T>(this);
-  errors$ = controlErrorChanges$<E>(this);
+  readonly value$ = controlValueChanges$<T>(this);
+  readonly disabled$ = controlDisabled$<T>(this);
+  readonly enabled$ = controlEnabled$<T>(this);
+  readonly status$ = controlStatusChanges$<T>(this);
+  readonly errors$ = controlErrorChanges$<E>(this);
 
   constructor(
     public controls: KeyValueControls<T>,
@@ -276,20 +274,3 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     disableControl(this, disable, opts);
   }
 }
-
-interface A {
-  a: number;
-  b?: {
-    a: string;
-    c: { a: number }[];
-  };
-  c?: { a: number }[];
-}
-
-const aa = new FormControl<A>({ a: 2, b: { a: 'asda', c: [] } });
-const a = new FormGroup<A>({ a: new FormControl(22), b: new FormControl({ a: '', c: [{ a: 3 }] }) });
-const b = new FormGroup<A>({ a: new FormControl(22), b: new FormControl({ a: '', c: [] }) });
-const c = new FormGroup<A>({
-  a: new FormControl(22),
-  b: new FormGroup({ a: new FormControl('3'), c: new FormArray([]) })
-});

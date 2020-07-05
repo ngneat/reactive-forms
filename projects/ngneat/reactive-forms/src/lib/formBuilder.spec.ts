@@ -17,21 +17,22 @@ describe('FormBuilder', () => {
 
   describe('group', () => {
     it('should accept an object', () => {
-      const group: FormGroup<User> = fb.group({ name: 'ngneat', id: 1, address: { city: 'Hello' } });
+      const group: FormGroup<User> = fb.group({ name: 'ngneat', id: 1, address: fb.group({ city: 'Hello' }) });
       expect(group.getRawValue()).toEqual({ name: 'ngneat', id: 1, address: { city: 'Hello' } });
     });
 
     it('should accept boxed value', () => {
-      const group: FormGroup<User> = fb.group({
+      const group = fb.group<User>({
         name: ['ngneat', Validators.required],
-        id: [1],
-        address: [{ value: { city: 'Hello' }, disabled: false }]
+        id: [{ value: 1, disabled: true }],
+        address: fb.group({ city: 'Hello' })
       });
+
       expect(group.getRawValue()).toEqual({ name: 'ngneat', id: 1, address: { city: 'Hello' } });
     });
 
     it('should have extended keys', () => {
-      const group: FormGroup<User> = fb.group({ name: 'ngneat', id: 1, address: { city: 'Hello' } });
+      const group: FormGroup<User> = fb.group({ name: 'ngneat', id: 1, address: fb.group({ city: '' }) });
       const keys: (keyof FormGroup)[] = [
         'getControl',
         'enabledWhile',
@@ -74,7 +75,6 @@ describe('FormBuilder', () => {
       'enabled$',
       'status$',
       'errors$',
-      'select',
       'disabledWhile',
       'enabledWhile',
       'mergeValidators',
@@ -90,7 +90,7 @@ describe('FormBuilder', () => {
   });
 
   it('should array', () => {
-    const array: FormArray<User> = fb.array([fb.control({ name: 'ngneat', id: 1, address: { city: 'ngneat' } })]);
+    const array = fb.array<User>([fb.group({ name: 'ngneat', id: 1, address: fb.group({ city: 'ngneat' }) })]);
     expect(array.getRawValue()).toEqual([
       {
         name: 'ngneat',
@@ -105,10 +105,10 @@ describe('FormBuilder', () => {
       'touch$',
       'dirty$',
       'value$',
-      'disabledChanges$',
-      'enabledChanges$',
-      'statusChanges$',
-      'errorChanges$',
+      'disabled$',
+      'enabled$',
+      'status$',
+      'errors$',
       'select',
       'disabledWhile',
       'enabledWhile',
