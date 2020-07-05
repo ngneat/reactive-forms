@@ -18,7 +18,6 @@ import {
   selectControlValue$,
   validateControlOn
 } from './control-actions';
-import { FormArray } from './formArray';
 import {
   AbstractControl,
   AbstractControlOptions,
@@ -35,7 +34,6 @@ import {
   ExtractAbstractControl
 } from './types';
 import { coerceArray, isFunction } from './utils';
-import { FormControl } from './formControl';
 
 export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
   value: T;
@@ -58,8 +56,8 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
 
   constructor(
     public controls: ExtractAbstractControl<KeyValueControls<T>, T>,
-    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
-    asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
+    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
+    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }

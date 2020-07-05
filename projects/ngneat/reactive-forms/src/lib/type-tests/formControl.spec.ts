@@ -127,14 +127,18 @@ test('should be able check if has errors', () => {
 test('validators should not infer value', () => {
   const control = new FormControl<string, Errors>('', required);
   expectTypeOf(control.value).toBeString();
-  const controlWithoutGeneric = new FormControl(null, required);
-  expectTypeOf(controlWithoutGeneric.value).toBeAny();
-  expectTypeOf(controlWithoutGeneric.setValue)
+  const controlWithoutGeneric = new FormControl('', Validators.required);
+  expectTypeOf(controlWithoutGeneric.value).toBeString();
+  const controlWithoutGeneric2 = new FormControl('', [required, Validators.min(2), Validators.email]);
+  expectTypeOf(controlWithoutGeneric2.value).toBeString();
+  const controlWithoutGeneric3 = new FormControl(null, required);
+  expectTypeOf(controlWithoutGeneric3.value).toBeAny();
+  expectTypeOf(controlWithoutGeneric3.setValue)
     .parameter(0)
     .toBeAny();
-  const controlWithoutGeneric2 = new FormControl(null, [required, Validators.min(2), Validators.email]);
-  expectTypeOf(controlWithoutGeneric2.value).toBeAny();
-  expectTypeOf(controlWithoutGeneric2.setValue)
+  const controlWithoutGeneric4 = new FormControl(null, [required, Validators.min(2), Validators.email]);
+  expectTypeOf(controlWithoutGeneric4.value).toBeAny();
+  expectTypeOf(controlWithoutGeneric4.setValue)
     .parameter(0)
     .toBeAny();
 });

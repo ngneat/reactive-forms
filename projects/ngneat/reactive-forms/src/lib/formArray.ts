@@ -52,8 +52,8 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
 
   constructor(
     public controls: Array<AbstractControl<T>>,
-    validatorOrOpts?: ValidatorFn<T[]> | ValidatorFn<T[]>[] | AbstractControlOptions<T[]> | null,
-    asyncValidator?: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[] | null
+    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
+    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }
