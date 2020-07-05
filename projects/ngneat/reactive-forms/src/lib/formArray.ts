@@ -18,8 +18,7 @@ import {
 } from './control-actions';
 import {
   AbstractControl,
-  AbstractControlOptions,
-  AsyncValidatorFn,
+  AsyncValidator,
   ControlEventOptions,
   ControlOptions,
   ControlPath,
@@ -27,9 +26,10 @@ import {
   EmitEvent,
   ExtractStrings,
   OnlySelf,
-  ValidatorFn
+  Validator,
+  ValidatorOrOpts
 } from './types';
-import { coerceArray, isFunction } from './utils';
+import { coerceArray } from './utils';
 
 export class FormArray<T = any, E extends object = any> extends NgFormArray {
   readonly value: T[];
@@ -52,8 +52,8 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
 
   constructor(
     public controls: Array<AbstractControl<T>>,
-    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
-    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
+    validatorOrOpts?: ValidatorOrOpts,
+    asyncValidator?: AsyncValidator
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }
@@ -75,27 +75,19 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   setValue(valueOrObservable: T[] | Observable<T[]>, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
-    } else {
-      super.setValue(valueOrObservable, options);
     }
+
+    super.setValue(valueOrObservable, options);
   }
 
   patchValue(valueOrObservable: Observable<T[]>, options?: ControlEventOptions): Subscription;
   patchValue(valueOrObservable: T[], options?: ControlEventOptions): void;
-  patchValue(valueOrObservable: (state: T[]) => T[], options?: ControlOptions): void;
-  patchValue(
-    valueOrObservable: T[] | Observable<T[]> | ((state: T[]) => T[]),
-    options?: ControlEventOptions
-  ): Subscription | void {
+  patchValue(valueOrObservable: any, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
-      return valueOrObservable.subscribe(value => super.patchValue(value, options));
-    } else {
-      let value = valueOrObservable;
-      if (isFunction(valueOrObservable)) {
-        value = valueOrObservable(this.value);
-      }
-      super.patchValue(value as T[], options);
+      return valueOrObservable.subscribe((value: T[]) => super.patchValue(value, options));
     }
+
+    super.patchValue(valueOrObservable as T[], options);
   }
 
   push(control: AbstractControl<T>): void {
@@ -118,11 +110,11 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: ValidatorFn<T[]> | ValidatorFn<T[]>[]) {
+  mergeValidators(validators: Validator) {
     mergeControlValidators(this, validators);
   }
 
-  mergeAsyncValidators(validators: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[]) {
+  mergeAsyncValidators(validators: AsyncValidator) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity();
   }
@@ -155,12 +147,12 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     super.reset(value, options);
   }
 
-  setValidators(newValidator: ValidatorFn<T[]> | ValidatorFn<T[]>[] | null): void {
+  setValidators(newValidator: Validator): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }
 
-  setAsyncValidators(newValidator: AsyncValidatorFn<T[]> | AsyncValidatorFn<T[]>[] | null): void {
+  setAsyncValidators(newValidator: AsyncValidator): void {
     super.setAsyncValidators(newValidator);
     super.updateValueAndValidity();
   }

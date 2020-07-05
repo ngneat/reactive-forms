@@ -35,14 +35,6 @@ test('control dirtyChanges$ should be of type stream of boolean', () => {
   expectTypeOf(control.touch$).toMatchTypeOf(new Observable<boolean>());
 });
 
-test('control select parameter should be of type stream of given type', () => {
-  const control = new FormControl<string>('a string');
-  const cb = (value: string) => parseInt(value);
-  expectTypeOf(control.select<number>(cb)).toEqualTypeOf(new Observable<string>());
-  const controlWithoutGeneric = new FormControl<string>('a string');
-  expectTypeOf(controlWithoutGeneric.select<number>(cb)).toEqualTypeOf(new Observable<string>());
-});
-
 test('control setValue should accept value of type string or stream of string', () => {
   const control = new FormControl<string>('a string');
   expectTypeOf(control.setValue)

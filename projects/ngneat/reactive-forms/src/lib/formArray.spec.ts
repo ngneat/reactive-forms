@@ -78,8 +78,6 @@ describe('FormArray', () => {
     expect(control.value).toEqual(['1', '2']);
     control.patchValue(['5', '4']);
     expect(control.value).toEqual(['5', '4']);
-    control.patchValue(state => ['6', '7']);
-    expect(control.value).toEqual(['6', '7']);
   });
 
   it('should disabledWhile', () => {

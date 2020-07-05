@@ -55,18 +55,6 @@ describe('FormControl', () => {
     expect(spy).toHaveBeenCalledWith('DISABLED');
   });
 
-  it('should select$', () => {
-    const control = new FormControl<string>();
-    const spy = jest.fn();
-
-    control.select(state => state).subscribe(spy);
-    expect(spy).toHaveBeenCalledWith(null);
-    control.patchValue('value');
-    expect(spy).toHaveBeenCalledWith('value');
-    control.patchValue('value');
-    expect(spy).toHaveBeenCalledTimes(2);
-  });
-
   it('should setValue', () => {
     const control = new FormControl<string>();
 
@@ -85,9 +73,6 @@ describe('FormControl', () => {
 
     control.patchValue('new value');
     expect(control.value).toEqual('new value');
-
-    control.patchValue(state => 'cb value');
-    expect(control.value).toEqual('cb value');
   });
 
   it('should disabledWhile', () => {

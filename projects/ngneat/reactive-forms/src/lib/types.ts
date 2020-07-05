@@ -1,22 +1,27 @@
 import {
   AbstractControl as NgAbstractControl,
   AbstractControlOptions as NgAbstractControlOptions,
-  ValidationErrors
+  ValidationErrors as NgValidationErrors
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
 
-export type ValidatorFn<T = any> = (control: AbstractControl<T>) => ValidationErrors | null;
-export type AsyncValidatorFn<T = any> = (
+export type ValidationErrors<T = NgValidationErrors> = T;
+export type ValidatorFn<T = any, E = any> = (control: AbstractControl<T>) => ValidationErrors<E> | null;
+export type AsyncValidatorFn<T = any, E = any> = (
   control: AbstractControl<T>
-) => Promise<ValidationErrors | null> | Observable<ValidationErrors | null>;
+) => Promise<ValidationErrors<E> | null> | Observable<ValidationErrors<E> | null>;
 
-export interface AbstractControlOptions<T = any> extends NgAbstractControlOptions {
-  validators?: ValidatorFn<T> | ValidatorFn<T>[] | null;
-  asyncValidators?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null;
+export interface AbstractControlOptions<T = any, E = any> extends NgAbstractControlOptions {
+  validators?: ValidatorFn<T, E> | ValidatorFn<T, E>[] | null;
+  asyncValidators?: AsyncValidatorFn<T, E> | AsyncValidatorFn<T, E>[] | null;
 }
+
+export type ValidatorOrOpts = ValidatorFn | ValidatorFn[] | AbstractControlOptions | null;
+export type AsyncValidator = AsyncValidatorFn | AsyncValidatorFn[] | null;
+export type Validator = ValidatorFn | ValidatorFn[];
 
 export interface ControlOptions {
   onlySelf?: boolean;

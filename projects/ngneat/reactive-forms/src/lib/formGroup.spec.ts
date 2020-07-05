@@ -153,19 +153,6 @@ describe('FormGroup', () => {
         prefix: 2
       }
     });
-
-    control.patchValue(state => ({
-      ...state,
-      name: 'ccc'
-    }));
-
-    expect(control.value).toEqual({
-      name: 'ccc',
-      phone: {
-        num: 1,
-        prefix: 2
-      }
-    });
   });
 
   it('should disabledWhile', () => {

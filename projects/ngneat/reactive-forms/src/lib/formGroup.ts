@@ -20,8 +20,7 @@ import {
 } from './control-actions';
 import {
   AbstractControl,
-  AbstractControlOptions,
-  AsyncValidatorFn,
+  AsyncValidator,
   ControlEventOptions,
   ControlOptions,
   ControlState,
@@ -31,9 +30,10 @@ import {
   KeyValueControls,
   Obj,
   OnlySelf,
-  ValidatorFn
+  Validator,
+  ValidatorOrOpts
 } from './types';
-import { coerceArray, isFunction } from './utils';
+import { coerceArray } from './utils';
 
 export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
   readonly value: T;
@@ -56,8 +56,8 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
 
   constructor(
     public controls: ExtractAbstractControl<KeyValueControls<T>, T>,
-    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
-    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
+    validatorOrOpts?: ValidatorOrOpts,
+    asyncValidator?: AsyncValidator
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }
@@ -93,7 +93,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     prop3: P3,
     prop4: P4
   ): AbstractControl<T[P1][P2][P3][P4]>;
-  getControl(...names: any): any {
+  getControl(...names: any): AbstractControl<any> {
     return this.get(names.join('.'));
   }
 
@@ -118,24 +118,19 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   setValue(valueOrObservable: any, options?: ControlEventOptions): any {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
-    } else {
-      super.setValue(valueOrObservable, options);
     }
+
+    super.setValue(valueOrObservable, options);
   }
 
   patchValue(valueOrObservable: Observable<Partial<T>>, options?: ControlEventOptions): Subscription;
   patchValue(valueOrObservable: Partial<T>, options?: ControlEventOptions): void;
-  patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
   patchValue(valueOrObservable: any, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
-    } else {
-      let value = valueOrObservable;
-      if (isFunction(valueOrObservable)) {
-        value = valueOrObservable(this.value);
-      }
-      super.patchValue(value, options);
     }
+
+    super.patchValue(valueOrObservable, options);
   }
 
   disabledWhile(observable: Observable<boolean>, options?: ControlOptions) {
@@ -146,11 +141,11 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: ValidatorFn<T> | ValidatorFn<T>[]) {
+  mergeValidators(validators: Validator) {
     mergeControlValidators(this, validators);
   }
 
-  mergeAsyncValidators(validators: AsyncValidatorFn<T> | AsyncValidatorFn<T>[]) {
+  mergeAsyncValidators(validators: AsyncValidator) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity();
   }
@@ -183,12 +178,12 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: ValidatorFn<T> | ValidatorFn<T>[] | null): void {
+  setValidators(newValidator: Validator): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }
 
-  setAsyncValidators(newValidator: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null): void {
+  setAsyncValidators(newValidator: AsyncValidator): void {
     super.setAsyncValidators(newValidator);
     super.updateValueAndValidity();
   }
