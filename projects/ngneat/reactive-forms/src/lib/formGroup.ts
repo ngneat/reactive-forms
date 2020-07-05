@@ -26,6 +26,7 @@ import {
   ControlOptions,
   ControlState,
   EmitEvent,
+  ExtractAbstractControl,
   ExtractStrings,
   KeyValueControls,
   Obj,
@@ -54,7 +55,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   readonly errors$ = controlErrorChanges$<E>(this);
 
   constructor(
-    public controls: KeyValueControls<T>,
+    public controls: ExtractAbstractControl<KeyValueControls<T>, T>,
     validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
     asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
   ) {

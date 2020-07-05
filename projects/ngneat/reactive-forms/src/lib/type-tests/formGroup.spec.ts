@@ -159,3 +159,8 @@ test('should support nested objects', () => {
   expectTypeOf(control.get(['user']).value.id).toBeNumber();
   expectTypeOf(control.get(['user', 'id']).value).toBeNumber();
 });
+
+test('should support form group without generic', () => {
+  let formGroup: FormGroup;
+  expectTypeOf(formGroup.controls.hello.value).toBeAny();
+});
