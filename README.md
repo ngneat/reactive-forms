@@ -55,7 +55,7 @@ Use it with a `FormControl`:
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.valueChanges$.subscribe(value => {
+control.valueChanges.subscribe(value => {
   // value is typed as string
 });
 ```
