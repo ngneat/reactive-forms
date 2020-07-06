@@ -17,7 +17,7 @@ const profileForm = new FormGroup<Profile>({
   firstName: new FormControl(''),
   lastName: new FormControl(''),
   skills: new FormArray([]),
-  address: new FormGroup<Profile['address']>({
+  address: new FormGroup({
     street: new FormControl(''),
     city: new FormControl('')
   })
