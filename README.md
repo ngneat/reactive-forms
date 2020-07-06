@@ -96,7 +96,7 @@ import { FormArray, FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormArray<string>([new FormControl()]);
 
-control.valueChanges$.subscribe(value => {
+control.value$.subscribe(value => {
   // value is typed as string[]
 });
 ```
