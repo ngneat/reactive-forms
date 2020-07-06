@@ -20,27 +20,19 @@ test('control value should be of type string when initial with empty value', () 
 
 test('control valueChanges$ should be of type stream of string', () => {
   const control = new FormControl<string>('a string');
-  expectTypeOf(control.valueChanges$).toMatchTypeOf(new Observable<string>());
+  expectTypeOf(control.value$).toMatchTypeOf(new Observable<string>());
   const controlWithoutGeneric = new FormControl('a string');
-  expectTypeOf(controlWithoutGeneric.valueChanges$).toMatchTypeOf(new Observable<string>());
+  expectTypeOf(controlWithoutGeneric.value$).toMatchTypeOf(new Observable<string>());
 });
 
 test('control toucheChanges$ should be of type stream of boolean', () => {
   const control = new FormControl<string>('a string');
-  expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
+  expectTypeOf(control.touch$).toMatchTypeOf(new Observable<boolean>());
 });
 
 test('control dirtyChanges$ should be of type stream of boolean', () => {
   const control = new FormControl<string>('a string');
-  expectTypeOf(control.touchChanges$).toMatchTypeOf(new Observable<boolean>());
-});
-
-test('control select parameter should be of type stream of given type', () => {
-  const control = new FormControl<string>('a string');
-  const cb = (value: string) => parseInt(value);
-  expectTypeOf(control.select<number>(cb)).toEqualTypeOf(new Observable<string>());
-  const controlWithoutGeneric = new FormControl<string>('a string');
-  expectTypeOf(controlWithoutGeneric.select<number>(cb)).toEqualTypeOf(new Observable<string>());
+  expectTypeOf(control.touch$).toMatchTypeOf(new Observable<boolean>());
 });
 
 test('control setValue should accept value of type string or stream of string', () => {
@@ -127,14 +119,18 @@ test('should be able check if has errors', () => {
 test('validators should not infer value', () => {
   const control = new FormControl<string, Errors>('', required);
   expectTypeOf(control.value).toBeString();
-  const controlWithoutGeneric = new FormControl(null, required);
-  expectTypeOf(controlWithoutGeneric.value).toBeAny();
-  expectTypeOf(controlWithoutGeneric.setValue)
+  const controlWithoutGeneric = new FormControl('', Validators.required);
+  expectTypeOf(controlWithoutGeneric.value).toBeString();
+  const controlWithoutGeneric2 = new FormControl('', [required, Validators.min(2), Validators.email]);
+  expectTypeOf(controlWithoutGeneric2.value).toBeString();
+  const controlWithoutGeneric3 = new FormControl(null, required);
+  expectTypeOf(controlWithoutGeneric3.value).toBeAny();
+  expectTypeOf(controlWithoutGeneric3.setValue)
     .parameter(0)
     .toBeAny();
-  const controlWithoutGeneric2 = new FormControl(null, [required, Validators.min(2), Validators.email]);
-  expectTypeOf(controlWithoutGeneric2.value).toBeAny();
-  expectTypeOf(controlWithoutGeneric2.setValue)
+  const controlWithoutGeneric4 = new FormControl(null, [required, Validators.min(2), Validators.email]);
+  expectTypeOf(controlWithoutGeneric4.value).toBeAny();
+  expectTypeOf(controlWithoutGeneric4.setValue)
     .parameter(0)
     .toBeAny();
 });

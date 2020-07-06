@@ -14,7 +14,7 @@ describe('FormArray', () => {
   it('should valueChanges$', () => {
     const control = createArray();
     const spy = jest.fn();
-    control.valueChanges$.subscribe(spy);
+    control.value$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(['', '']);
     control.patchValue(['1', '2']);
     expect(spy).toHaveBeenCalledWith(['1', '2']);
@@ -23,7 +23,7 @@ describe('FormArray', () => {
   it('should disabledChanges$', () => {
     const control = createArray();
     const spy = jest.fn();
-    control.disabledChanges$.subscribe(spy);
+    control.disabled$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(false);
     control.disable();
     expect(spy).toHaveBeenCalledWith(true);
@@ -34,7 +34,7 @@ describe('FormArray', () => {
   it('should enabledChanges$', () => {
     const control = createArray();
     const spy = jest.fn();
-    control.enabledChanges$.subscribe(spy);
+    control.enabled$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(true);
     control.disable();
     expect(spy).toHaveBeenCalledWith(false);
@@ -45,7 +45,7 @@ describe('FormArray', () => {
   it('should statusChanges$', () => {
     const control = createArray();
     const spy = jest.fn();
-    control.statusChanges$.subscribe(spy);
+    control.status$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith('VALID');
     control.disable();
     expect(spy).toHaveBeenCalledWith('DISABLED');
@@ -78,8 +78,6 @@ describe('FormArray', () => {
     expect(control.value).toEqual(['1', '2']);
     control.patchValue(['5', '4']);
     expect(control.value).toEqual(['5', '4']);
-    control.patchValue(state => ['6', '7']);
-    expect(control.value).toEqual(['6', '7']);
   });
 
   it('should disabledWhile', () => {
@@ -110,7 +108,7 @@ describe('FormArray', () => {
     const control = createArray();
 
     const spy = jest.fn();
-    control.touchChanges$.subscribe(spy);
+    control.touch$.subscribe(spy);
     control.markAsTouched();
     expect(spy).toHaveBeenCalledWith(true);
     control.markAsUntouched();
@@ -120,7 +118,7 @@ describe('FormArray', () => {
   it('should markAsPristine/Dirty', () => {
     const control = createArray();
     const spy = jest.fn();
-    control.dirtyChanges$.subscribe(spy);
+    control.dirty$.subscribe(spy);
     control.markAllAsDirty();
     expect(spy).toHaveBeenCalledWith(true);
     control.markAsPristine();
@@ -208,7 +206,7 @@ describe('FormArray', () => {
     const spy = jest.fn();
     const validator = (control: FormArray) => (control.length < 4 ? { minimum: 4 } : null);
     control.setValidators(validator);
-    control.errorChanges$.subscribe(spy);
+    control.errors$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith({ minimum: 4 });
     control.push(new FormControl('Name'));
     control.push(new FormControl('Phone'));
