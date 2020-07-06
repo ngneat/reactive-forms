@@ -450,7 +450,7 @@ from `@angular/forms`.
 
 Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/master/projects/ngneat/eslint-plugin-reactive-forms).
 
-## Schematics
+## Migration
 
 The command will replace entities coming from `@angular/reactive-forms` with `@ngneat/reactive-forms`.
 
