@@ -31,7 +31,7 @@ describe('FormGroup', () => {
   it('should valueChanges$', () => {
     const control = createGroup();
     const spy = jest.fn();
-    control.valueChanges$.subscribe(spy);
+    control.value$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith({ name: null, phone: { num: null, prefix: null } });
     control.patchValue({
       name: 'changed'
@@ -42,7 +42,7 @@ describe('FormGroup', () => {
   it('should disabledChanges$', () => {
     const control = createGroup();
     const spy = jest.fn();
-    control.disabledChanges$.subscribe(spy);
+    control.disabled$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(false);
     control.disable();
     expect(spy).toHaveBeenCalledWith(true);
@@ -53,7 +53,7 @@ describe('FormGroup', () => {
   it('should enabledChanges$', () => {
     const control = createGroup();
     const spy = jest.fn();
-    control.enabledChanges$.subscribe(spy);
+    control.enabled$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(true);
     control.disable();
     expect(spy).toHaveBeenCalledWith(false);
@@ -64,7 +64,7 @@ describe('FormGroup', () => {
   it('should statusChanges$', () => {
     const control = createGroup();
     const spy = jest.fn();
-    control.statusChanges$.subscribe(spy);
+    control.status$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith('VALID');
     control.disable();
     expect(spy).toHaveBeenCalledWith('DISABLED');
@@ -153,19 +153,6 @@ describe('FormGroup', () => {
         prefix: 2
       }
     });
-
-    control.patchValue(state => ({
-      ...state,
-      name: 'ccc'
-    }));
-
-    expect(control.value).toEqual({
-      name: 'ccc',
-      phone: {
-        num: 1,
-        prefix: 2
-      }
-    });
   });
 
   it('should disabledWhile', () => {
@@ -194,7 +181,7 @@ describe('FormGroup', () => {
   it('should markAsTouched/Untouched', () => {
     const control = createGroup();
     const spy = jest.fn();
-    control.touchChanges$.subscribe(spy);
+    control.touch$.subscribe(spy);
     control.markAsTouched();
     expect(spy).toHaveBeenCalledWith(true);
     control.markAsUntouched();
@@ -204,7 +191,7 @@ describe('FormGroup', () => {
   it('should markAsPristine/Dirty', () => {
     const control = createGroup();
     const spy = jest.fn();
-    control.dirtyChanges$.subscribe(spy);
+    control.dirty$.subscribe(spy);
     control.markAllAsDirty();
     expect(spy).toHaveBeenCalledWith(true);
     control.markAsPristine();
@@ -293,7 +280,7 @@ describe('FormGroup', () => {
       control.getRawValue().name === 'Test' ? { invalidName: true } : null;
     control.setValidators(validator);
     const spy = jest.fn();
-    control.errorChanges$.subscribe(spy);
+    control.errors$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(null);
     control.patchValue({ name: 'Test' });
     expect(spy).toHaveBeenCalledWith({ invalidName: true });

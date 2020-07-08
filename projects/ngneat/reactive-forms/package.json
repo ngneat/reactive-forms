@@ -1,7 +1,7 @@
 {
   "name": "@ngneat/reactive-forms",
   "description": "(Angular Reactive) Forms with Benefits",
-  "version": "1.0.0-beta.20",
+  "version": "1.0.0",
   "schematics": "./schematics/collection.json",
   "keywords": [
     "angular",
@@ -13,7 +13,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@phenomnomnominal/tsquery": "^4.1.0"
+    "@phenomnomnominal/tsquery": "4.1.0"
   },
   "publishConfig": {
     "access": "public"

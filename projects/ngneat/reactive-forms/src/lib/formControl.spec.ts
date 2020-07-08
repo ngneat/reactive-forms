@@ -18,7 +18,7 @@ describe('FormControl', () => {
   it('should valueChanges$', () => {
     const control = new FormControl<string>();
     const spy = jest.fn();
-    control.valueChanges$.subscribe(spy);
+    control.value$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(null);
     control.patchValue('patched');
     expect(spy).toHaveBeenCalledWith('patched');
@@ -27,7 +27,7 @@ describe('FormControl', () => {
   it('should disabledChanges$', () => {
     const control = new FormControl<string>();
     const spy = jest.fn();
-    control.disabledChanges$.subscribe(spy);
+    control.disabled$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(false);
     control.disable();
     expect(spy).toHaveBeenCalledWith(true);
@@ -38,7 +38,7 @@ describe('FormControl', () => {
   it('should enabledChanges$', () => {
     const control = new FormControl<string>();
     const spy = jest.fn();
-    control.enabledChanges$.subscribe(spy);
+    control.enabled$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(true);
     control.disable();
     expect(spy).toHaveBeenCalledWith(false);
@@ -49,22 +49,10 @@ describe('FormControl', () => {
   it('should statusChanges$', () => {
     const control = new FormControl<string>();
     const spy = jest.fn();
-    control.statusChanges$.subscribe(spy);
+    control.status$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith('VALID');
     control.disable();
     expect(spy).toHaveBeenCalledWith('DISABLED');
-  });
-
-  it('should select$', () => {
-    const control = new FormControl<string>();
-    const spy = jest.fn();
-
-    control.select(state => state).subscribe(spy);
-    expect(spy).toHaveBeenCalledWith(null);
-    control.patchValue('value');
-    expect(spy).toHaveBeenCalledWith('value');
-    control.patchValue('value');
-    expect(spy).toHaveBeenCalledTimes(2);
   });
 
   it('should setValue', () => {
@@ -85,9 +73,6 @@ describe('FormControl', () => {
 
     control.patchValue('new value');
     expect(control.value).toEqual('new value');
-
-    control.patchValue(state => 'cb value');
-    expect(control.value).toEqual('cb value');
   });
 
   it('should disabledWhile', () => {
@@ -129,7 +114,7 @@ describe('FormControl', () => {
   it('should markAsTouched/Untouched', () => {
     const control = new FormControl<string>();
     const spy = jest.fn();
-    control.touchChanges$.subscribe(spy);
+    control.touch$.subscribe(spy);
     control.markAsTouched();
     expect(spy).toHaveBeenCalledWith(true);
     control.markAsUntouched();
@@ -139,7 +124,7 @@ describe('FormControl', () => {
   it('should markAsPristine/Dirty', () => {
     const control = new FormControl<string>();
     const spy = jest.fn();
-    control.dirtyChanges$.subscribe(spy);
+    control.dirty$.subscribe(spy);
     control.markAllAsDirty();
     expect(spy).toHaveBeenCalledWith(true);
     control.markAsPristine();
@@ -217,7 +202,7 @@ describe('FormControl', () => {
   it('should errorChanges$', () => {
     const control = new FormControl<string>(null, Validators.required);
     const spy = jest.fn();
-    control.errorChanges$.subscribe(spy);
+    control.errors$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith({ required: true });
     control.patchValue(null);
     control.patchValue('');

@@ -129,5 +129,5 @@ export function selectControlValue$<T, R>(
   control: FormGroup<T> | FormArray<T> | FormControl<T>,
   mapFn: (state: T | T[]) => R
 ): Observable<R> {
-  return (control.valueChanges$ as Observable<any>).pipe(map(mapFn), distinctUntilChanged());
+  return (control.value$ as Observable<any>).pipe(map(mapFn), distinctUntilChanged());
 }

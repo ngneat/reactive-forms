@@ -17,7 +17,7 @@ const profileForm = new FormGroup<Profile>({
   firstName: new FormControl(''),
   lastName: new FormControl(''),
   skills: new FormArray([]),
-  address: new FormGroup<Profile['address']>({
+  address: new FormGroup({
     street: new FormControl(''),
     city: new FormControl('')
   })
@@ -26,7 +26,7 @@ const profileForm = new FormGroup<Profile>({
 profileForm.setValue({ firstName: '', lastName: '', skills: ['1'], address: { street: '', city: '' } });
 profileForm.patchValue({ firstName: '' });
 profileForm.valueChanges.subscribe(v => v.firstName);
-profileForm.valueChanges$.subscribe(v => v.lastName);
+profileForm.value$.subscribe(v => v.lastName);
 const hasError = profileForm.hasError('required');
 const getError = profileForm.getError('required');
 const cityControl = profileForm.getControl('address', 'city') as FormControl<string>;

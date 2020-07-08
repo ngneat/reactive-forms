@@ -20,41 +20,44 @@ import {
 } from './control-actions';
 import {
   AbstractControl,
-  AbstractControlOptions,
-  AsyncValidatorFn,
+  AsyncValidator,
   ControlEventOptions,
   ControlOptions,
   ControlState,
   EmitEvent,
+  ExtractAbstractControl,
   ExtractStrings,
+  KeyValueControls,
+  Obj,
   OnlySelf,
-  ValidatorFn
+  Validator,
+  ValidatorOrOpts
 } from './types';
-import { coerceArray, isFunction } from './utils';
+import { coerceArray } from './utils';
 
-export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
-  value: T;
-  errors: E | null;
-  valueChanges: Observable<T>;
-  status: ControlState;
-  statusChanges: Observable<ControlState>;
+export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
+  readonly value: T;
+  readonly errors: E | null;
+  readonly valueChanges: Observable<T>;
+  readonly status: ControlState;
+  readonly statusChanges: Observable<ControlState>;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
 
-  touchChanges$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
-  dirtyChanges$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
+  touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
+  dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  valueChanges$ = controlValueChanges$<T>(this);
-  disabledChanges$ = controlDisabled$<T>(this);
-  enabledChanges$ = controlEnabled$<T>(this);
-  statusChanges$ = controlStatusChanges$<T>(this);
-  errorChanges$ = controlErrorChanges$<E>(this);
+  readonly value$ = controlValueChanges$<T>(this);
+  readonly disabled$ = controlDisabled$<T>(this);
+  readonly enabled$ = controlEnabled$<T>(this);
+  readonly status$ = controlStatusChanges$<T>(this);
+  readonly errors$ = controlErrorChanges$<E>(this);
 
   constructor(
-    public controls: { [K in keyof T]: AbstractControl<T[K]> },
-    validatorOrOpts?: ValidatorFn<T> | ValidatorFn<T>[] | AbstractControlOptions<T> | null,
-    asyncValidator?: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
+    public controls: ExtractAbstractControl<KeyValueControls<T>, T>,
+    validatorOrOpts?: ValidatorOrOpts,
+    asyncValidator?: AsyncValidator
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }
@@ -90,7 +93,7 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     prop3: P3,
     prop4: P4
   ): AbstractControl<T[P1][P2][P3][P4]>;
-  getControl(...names: any): any {
+  getControl(...names: any): AbstractControl<any> {
     return this.get(names.join('.'));
   }
 
@@ -115,24 +118,19 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
   setValue(valueOrObservable: any, options?: ControlEventOptions): any {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
-    } else {
-      super.setValue(valueOrObservable, options);
     }
+
+    super.setValue(valueOrObservable, options);
   }
 
   patchValue(valueOrObservable: Observable<Partial<T>>, options?: ControlEventOptions): Subscription;
   patchValue(valueOrObservable: Partial<T>, options?: ControlEventOptions): void;
-  patchValue(valueOrObservable: (state: T) => T, options?: ControlOptions): void;
   patchValue(valueOrObservable: any, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
-    } else {
-      let value = valueOrObservable;
-      if (isFunction(valueOrObservable)) {
-        value = valueOrObservable(this.value);
-      }
-      super.patchValue(value, options);
     }
+
+    super.patchValue(valueOrObservable, options);
   }
 
   disabledWhile(observable: Observable<boolean>, options?: ControlOptions) {
@@ -143,11 +141,11 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: ValidatorFn<T> | ValidatorFn<T>[]) {
+  mergeValidators(validators: Validator) {
     mergeControlValidators(this, validators);
   }
 
-  mergeAsyncValidators(validators: AsyncValidatorFn<T> | AsyncValidatorFn<T>[]) {
+  mergeAsyncValidators(validators: AsyncValidator) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity();
   }
@@ -180,12 +178,12 @@ export class FormGroup<T = any, E extends object = any> extends NgFormGroup {
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: ValidatorFn<T> | ValidatorFn<T>[] | null): void {
+  setValidators(newValidator: Validator): void {
     super.setValidators(newValidator);
     super.updateValueAndValidity();
   }
 
-  setAsyncValidators(newValidator: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null): void {
+  setAsyncValidators(newValidator: AsyncValidator): void {
     super.setAsyncValidators(newValidator);
     super.updateValueAndValidity();
   }

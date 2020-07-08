@@ -23,7 +23,7 @@ Let's take a look at all the neat things we provide:
 
 ## 🔮 Features
 
-✅ Offers seamless `FormControl`, `FormGroup`, `FormArray` Replacement<br>
+✅ Offers (almost) seamless `FormControl`, `FormGroup`, `FormArray` Replacement<br>
 ✅ Allows Typed Forms! <br>
 ✅ Provides Reactive Queries <br>
 ✅ Provides Helpful Methods <br>
@@ -43,7 +43,7 @@ Let's take a look at all the neat things we provide:
 - [ControlValueAccessor](#control-value-accessor)
 - [Form Builder](#form-builder)
 - [ESLint Rule](#eslint-rule)
-- [Schematics](#schematics)
+- [Migration](#migration)
 
 ## Control Type
 
@@ -55,7 +55,7 @@ Use it with a `FormControl`:
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.valueChanges$.subscribe(value => {
+control.valueChanges.subscribe(value => {
   // value is typed as string
 });
 ```
@@ -77,7 +77,7 @@ interface Profile {
 const profileForm = new FormGroup<Profile>({
   firstName: new FormControl(''),
   lastName: new FormControl(''),
-  address: new FormGroup<Profile['address']>({
+  address: new FormGroup({
     street: new FormControl(''),
     city: new FormControl('')
   })
@@ -96,14 +96,14 @@ import { FormArray, FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormArray<string>([new FormControl()]);
 
-control.valueChanges$.subscribe(value => {
+control.value$.subscribe(value => {
   // value is typed as string[]
 });
 ```
 
 ## Control Queries
 
-### `valueChanges$`
+### `value$`
 
 Observes the control's value. Unlike the behavior of the built-in `valueChanges` observable, it emits the current `rawValue` **immediately** (which means you'll also get the values of `disabled` controls).
 
@@ -111,10 +111,10 @@ Observes the control's value. Unlike the behavior of the built-in `valueChanges`
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.valueChanges$.subscribe(value => ...);
+control.value$.subscribe(value => ...);
 ```
 
-### `disabledChanges$`
+### `disabled$`
 
 Observes the control's `disable` status.
 
@@ -122,10 +122,10 @@ Observes the control's `disable` status.
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.disabledChanges$.subscribe(isDisabled => ...);
+control.disabled$.subscribe(isDisabled => ...);
 ```
 
-### `enabledChanges$`
+### `enabled$`
 
 Observes the control's `enable` status.
 
@@ -133,10 +133,10 @@ Observes the control's `enable` status.
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.enabledChanges$.subscribe(isEnabled => ...);
+control.enabled$.subscribe(isEnabled => ...);
 ```
 
-### `statusChanges$`
+### `status$`
 
 Observes the control's `status`.
 
@@ -144,12 +144,12 @@ Observes the control's `status`.
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.statusChanges$.subscribe(status => ...);
+control.status$.subscribe(status => ...);
 ```
 
 The `status` is `typed` as `ControlState` (valid, invalid, pending or disabled).
 
-### `touchChanges$`
+### `touch$`
 
 Observes the control's `touched` status.
 
@@ -157,12 +157,12 @@ Observes the control's `touched` status.
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.touchChanges$.subscribe(isTouched => ...);
+control.touch$.subscribe(isTouched => ...);
 ```
 
 This emits a value **only** when `markAsTouched`, or `markAsUnTouched`, has been called.
 
-### `dirtyChanges$`
+### `dirty$`
 
 Observes the control's `dirty` status.
 
@@ -170,12 +170,12 @@ Observes the control's `dirty` status.
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.dirtyChanges$.subscribe(isDirty => ...);
+control.dirty$.subscribe(isDirty => ...);
 ```
 
 This emits a value **only** when `markAsDirty`, or `markAsPristine`, has been called.
 
-### `errorsChanges$`
+### `errors$`
 
 Observes the control's `errors`.
 
@@ -183,7 +183,7 @@ Observes the control's `errors`.
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.errorsChanges$.subscribe(errors => ...);
+control.errors$.subscribe(errors => ...);
 ```
 
 ### `select()`
@@ -212,18 +212,13 @@ control.setValue(query.select('formValue'));
 
 ### `patchValue()`
 
-In addition to the built-in method functionality, it can take an `observable` or a `callback` function.
+In addition to the built-in method functionality, it can also take an `observable`.
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
 
 const control = new FormGroup<Person>();
 control.patchValue(query.select('formValue'));
-
-control.patchValue(state => ({
-  ...state,
-  name: state.someProp ? 'someName' : 'anotherName'
-}));
 ```
 
 ### `disabledWhile()`
@@ -356,7 +351,7 @@ const address = group.getControl('name') as FormGroup<Profile['address']>;
 const city = group.getControl('address', 'city') as FormControl<string>;
 ```
 
-Note that the return type should still be inferred.
+**Note that the return type should still be inferred.**
 
 ### Control Path
 
@@ -455,7 +450,7 @@ from `@angular/forms`.
 
 Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/master/projects/ngneat/eslint-plugin-reactive-forms).
 
-## Schematics
+## Migration
 
 The command will replace entities coming from `@angular/reactive-forms` with `@ngneat/reactive-forms`.
 
