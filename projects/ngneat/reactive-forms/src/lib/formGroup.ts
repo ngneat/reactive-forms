@@ -75,7 +75,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   get<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
     path?: [K1, K2, K3]
   ): AbstractControl<T[K1][K2][K3]>;
-  get(path?: Array<string | number> | string): AbstractControl;
+  get(path?: (string | number)[] | string): AbstractControl;
   get(path: any): AbstractControl<T> | null {
     return super.get(path);
   }
