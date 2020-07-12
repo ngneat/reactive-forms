@@ -14,6 +14,7 @@ import {
   hasErrorAndDirty,
   hasErrorAndTouched,
   markAllDirty,
+  mergeControlAsyncValidators,
   mergeControlValidators
 } from './control-actions';
 import {
@@ -29,14 +30,13 @@ import {
   Validator,
   ValidatorOrOpts
 } from './types';
-import { coerceArray } from './utils';
 
 export class FormArray<T = any, E extends object = any> extends NgFormArray {
-  readonly value: T[];
-  readonly valueChanges: Observable<T[]>;
-  readonly status: ControlState;
-  readonly statusChanges: Observable<ControlState>;
-  readonly errors: E | null;
+  readonly value!: T[];
+  readonly valueChanges!: Observable<T[]>;
+  readonly status!: ControlState;
+  readonly statusChanges!: Observable<ControlState>;
+  readonly errors!: E | null;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -84,7 +84,7 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   patchValue(valueOrObservable: T[], options?: ControlEventOptions): void;
   patchValue(valueOrObservable: any, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
-      return valueOrObservable.subscribe((value: T[]) => super.patchValue(value, options));
+      return valueOrObservable.subscribe((value: any) => super.patchValue(value, options));
     }
 
     super.patchValue(valueOrObservable as T[], options);
@@ -115,8 +115,7 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   }
 
   mergeAsyncValidators(validators: AsyncValidator) {
-    this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
-    this.updateValueAndValidity();
+    mergeControlAsyncValidators(this, validators);
   }
 
   markAsTouched(opts?: OnlySelf): void {

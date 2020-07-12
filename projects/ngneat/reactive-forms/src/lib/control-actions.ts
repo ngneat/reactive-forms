@@ -4,7 +4,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import { AbstractControl, ControlOptions, ControlState, ValidatorFn, ControlPath } from './types';
+import { AbstractControl, AsyncValidatorFn, ControlOptions, ControlPath, ControlState, ValidatorFn } from './types';
 import { coerceArray, isNil } from './utils';
 
 function getControlValue<T>(control: AbstractControl<T>): T {
@@ -96,11 +96,19 @@ export function controlEnabledWhile<T>(
   return observable.subscribe(isEnabled => enableControl(control, isEnabled, opts));
 }
 
-export function mergeControlValidators<T, Control extends AbstractControl<T>>(
-  control: Control,
-  validators: ValidatorFn<T> | ValidatorFn<T>[]
+export function mergeControlValidators<T>(
+  control: AbstractControl<T>,
+  validators: ValidatorFn<T> | ValidatorFn<T>[] | null
 ): void {
-  control.setValidators([control.validator, ...coerceArray(validators)]);
+  control.setValidators([control.validator as any, ...coerceArray(validators)]);
+  control.updateValueAndValidity();
+}
+
+export function mergeControlAsyncValidators<T>(
+  control: AbstractControl<T>,
+  validators: AsyncValidatorFn<T> | AsyncValidatorFn<T>[] | null
+): void {
+  control.setAsyncValidators([control.asyncValidator as any, ...coerceArray(validators)]);
   control.updateValueAndValidity();
 }
 
@@ -122,12 +130,12 @@ export function hasErrorAndDirty<T>(control: AbstractControl<T>, error: string, 
 
 export function markAllDirty<T>(control: FormArray<T> | FormGroup<T>): void {
   control.markAsDirty({ onlySelf: true });
-  (control as any)._forEachChild(control => control.markAllAsDirty());
+  (control as any)._forEachChild((control: any) => control.markAllAsDirty());
 }
 
 export function selectControlValue$<T, R>(
   control: FormGroup<T> | FormArray<T> | FormControl<T>,
-  mapFn: (state: T | T[]) => R
+  mapFn: (state: T) => R
 ): Observable<R> {
   return (control.value$ as Observable<any>).pipe(map(mapFn), distinctUntilChanged());
 }

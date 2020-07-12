@@ -14,6 +14,7 @@ import {
   hasErrorAndDirty,
   hasErrorAndTouched,
   markAllDirty,
+  mergeControlAsyncValidators,
   mergeControlValidators,
   selectControlValue$,
   validateControlOn
@@ -33,14 +34,13 @@ import {
   Validator,
   ValidatorOrOpts
 } from './types';
-import { coerceArray } from './utils';
 
 export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
-  readonly value: T;
-  readonly errors: E | null;
-  readonly valueChanges: Observable<T>;
-  readonly status: ControlState;
-  readonly statusChanges: Observable<ControlState>;
+  readonly value!: T;
+  readonly errors!: E | null;
+  readonly valueChanges!: Observable<T>;
+  readonly status!: ControlState;
+  readonly statusChanges!: Observable<ControlState>;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -75,8 +75,8 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   get<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
     path?: [K1, K2, K3]
   ): AbstractControl<T[K1][K2][K3]>;
-  get(path?: string): AbstractControl;
-  get(path: any) {
+  get(path?: Array<string | number> | string): AbstractControl;
+  get(path: any): AbstractControl<T> | null {
     return super.get(path);
   }
 
@@ -117,7 +117,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   setValue(valueOrObservable: T, options?: ControlEventOptions): void;
   setValue(valueOrObservable: any, options?: ControlEventOptions): any {
     if (isObservable(valueOrObservable)) {
-      return valueOrObservable.subscribe(value => super.setValue(value, options));
+      return valueOrObservable.subscribe(value => super.setValue(value as any, options));
     }
 
     super.setValue(valueOrObservable, options);
@@ -127,7 +127,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   patchValue(valueOrObservable: Partial<T>, options?: ControlEventOptions): void;
   patchValue(valueOrObservable: any, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
-      return valueOrObservable.subscribe(value => super.patchValue(value, options));
+      return valueOrObservable.subscribe(value => super.patchValue(value as any, options));
     }
 
     super.patchValue(valueOrObservable, options);
@@ -145,9 +145,8 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     mergeControlValidators(this, validators);
   }
 
-  mergeAsyncValidators(validators: AsyncValidator) {
-    this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
-    this.updateValueAndValidity();
+  mergeAsyncValidators(validators: AsyncValidator | null) {
+    mergeControlAsyncValidators(this, validators);
   }
 
   markAsTouched(opts?: OnlySelf): void {
@@ -183,7 +182,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     super.updateValueAndValidity();
   }
 
-  setAsyncValidators(newValidator: AsyncValidator): void {
+  setAsyncValidators(newValidator: AsyncValidator | null): void {
     super.setAsyncValidators(newValidator);
     super.updateValueAndValidity();
   }

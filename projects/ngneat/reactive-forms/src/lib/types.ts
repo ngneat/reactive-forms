@@ -1,7 +1,9 @@
 import {
   AbstractControl as NgAbstractControl,
   AbstractControlOptions as NgAbstractControlOptions,
-  ValidationErrors as NgValidationErrors
+  AsyncValidatorFn as NgAsyncValidatorFn,
+  ValidationErrors as NgValidationErrors,
+  ValidatorFn as NgValidatorFn
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormArray } from './formArray';
@@ -9,10 +11,14 @@ import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
 
 export type ValidationErrors<T = NgValidationErrors> = T;
-export type ValidatorFn<T = any, E = any> = (control: AbstractControl<T>) => ValidationErrors<E> | null;
-export type AsyncValidatorFn<T = any, E = any> = (
-  control: AbstractControl<T>
-) => Promise<ValidationErrors<E> | null> | Observable<ValidationErrors<E> | null>;
+
+export interface ValidatorFn<T = any, E = ValidationErrors> extends NgValidatorFn {
+  (control: AbstractControl<T>): ValidationErrors<E> | null;
+}
+
+export interface AsyncValidatorFn<T = any, E = any> extends NgAsyncValidatorFn {
+  (control: AbstractControl<T>): Promise<ValidationErrors<E> | null> | Observable<ValidationErrors<E> | null>;
+}
 
 export interface AbstractControlOptions<T = any, E = any> extends NgAbstractControlOptions {
   validators?: ValidatorFn<T, E> | ValidatorFn<T, E>[] | null;
@@ -36,8 +42,8 @@ export type EmitEvent = Pick<ControlOptions, 'emitEvent'>;
 export type ControlPath = Array<string | number> | string;
 export type ControlState = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED';
 
-export interface AbstractControl<T = any> extends NgAbstractControl {
-  value: T;
+export abstract class AbstractControl<T = any, E = ValidationErrors> extends NgAbstractControl {
+  value!: T;
 }
 
 export type ExtractStrings<T> = Extract<keyof T, string>;

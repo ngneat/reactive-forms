@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-
-import { FormControl, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@ngneat/reactive-forms';
 
 @Component({
   selector: 'app-test-form',
@@ -11,11 +10,9 @@ import { FormControl, FormGroup, FormArray } from '@angular/forms';
   `
 })
 export class TestFormComponent {
-  control: FormControl = new FormControl();
+  group: FormGroup<{ id: number; name: string }>;
 
-  constructor() {
-    const control = new FormArray([]);
-    control.setControl(0, new FormGroup({}));
-    control.at(0).setValue({ name: 'itay' });
+  constructor(fb: FormBuilder) {
+    this.group = fb.group({ id: 1, name: 'D' });
   }
 }

@@ -13,6 +13,7 @@ import {
   enableControl,
   hasErrorAndDirty,
   hasErrorAndTouched,
+  mergeControlAsyncValidators,
   mergeControlValidators,
   validateControlOn
 } from './control-actions';
@@ -29,15 +30,14 @@ import {
   Validator,
   ValidatorOrOpts
 } from './types';
-import { coerceArray } from './utils';
 
 export class FormControl<T = any, E extends object = any> extends NgFormControl {
-  readonly value: T;
-  readonly errors: E | null;
-  readonly asyncValidator: AsyncValidatorFn<T>;
-  readonly valueChanges: Observable<T>;
-  readonly status: ControlState;
-  readonly statusChanges: Observable<ControlState>;
+  readonly value!: T;
+  readonly errors!: E | null;
+  readonly asyncValidator!: AsyncValidatorFn<T>;
+  readonly valueChanges!: Observable<T>;
+  readonly status!: ControlState;
+  readonly statusChanges!: Observable<ControlState>;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
@@ -88,8 +88,7 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   }
 
   mergeAsyncValidators(validators: AsyncValidator) {
-    this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
-    this.updateValueAndValidity();
+    mergeControlAsyncValidators(this, validators);
   }
 
   markAsTouched(opts?: OnlySelf): void {
