@@ -31,14 +31,18 @@ import {
   Obj,
   OnlySelf,
   Validator,
-  ValidatorOrOpts
+  ValidatorOrOpts,
+  ControlsValue
 } from './types';
 import { coerceArray } from './utils';
 
-export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
-  readonly value: T;
+export class FormGroup<
+  C extends NgFormGroup['controls'] = { [key: string]: AbstractControl },
+  E extends object = any
+> extends NgFormGroup {
+  readonly value: ControlsValue<C>;
   readonly errors: E | null;
-  readonly valueChanges: Observable<T>;
+  readonly valueChanges: Observable<ControlsValue<C>>;
   readonly status: ControlState;
   readonly statusChanges: Observable<ControlState>;
 
@@ -48,73 +52,71 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
   dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
-  readonly value$ = controlValueChanges$<T>(this);
-  readonly disabled$ = controlDisabled$<T>(this);
-  readonly enabled$ = controlEnabled$<T>(this);
-  readonly status$ = controlStatusChanges$<T>(this);
+  readonly value$ = controlValueChanges$<ControlsValue<C>>(this);
+  readonly disabled$ = controlDisabled$<ControlsValue<C>>(this);
+  readonly enabled$ = controlEnabled$<ControlsValue<C>>(this);
+  readonly status$ = controlStatusChanges$<ControlsValue<C>>(this);
   readonly errors$ = controlErrorChanges$<E>(this);
 
-  constructor(
-    public controls: ExtractAbstractControl<KeyValueControls<T>, T>,
-    validatorOrOpts?: ValidatorOrOpts,
-    asyncValidator?: AsyncValidator
-  ) {
+  constructor(public controls: C, validatorOrOpts?: ValidatorOrOpts, asyncValidator?: AsyncValidator) {
     super(controls, validatorOrOpts, asyncValidator);
   }
 
-  select<R>(mapFn: (state: T) => R): Observable<R> {
+  select<R>(mapFn: (state: ControlsValue<C>) => R): Observable<R> {
     return selectControlValue$(this, mapFn);
   }
 
-  getRawValue(): T {
+  getRawValue(): ControlsValue<C> {
     return super.getRawValue();
   }
 
-  get<K1 extends keyof T>(path?: [K1]): AbstractControl<T[K1]>;
-  get<K1 extends keyof T, K2 extends keyof T[K1]>(path?: [K1, K2]): AbstractControl<T[K1][K2]>;
-  get<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
-    path?: [K1, K2, K3]
-  ): AbstractControl<T[K1][K2][K3]>;
-  get(path?: string): AbstractControl;
-  get(path: any) {
+  get<K1 extends keyof ControlsValue<C>>(path?: [K1]): C[K1];
+  get<K1 extends keyof ControlsValue<C>, K2 extends keyof ControlsValue<C>[K1]>(path?: [K1, K2]): C[K1][K2];
+  get<
+    K1 extends keyof ControlsValue<C>,
+    K2 extends keyof ControlsValue<C>[K1],
+    K3 extends keyof ControlsValue<C>[K1][K2]
+  >(path?: [K1, K2, K3]): C[K1][K2][K3];
+  get(path?: string): C[keyof ControlsValue<C>];
+  get(path: Array<string | number> | string) {
     return super.get(path);
   }
 
-  getControl<P1 extends keyof T>(prop1: P1): AbstractControl<T[P1]>;
-  getControl<P1 extends keyof T, P2 extends keyof T[P1]>(prop1: P1, prop2: P2): AbstractControl<T[P1][P2]>;
-  getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
-    prop1: P1,
-    prop2: P2,
-    prop3: P3
-  ): AbstractControl<T[P1][P2][P3]>;
-  getControl<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2], P4 extends keyof T[P1][P2][P3]>(
-    prop1: P1,
-    prop2: P2,
-    prop3: P3,
-    prop4: P4
-  ): AbstractControl<T[P1][P2][P3][P4]>;
+  getControl<P1 extends keyof ControlsValue<C>>(prop1: P1): C[P1];
+  getControl<P1 extends keyof ControlsValue<C>, P2 extends keyof ControlsValue<C>[P1]>(prop1: P1, prop2: P2): C[P1][P2];
+  getControl<
+    P1 extends keyof ControlsValue<C>,
+    P2 extends keyof ControlsValue<C>[P1],
+    P3 extends keyof ControlsValue<C>[P1][P2]
+  >(prop1: P1, prop2: P2, prop3: P3): C[P1][P2][P3];
+  getControl<
+    P1 extends keyof ControlsValue<C>,
+    P2 extends keyof ControlsValue<C>[P1],
+    P3 extends keyof ControlsValue<C>[P1][P2],
+    P4 extends keyof ControlsValue<C>[P1][P2][P3]
+  >(prop1: P1, prop2: P2, prop3: P3, prop4: P4): AbstractControl<ControlsValue<C>[P1][P2][P3][P4]>;
   getControl(...names: any): AbstractControl<any> {
     return this.get(names.join('.'));
   }
 
-  addControl<K extends ExtractStrings<T>>(name: K, control: AbstractControl<T[K]>): void {
+  addControl<K extends ExtractStrings<C>>(name: K, control: C[K]): void {
     super.addControl(name, control);
   }
 
-  removeControl(name: ExtractStrings<T>): void {
+  removeControl(name: ExtractStrings<C>): void {
     super.removeControl(name);
   }
 
-  contains(controlName: ExtractStrings<T>): boolean {
+  contains(controlName: ExtractStrings<C>): boolean {
     return super.contains(controlName);
   }
 
-  setControl<K extends ExtractStrings<T>>(name: K, control: AbstractControl<T[K]>): void {
+  setControl<K extends ExtractStrings<C>>(name: K, control: C[K]): void {
     super.setControl(name, control);
   }
 
-  setValue(valueOrObservable: Observable<T>, options?: ControlEventOptions): Subscription;
-  setValue(valueOrObservable: T, options?: ControlEventOptions): void;
+  setValue(valueOrObservable: Observable<ControlsValue<C>>, options?: ControlEventOptions): Subscription;
+  setValue(valueOrObservable: ControlsValue<C>, options?: ControlEventOptions): void;
   setValue(valueOrObservable: any, options?: ControlEventOptions): any {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
@@ -123,8 +125,8 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     super.setValue(valueOrObservable, options);
   }
 
-  patchValue(valueOrObservable: Observable<Partial<T>>, options?: ControlEventOptions): Subscription;
-  patchValue(valueOrObservable: Partial<T>, options?: ControlEventOptions): void;
+  patchValue(valueOrObservable: Observable<Partial<ControlsValue<C>>>, options?: ControlEventOptions): Subscription;
+  patchValue(valueOrObservable: Partial<ControlsValue<C>>, options?: ControlEventOptions): void;
   patchValue(valueOrObservable: any, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
@@ -174,7 +176,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     markAllDirty(this);
   }
 
-  reset(formState?: Partial<T>, options?: ControlEventOptions): void {
+  reset(formState?: Partial<ControlsValue<C>>, options?: ControlEventOptions): void {
     super.reset(formState, options);
   }
 
@@ -192,12 +194,16 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     return validateControlOn(this, observableValidation);
   }
 
-  hasError<K1 extends keyof T>(errorCode: ExtractStrings<E>, path?: [K1]): boolean;
-  hasError<K1 extends keyof T, K2 extends keyof T[K1]>(errorCode: ExtractStrings<E>, path?: [K1, K2]): boolean;
-  hasError<K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
+  hasError<K1 extends keyof ControlsValue<C>>(errorCode: ExtractStrings<E>, path?: [K1]): boolean;
+  hasError<K1 extends keyof ControlsValue<C>, K2 extends keyof ControlsValue<C>[K1]>(
     errorCode: ExtractStrings<E>,
-    path?: [K1, K2, K3]
+    path?: [K1, K2]
   ): boolean;
+  hasError<
+    K1 extends keyof ControlsValue<C>,
+    K2 extends keyof ControlsValue<C>[K1],
+    K3 extends keyof ControlsValue<C>[K1][K2]
+  >(errorCode: ExtractStrings<E>, path?: [K1, K2, K3]): boolean;
   hasError(errorCode: ExtractStrings<E>, path?: string): boolean;
   hasError(errorCode: ExtractStrings<E>, path?: any): boolean {
     return super.hasError(errorCode, path);
@@ -207,56 +213,59 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     return super.setErrors(errors, opts);
   }
 
-  getError<K extends keyof E, K1 extends keyof T>(errorCode: K, path?: [K1]): E[K] | null;
-  getError<K extends keyof E, K1 extends keyof T, K2 extends keyof T[K1]>(errorCode: K, path?: [K1, K2]): E[K] | null;
-  getError<K extends keyof E, K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(
+  getError<K extends keyof E, K1 extends keyof ControlsValue<C>>(errorCode: K, path?: [K1]): E[K] | null;
+  getError<K extends keyof E, K1 extends keyof ControlsValue<C>, K2 extends keyof ControlsValue<C>[K1]>(
     errorCode: K,
-    path?: [K1, K2, K3]
+    path?: [K1, K2]
   ): E[K] | null;
+  getError<
+    K extends keyof E,
+    K1 extends keyof ControlsValue<C>,
+    K2 extends keyof ControlsValue<C>[K1],
+    K3 extends keyof ControlsValue<C>[K1][K2]
+  >(errorCode: K, path?: [K1, K2, K3]): E[K] | null;
   getError<K extends keyof E>(errorCode: K, path?: string): E[K] | null;
   getError<K extends keyof E>(errorCode: K, path?: any): E[K] | null {
     return super.getError(errorCode as any, path) as E[K] | null;
   }
 
-  hasErrorAndTouched<P1 extends keyof T>(error: ExtractStrings<E>, prop1?: P1): boolean;
-  hasErrorAndTouched<P1 extends keyof T, P2 extends keyof T[P1]>(
+  hasErrorAndTouched<P1 extends keyof ControlsValue<C>>(error: ExtractStrings<E>, prop1?: P1): boolean;
+  hasErrorAndTouched<P1 extends keyof ControlsValue<C>, P2 extends keyof ControlsValue<C>[P1]>(
     error: ExtractStrings<E>,
     prop1?: P1,
     prop2?: P2
   ): boolean;
-  hasErrorAndTouched<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
-    error: ExtractStrings<E>,
-    prop1?: P1,
-    prop2?: P2,
-    prop3?: P3
-  ): boolean;
   hasErrorAndTouched<
-    P1 extends keyof T,
-    P2 extends keyof T[P1],
-    P3 extends keyof T[P1][P2],
-    P4 extends keyof T[P1][P2][P3]
+    P1 extends keyof ControlsValue<C>,
+    P2 extends keyof ControlsValue<C>[P1],
+    P3 extends keyof ControlsValue<C>[P1][P2]
+  >(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3): boolean;
+  hasErrorAndTouched<
+    P1 extends keyof ControlsValue<C>,
+    P2 extends keyof ControlsValue<C>[P1],
+    P3 extends keyof ControlsValue<C>[P1][P2],
+    P4 extends keyof ControlsValue<C>[P1][P2][P3]
   >(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
   hasErrorAndTouched(error: any, ...path: any): boolean {
     return hasErrorAndTouched(this, error, ...path);
   }
 
-  hasErrorAndDirty<P1 extends keyof T>(error: ExtractStrings<E>, prop1?: P1): boolean;
-  hasErrorAndDirty<P1 extends keyof T, P2 extends keyof T[P1]>(
+  hasErrorAndDirty<P1 extends keyof ControlsValue<C>>(error: ExtractStrings<E>, prop1?: P1): boolean;
+  hasErrorAndDirty<P1 extends keyof ControlsValue<C>, P2 extends keyof ControlsValue<C>[P1]>(
     error: ExtractStrings<E>,
     prop1?: P1,
     prop2?: P2
   ): boolean;
-  hasErrorAndDirty<P1 extends keyof T, P2 extends keyof T[P1], P3 extends keyof T[P1][P2]>(
-    error: ExtractStrings<E>,
-    prop1?: P1,
-    prop2?: P2,
-    prop3?: P3
-  ): boolean;
   hasErrorAndDirty<
-    P1 extends keyof T,
-    P2 extends keyof T[P1],
-    P3 extends keyof T[P1][P2],
-    P4 extends keyof T[P1][P2][P3]
+    P1 extends keyof ControlsValue<C>,
+    P2 extends keyof ControlsValue<C>[P1],
+    P3 extends keyof ControlsValue<C>[P1][P2]
+  >(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3): boolean;
+  hasErrorAndDirty<
+    P1 extends keyof ControlsValue<C>,
+    P2 extends keyof ControlsValue<C>[P1],
+    P3 extends keyof ControlsValue<C>[P1][P2],
+    P4 extends keyof ControlsValue<C>[P1][P2][P3]
   >(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
   hasErrorAndDirty(error: any, ...path: any): boolean {
     return hasErrorAndDirty(this, error, ...path);

@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
+import { AbstractControl } from '../public-api';
 
 export type ValidationErrors<T = NgValidationErrors> = T;
 export type ValidatorFn<T = any, E = any> = (control: AbstractControl<T>) => ValidationErrors<E> | null;
@@ -70,3 +71,11 @@ export type KeyValueControls<T extends Obj> = {
 export type ExtractAbstractControl<T, U> = T extends KeyValueControls<any>
   ? { [K in keyof U]: AbstractControl<U[K]> }
   : T;
+
+export type ControlsValue<C extends { [key: string]: AbstractControl } | AbstractControl[]> = {
+  [key in keyof C]: C[key]['value'];
+};
+
+export type FlatFormGroupControls<T extends Object> = {};
+
+export type ControlsOfValue<T extends Object> = {};

@@ -59,3 +59,8 @@ const first = users.at(0) as FormGroup<User>;
 first.setValue({ id: 1, name: '2' });
 const newUser = new FormGroup({ id: new FormControl(), name: new FormControl('') });
 users.push(newUser);
+
+// TODO (Delete)
+type MyType<T extends Array<{ x: any }>> = {
+  [key in keyof T]: T[key]['x'];
+};
