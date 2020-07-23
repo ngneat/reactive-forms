@@ -24,7 +24,7 @@ const profileForm = new FormGroup<Profile>({
 });
 
 profileForm.setValue({ firstName: '', lastName: '', skills: ['1'], address: { street: '', city: '' } });
-profileForm.patchValue({firstName: ''});
+profileForm.patchValue({ firstName: '' });
 profileForm.valueChanges.subscribe(v => v.firstName);
 profileForm.value$.subscribe(v => v.lastName);
 const hasError = profileForm.hasError('required');
@@ -34,7 +34,7 @@ const cityControl2 = profileForm.get('address.city') as FormControl<string>;
 const cityControl3 = profileForm.get(['address']) as FormGroup<Profile['address']>;
 const skills = profileForm.getControl('skills') as FormArray<string>;
 skills.setValue(['1']);
-profileForm.reset({lastName: ''});
+profileForm.reset({ lastName: '' });
 
 // FORM_CONTROL
 const one = new FormControl();
@@ -42,7 +42,7 @@ const two = new FormControl('');
 const three = new FormControl<string[]>([]);
 const four = new FormControl({});
 
-four.setValue({a: 1});
+four.setValue({ a: 1 });
 three.setValue(['1']);
 one.setValue('any');
 two.setValue('');

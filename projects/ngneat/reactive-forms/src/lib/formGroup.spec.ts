@@ -2,20 +2,20 @@ import { of, Subject } from 'rxjs';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
 
-type PersonControls = {
-  name: FormControl<string>;
-  phone: FormGroup<{
-    num: FormControl<number>,
-    prefix: FormControl<number>,
-  }>
-}
+type Person = {
+  name: string;
+  phone: {
+    num: number;
+    prefix: number;
+  };
+};
 
 const errorFn = group => {
   return { isInvalid: true };
 };
 
 const createGroup = (withError = false) => {
-  return new FormGroup<PersonControls>(
+  return new FormGroup<Person>(
     {
       name: new FormControl(),
       phone: new FormGroup({
@@ -276,7 +276,7 @@ describe('FormGroup', () => {
 
   it('should errorChanges$', () => {
     const control = createGroup();
-    const validator = (control: FormGroup<PersonControls>) =>
+    const validator = (control: FormGroup<Person>) =>
       control.getRawValue().name === 'Test' ? { invalidName: true } : null;
     control.setValidators(validator);
     const spy = jest.fn();
