@@ -3,15 +3,7 @@ import { FormBuilder as NgFormBuilder } from '@angular/forms';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import {
-  AbstractControlOptions,
-  AsyncValidatorFn,
-  AbstractControl,
-  OrBoxedValue,
-  ValidatorFn,
-  ControlsValue,
-  ControlsOfValue
-} from './types';
+import { AbstractControlOptions, AsyncValidatorFn, AbstractControl, OrBoxedValue, ValidatorFn } from './types';
 
 function isAbstractControlOptions<T>(
   options: AbstractControlOptions<T> | { [key: string]: any }
@@ -44,7 +36,7 @@ export class FormBuilder extends NgFormBuilder {
           asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[];
         }
       | null
-  ): FormGroup<ControlsOfValue<T>, E> {
+  ): FormGroup<T, E> {
     const controls = (this as any)._reduceControls(controlsConfig);
 
     let validators: ValidatorFn | ValidatorFn[] | null = null;

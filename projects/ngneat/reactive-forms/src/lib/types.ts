@@ -71,8 +71,27 @@ export type ExtractAbstractControl<T, U> = T extends KeyValueControls<any>
   ? { [K in keyof U]: AbstractControl<U[K]> }
   : T;
 
-export type ControlsValue<C extends { [key in string]: AbstractControl }> = {
-  [key in keyof C]: C[key]['value'];
+/**
+* Convert an object of a FormGroup's "value" or "controls" to its "value"
+* */
+export type ControlsValue<C extends object> = {
+  [key in keyof C]: C[key] extends FormControl | FormGroup | FormArray | AbstractControl ? C[key]['value'] : C[key];
+};
+
+/**
+ * Convert an object of a FormGroup's "value" or "controls" to "controls".
+ * Converting any non-control type to AbstractControl
+* */
+export type ControlsOfValue<T extends Obj> = {
+  [K in keyof T]: T[K] extends FormControl
+    ? FormControl<T[K]['value']>
+    : T[K] extends FormGroup
+      ? FormGroup<T[K]['value']>
+      : T[K] extends FormArray
+        ? FormArray<T[K]['value']>
+        : T[K] extends AbstractControl
+          ? AbstractControl<T[K]['value']>
+          : AbstractControl<T[K]>
 };
 
 /**
@@ -93,22 +112,3 @@ export type ControlsValue<C extends { [key in string]: AbstractControl }> = {
 export type FlatControls<T extends Object> = {
   [key in keyof T]: FormControl<T[key]>;
 };
-
-/**
- * Use with formGroup when you don't want to specify the exact controls structure
- *
- * @example
- * ```
- * new FormGroup<FlatControls<{
- *   name: string;
- *   phone: {
- *      num: number;
- *      prefix: number;
- *   };
- * }>>({
- *   name: new FormControl<string>(),
- *   phone: new FormGroup<{num: number, prefix: number}>(...), // Note here you won't get type inference
- * });
- * ```
- * */
-export type ControlsOfValue<T extends Object> = ExtractAbstractControl<KeyValueControls<T>, T>;
