@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import { AbstractControl } from '../public-api';
 
 export type ValidationErrors<T = NgValidationErrors> = T;
 export type ValidatorFn<T = any, E = any> = (control: AbstractControl<T>) => ValidationErrors<E> | null;
@@ -63,19 +62,53 @@ export type KeyValueControls<T extends Obj> = {
   [K in keyof T]: T[K] extends FormControl<T[K]>
     ? FormControl<T[K]>
     : T[K] extends FormGroup<T[K]>
-    ? FormGroup<T[K]>
-    : T[K] extends FormArray<ArrayType<T[K]>>
-    ? FormArray<ArrayType<T[K]>>
-    : AbstractControl<T[K]>;
+      ? FormGroup<T[K]>
+      : T[K] extends FormArray<ArrayType<T[K]>>
+        ? FormArray<ArrayType<T[K]>>
+        : AbstractControl<T[K]>;
 };
 export type ExtractAbstractControl<T, U> = T extends KeyValueControls<any>
   ? { [K in keyof U]: AbstractControl<U[K]> }
   : T;
 
-export type ControlsValue<C extends { [key: string]: AbstractControl } | AbstractControl[]> = {
+export type ControlsValue<C extends { [key in string]: AbstractControl }> = {
   [key in keyof C]: C[key]['value'];
 };
 
-export type FlatFormGroupControls<T extends Object> = {};
+/**
+ * Use with FormGroup you want a regular FormControl for each property
+ *
+ * @example
+ * new FormGroup<FlatControls<{
+ *   name: string;
+ *   phone: {
+ *      num: number;
+ *      prefix: number;
+ *   };
+ * }>>({
+ *   name: new FormControl<string>(),
+ *   phone: new FormControl<{num: number, prefix: number}>(),
+ * });
+ * */
+export type FlatControls<T extends Object> = {
+  [key in keyof T]: FormControl<T[key]>;
+};
 
-export type ControlsOfValue<T extends Object> = {};
+/**
+ * Use with formGroup when you don't want to specify the exact controls structure
+ *
+ * @example
+ * ```
+ * new FormGroup<FlatControls<{
+ *   name: string;
+ *   phone: {
+ *      num: number;
+ *      prefix: number;
+ *   };
+ * }>>({
+ *   name: new FormControl<string>(),
+ *   phone: new FormGroup<{num: number, prefix: number}>(...), // Note here you won't get type inference
+ * });
+ * ```
+ * */
+export type ControlsOfValue<T extends Object> = ExtractAbstractControl<KeyValueControls<T>, T>;

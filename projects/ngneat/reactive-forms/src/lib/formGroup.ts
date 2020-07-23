@@ -1,5 +1,10 @@
 import { FormGroup as NgFormGroup } from '@angular/forms';
-import { isObservable, Observable, Subject, Subscription } from 'rxjs';
+import {
+  isObservable,
+  Observable,
+  Subject,
+  Subscription
+} from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import {
   controlDisabled$,
@@ -36,10 +41,8 @@ import {
 } from './types';
 import { coerceArray } from './utils';
 
-export class FormGroup<
-  C extends NgFormGroup['controls'] = { [key: string]: AbstractControl },
-  E extends object = any
-> extends NgFormGroup {
+export class FormGroup<C extends NgFormGroup['controls'] = { [key: string]: AbstractControl },
+  E extends object = any> extends NgFormGroup {
   readonly value: ControlsValue<C>;
   readonly errors: E | null;
   readonly valueChanges: Observable<ControlsValue<C>>;
@@ -71,12 +74,19 @@ export class FormGroup<
   }
 
   get<K1 extends keyof ControlsValue<C>>(path?: [K1]): C[K1];
-  get<K1 extends keyof ControlsValue<C>, K2 extends keyof ControlsValue<C>[K1]>(path?: [K1, K2]): C[K1][K2];
-  get<
-    K1 extends keyof ControlsValue<C>,
+  get<K1 extends keyof ControlsValue<C>, K2 extends keyof ControlsValue<C>[K1]>(path?: [K1, K2]): C[K1] extends FormGroup
+    ? C[K1]['controls'][K2]
+    : C[K1] extends AbstractControl
+      ? AbstractControl<ControlsValue<C>[K1][K2]> : never;
+  get<K1 extends keyof ControlsValue<C>,
     K2 extends keyof ControlsValue<C>[K1],
-    K3 extends keyof ControlsValue<C>[K1][K2]
-  >(path?: [K1, K2, K3]): C[K1][K2][K3];
+    K3 extends keyof ControlsValue<C>[K1][K2]>(path?: [K1, K2, K3]): C[K1] extends FormGroup
+    ? C[K1]['controls'][K2] extends FormGroup
+      ? C[K1]['controls'][K2]['controls'][K3]
+      : C[K1]['controls'][K2] extends AbstractControl
+        ? AbstractControl<ControlsValue<C>[K1][K2][K3]>
+        : C[K1] extends AbstractControl
+          ? AbstractControl<ControlsValue<C>[K1][K2][K3]> : never : never;
   get(path?: string): C[keyof ControlsValue<C>];
   get(path: Array<string | number> | string) {
     return super.get(path);
@@ -84,17 +94,13 @@ export class FormGroup<
 
   getControl<P1 extends keyof ControlsValue<C>>(prop1: P1): C[P1];
   getControl<P1 extends keyof ControlsValue<C>, P2 extends keyof ControlsValue<C>[P1]>(prop1: P1, prop2: P2): C[P1][P2];
-  getControl<
-    P1 extends keyof ControlsValue<C>,
+  getControl<P1 extends keyof ControlsValue<C>,
     P2 extends keyof ControlsValue<C>[P1],
-    P3 extends keyof ControlsValue<C>[P1][P2]
-  >(prop1: P1, prop2: P2, prop3: P3): C[P1][P2][P3];
-  getControl<
-    P1 extends keyof ControlsValue<C>,
+    P3 extends keyof ControlsValue<C>[P1][P2]>(prop1: P1, prop2: P2, prop3: P3): C[P1][P2][P3];
+  getControl<P1 extends keyof ControlsValue<C>,
     P2 extends keyof ControlsValue<C>[P1],
     P3 extends keyof ControlsValue<C>[P1][P2],
-    P4 extends keyof ControlsValue<C>[P1][P2][P3]
-  >(prop1: P1, prop2: P2, prop3: P3, prop4: P4): AbstractControl<ControlsValue<C>[P1][P2][P3][P4]>;
+    P4 extends keyof ControlsValue<C>[P1][P2][P3]>(prop1: P1, prop2: P2, prop3: P3, prop4: P4): AbstractControl<ControlsValue<C>[P1][P2][P3][P4]>;
   getControl(...names: any): AbstractControl<any> {
     return this.get(names.join('.'));
   }
@@ -199,11 +205,9 @@ export class FormGroup<
     errorCode: ExtractStrings<E>,
     path?: [K1, K2]
   ): boolean;
-  hasError<
-    K1 extends keyof ControlsValue<C>,
+  hasError<K1 extends keyof ControlsValue<C>,
     K2 extends keyof ControlsValue<C>[K1],
-    K3 extends keyof ControlsValue<C>[K1][K2]
-  >(errorCode: ExtractStrings<E>, path?: [K1, K2, K3]): boolean;
+    K3 extends keyof ControlsValue<C>[K1][K2]>(errorCode: ExtractStrings<E>, path?: [K1, K2, K3]): boolean;
   hasError(errorCode: ExtractStrings<E>, path?: string): boolean;
   hasError(errorCode: ExtractStrings<E>, path?: any): boolean {
     return super.hasError(errorCode, path);
@@ -218,12 +222,10 @@ export class FormGroup<
     errorCode: K,
     path?: [K1, K2]
   ): E[K] | null;
-  getError<
-    K extends keyof E,
+  getError<K extends keyof E,
     K1 extends keyof ControlsValue<C>,
     K2 extends keyof ControlsValue<C>[K1],
-    K3 extends keyof ControlsValue<C>[K1][K2]
-  >(errorCode: K, path?: [K1, K2, K3]): E[K] | null;
+    K3 extends keyof ControlsValue<C>[K1][K2]>(errorCode: K, path?: [K1, K2, K3]): E[K] | null;
   getError<K extends keyof E>(errorCode: K, path?: string): E[K] | null;
   getError<K extends keyof E>(errorCode: K, path?: any): E[K] | null {
     return super.getError(errorCode as any, path) as E[K] | null;
@@ -235,17 +237,13 @@ export class FormGroup<
     prop1?: P1,
     prop2?: P2
   ): boolean;
-  hasErrorAndTouched<
-    P1 extends keyof ControlsValue<C>,
+  hasErrorAndTouched<P1 extends keyof ControlsValue<C>,
     P2 extends keyof ControlsValue<C>[P1],
-    P3 extends keyof ControlsValue<C>[P1][P2]
-  >(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3): boolean;
-  hasErrorAndTouched<
-    P1 extends keyof ControlsValue<C>,
+    P3 extends keyof ControlsValue<C>[P1][P2]>(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3): boolean;
+  hasErrorAndTouched<P1 extends keyof ControlsValue<C>,
     P2 extends keyof ControlsValue<C>[P1],
     P3 extends keyof ControlsValue<C>[P1][P2],
-    P4 extends keyof ControlsValue<C>[P1][P2][P3]
-  >(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
+    P4 extends keyof ControlsValue<C>[P1][P2][P3]>(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
   hasErrorAndTouched(error: any, ...path: any): boolean {
     return hasErrorAndTouched(this, error, ...path);
   }
@@ -256,17 +254,13 @@ export class FormGroup<
     prop1?: P1,
     prop2?: P2
   ): boolean;
-  hasErrorAndDirty<
-    P1 extends keyof ControlsValue<C>,
+  hasErrorAndDirty<P1 extends keyof ControlsValue<C>,
     P2 extends keyof ControlsValue<C>[P1],
-    P3 extends keyof ControlsValue<C>[P1][P2]
-  >(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3): boolean;
-  hasErrorAndDirty<
-    P1 extends keyof ControlsValue<C>,
+    P3 extends keyof ControlsValue<C>[P1][P2]>(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3): boolean;
+  hasErrorAndDirty<P1 extends keyof ControlsValue<C>,
     P2 extends keyof ControlsValue<C>[P1],
     P3 extends keyof ControlsValue<C>[P1][P2],
-    P4 extends keyof ControlsValue<C>[P1][P2][P3]
-  >(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
+    P4 extends keyof ControlsValue<C>[P1][P2][P3]>(error: ExtractStrings<E>, prop1?: P1, prop2?: P2, prop3?: P3, prop4?: P4): boolean;
   hasErrorAndDirty(error: any, ...path: any): boolean {
     return hasErrorAndDirty(this, error, ...path);
   }
