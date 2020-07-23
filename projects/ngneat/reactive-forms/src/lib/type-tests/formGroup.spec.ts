@@ -17,10 +17,27 @@ test('control should be constructed with null', () => {
 
 test('control should be constructed according to generic type', () => {
   const a = new FormGroup<NestedForm>({ a: new FormControl(22), b: new FormControl({ a: '', c: [3] }) });
+  const a2 = new FormGroup<{
+    a: FormControl<number>,
+    b: FormControl<{
+      a: string;
+      c: number[];
+    }>
+  }>({ a: new FormControl(22), b: new FormControl({ a: '', c: [3] }) })
   const b = new FormGroup<NestedForm>({
     a: new FormControl(22),
     b: new FormGroup({ a: new FormControl('3'), c: new FormArray([new FormControl(2)]) })
   });
+  const b2 = new FormGroup<{
+    a: FormControl<number>,
+    b: FormGroup<{
+      a: FormControl<string>;
+      c: FormArray<number>;
+    }>
+  }>({
+    a: new FormControl(22),
+    b: new FormGroup({ a: new FormControl('3'), c: new FormArray([new FormControl(2)]) })
+  })
   const c = new FormGroup<NestedForm>({
     a: new FormControl(22),
     b: new FormGroup({ a: new FormControl('3'), c: new FormArray([new FormControl(33)]) }),

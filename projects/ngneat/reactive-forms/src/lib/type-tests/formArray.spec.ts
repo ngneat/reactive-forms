@@ -132,7 +132,10 @@ test('should be able to insert groups', () => {
     0,
     new FormGroup<User>({ id: new FormControl(1) })
   );
-  control.setControl(1, new FormGroup<any>({}));
+  control.setControl(
+    0,
+    new FormGroup<User>({ id: new FormControl(2) })
+  );
 });
 
 test('should be able to set value to controls', () => {

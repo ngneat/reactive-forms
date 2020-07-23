@@ -42,7 +42,7 @@ import {
 } from './types';
 import { coerceArray } from './utils';
 
-export class FormGroup<T extends object = { [key: string]: AbstractControl },
+export class FormGroup<T extends Obj = any,
   E extends object = any> extends NgFormGroup {
   readonly value: ControlsValue<T>;
   readonly errors: E | null;
@@ -82,13 +82,6 @@ export class FormGroup<T extends object = { [key: string]: AbstractControl },
   get<K1 extends keyof ControlsValue<T>,
     K2 extends keyof ControlsValue<T>[K1]>(path?: [K1, K2]): AbstractControl<ControlsValue<T>[K1][K2]>;
   get<K1 extends keyof ControlsValue<T>,
-    K2 extends (ControlsOfValue<T>[K1] extends FormGroup ? keyof ControlsOfValue<T>[K1]['controls'] : never),
-    K3 extends (ControlsOfValue<T>[K1] extends FormGroup ? ControlsOfValue<T>[K1]['controls'][K2] extends FormGroup ? keyof ControlsOfValue<T>[K1]['controls'][K2]['controls'] : never : never),
-    >(path?: [K1, K2, K3]): ControlsOfValue<T>[K1] extends FormGroup
-    ? ControlsOfValue<T>[K1]['controls'][K2] extends FormGroup
-      ? ControlsOfValue<T>[K1]['controls'][K2]['controls'][K3]
-      : never : never;
-  get<K1 extends keyof ControlsValue<T>,
     K2 extends keyof ControlsValue<T>[K1],
     K3 extends keyof ControlsValue<T>[K1][K2],
     >(path?: [K1, K2, K3]): AbstractControl<ControlsValue<T>[K1][K2][K3]>;
@@ -110,17 +103,6 @@ export class FormGroup<T extends object = { [key: string]: AbstractControl },
     prop1: P1,
     prop2: P2,
   ): AbstractControl<ControlsValue<T>[P1][P2]>;
-  getControl<P1 extends keyof ControlsValue<T>,
-    P2 extends (ControlsOfValue<T>[P1] extends FormGroup ? keyof ControlsOfValue<T>[P1]['controls'] : never),
-    P3 extends (ControlsOfValue<T>[P1] extends FormGroup ? ControlsOfValue<T>[P1]['controls'][P2] extends FormGroup ? keyof ControlsOfValue<T>[P1]['controls'][P2]['controls'] : never : never),
-    >(
-    prop1: P1,
-    prop2: P2,
-    prop3: P3,
-  ): ControlsOfValue<T>[P1] extends FormGroup
-    ? ControlsOfValue<T>[P1]['controls'][P2] extends FormGroup
-      ? ControlsOfValue<T>[P1]['controls'][P2]['controls'][P3]
-      : never : never;
   getControl<P1 extends keyof ControlsValue<T>,
     P2 extends keyof ControlsValue<T>[P1],
     P3 extends keyof ControlsValue<T>[P1][P2],
