@@ -33,7 +33,6 @@
     "@angular/platform-browser-dynamic": "~9.1.7",
     "@angular/router": "~9.1.7",
     "@ngneat/lib": "^1.0.0",
-    "@ngneat/reactive-forms": "^1.0.0",
     "requireindex": "^1.1.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
