@@ -1,10 +1,18 @@
-import { ValidationErrors } from '@angular/forms';
+import { ValidationErrors, FormArray as NgFormArray } from '@angular/forms';
 import { defer, merge, Observable, of, Subscription } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map, tap, debounceTime } from 'rxjs/operators';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import { AbstractControl, ControlOptions, ControlState, ValidatorFn, ControlPath } from './types';
+import {
+  AbstractControl,
+  ControlOptions,
+  ControlState,
+  ValidatorFn,
+  ControlPath,
+  PersistOptions,
+  ControlFactoryMap
+} from './types';
 import { coerceArray, isNil } from './utils';
 
 function getControlValue<T>(control: AbstractControl<T>): T {
@@ -122,7 +130,7 @@ export function hasErrorAndDirty<T>(control: AbstractControl<T>, error: string, 
 
 export function markAllDirty<T>(control: FormArray<T> | FormGroup<T>): void {
   control.markAsDirty({ onlySelf: true });
-  (control as any)._forEachChild(control => control.markAllAsDirty());
+  (control as any)._forEachChild(control => control.markAllAsDirty?.());
 }
 
 export function selectControlValue$<T, R>(
@@ -130,4 +138,36 @@ export function selectControlValue$<T, R>(
   mapFn: (state: T | T[]) => R
 ): Observable<R> {
   return (control.value$ as Observable<any>).pipe(map(mapFn), distinctUntilChanged());
+}
+
+export function persistValue$<T>(control: FormGroup<T>, key: string, options: PersistOptions<T>): Observable<T> {
+  return control.valueChanges.pipe(
+    debounceTime(options.debounceTime),
+    tap(value => options.manager.setValue(key, value))
+  );
+}
+
+export function handleFormArrays<T>(
+  control: AbstractControl<T>,
+  formValue: T,
+  arrControlFactory: ControlFactoryMap<T>
+) {
+  Object.keys(formValue).forEach(controlName => {
+    const value = formValue[controlName];
+    if (Array.isArray(value) && control.get(controlName) instanceof NgFormArray) {
+      if (!arrControlFactory || (arrControlFactory && !(controlName in arrControlFactory))) {
+        throw new Error(`Please provide arrControlFactory for ${controlName}`);
+      }
+      const current = control.get(controlName) as NgFormArray;
+      const fc = arrControlFactory[controlName];
+      clearFormArray(current);
+      value.forEach((v, i) => current.insert(i, fc(v)));
+    }
+  });
+}
+
+export function clearFormArray(control: NgFormArray) {
+  while (control.length !== 0) {
+    control.removeAt(0);
+  }
 }

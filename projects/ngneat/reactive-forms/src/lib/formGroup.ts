@@ -1,4 +1,4 @@
-import { FormGroup as NgFormGroup } from '@angular/forms';
+import { FormGroup as NgFormGroup, FormArray as NgFormArray } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import {
@@ -16,7 +16,9 @@ import {
   markAllDirty,
   mergeControlValidators,
   selectControlValue$,
-  validateControlOn
+  validateControlOn,
+  persistValue$,
+  handleFormArrays
 } from './control-actions';
 import {
   AbstractControl,
@@ -31,9 +33,14 @@ import {
   Obj,
   OnlySelf,
   Validator,
-  ValidatorOrOpts
+  ValidatorOrOpts,
+  PersistOptions,
+  ControlFactoryMap
 } from './types';
 import { coerceArray } from './utils';
+import { PersistManager } from './persistManager';
+import { LocalStorageManager } from './localStorageManager';
+import { FormArray } from './formArray';
 
 export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
   readonly value: T;
@@ -268,5 +275,21 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
 
   setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
+  }
+
+  persist(key: string, { debounceTime, manager, arrControlFactory }: PersistOptions<T>): Observable<T> {
+    const persistManager = manager || new LocalStorageManager();
+    this.restore(key, persistManager, arrControlFactory);
+    return persistValue$(this, key, {
+      debounceTime: debounceTime || 250,
+      manager: persistManager
+    });
+  }
+
+  private restore(key: string, manager: PersistManager<T>, arrControlFactory: ControlFactoryMap<T>) {
+    const value = manager.getValue(key);
+    if (!value) return;
+    handleFormArrays(this, value, arrControlFactory);
+    this.patchValue(value, { emitEvent: false });
   }
 }

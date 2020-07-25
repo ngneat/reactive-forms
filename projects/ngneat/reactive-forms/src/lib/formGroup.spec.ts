@@ -1,6 +1,8 @@
+import { fakeAsync, tick } from '@angular/core/testing';
 import { of, Subject } from 'rxjs';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
+import { FormArray } from './formArray';
 
 type Person = {
   name: string;
@@ -8,6 +10,7 @@ type Person = {
     num: number;
     prefix: number;
   };
+  skills: string[];
 };
 
 const errorFn = group => {
@@ -21,7 +24,8 @@ const createGroup = (withError = false) => {
       phone: new FormGroup({
         num: new FormControl(),
         prefix: new FormControl()
-      })
+      }),
+      skills: new FormArray([])
     },
     { validators: withError ? errorFn : [] }
   );
@@ -32,11 +36,11 @@ describe('FormGroup', () => {
     const control = createGroup();
     const spy = jest.fn();
     control.value$.subscribe(spy);
-    expect(spy).toHaveBeenCalledWith({ name: null, phone: { num: null, prefix: null } });
+    expect(spy).toHaveBeenCalledWith({ name: null, phone: { num: null, prefix: null }, skills: [] });
     control.patchValue({
       name: 'changed'
     });
-    expect(spy).toHaveBeenCalledWith({ name: 'changed', phone: { num: null, prefix: null } });
+    expect(spy).toHaveBeenCalledWith({ name: 'changed', phone: { num: null, prefix: null }, skills: [] });
   });
 
   it('should disabledChanges$', () => {
@@ -94,7 +98,8 @@ describe('FormGroup', () => {
         phone: {
           num: 1,
           prefix: 2
-        }
+        },
+        skills: []
       })
     );
     expect(control.value).toEqual({
@@ -102,7 +107,8 @@ describe('FormGroup', () => {
       phone: {
         num: 1,
         prefix: 2
-      }
+      },
+      skills: []
     });
 
     control.setValue({
@@ -110,14 +116,16 @@ describe('FormGroup', () => {
       phone: {
         num: 1,
         prefix: 2
-      }
+      },
+      skills: []
     });
     expect(control.value).toEqual({
       name: 'd',
       phone: {
         num: 1,
         prefix: 2
-      }
+      },
+      skills: []
     });
   });
 
@@ -135,7 +143,8 @@ describe('FormGroup', () => {
       phone: {
         num: null,
         prefix: null
-      }
+      },
+      skills: []
     });
 
     control.patchValue({
@@ -151,7 +160,8 @@ describe('FormGroup', () => {
       phone: {
         num: 1,
         prefix: 2
-      }
+      },
+      skills: []
     });
   });
 
@@ -284,5 +294,36 @@ describe('FormGroup', () => {
     expect(spy).toHaveBeenCalledWith(null);
     control.patchValue({ name: 'Test' });
     expect(spy).toHaveBeenCalledWith({ invalidName: true });
+  });
+
+  it('should persist', fakeAsync(() => {
+    const control = createGroup();
+    const debounceTime = 50;
+    const persistManager = {
+      getValue: jest.fn(),
+      setValue: jest.fn()
+    };
+    control.persist('key', { debounceTime, manager: persistManager }).subscribe();
+    control.getControl('name').setValue('ewan');
+    tick(debounceTime);
+    expect(persistManager.setValue).toHaveBeenCalledWith('key', control.value);
+  }));
+
+  it('should restore', () => {
+    const control = createGroup();
+    const person = { name: 'ewan', phone: { num: 5550153, prefix: 288 }, skills: ['acting', 'motorcycle'] };
+    const persistManager = {
+      getValue: jest.fn<Person, never>(() => person),
+      setValue: jest.fn()
+    };
+    const spy = jest.fn(value => new FormControl(value));
+    control.persist('key', {
+      manager: persistManager,
+      arrControlFactory: { skills: spy }
+    });
+    expect(persistManager.getValue).toHaveBeenCalledWith('key');
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(control.getControl('skills')).toHaveLength(2);
+    expect(control.value).toEqual(person);
   });
 });
