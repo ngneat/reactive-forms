@@ -1,14 +1,29 @@
 import { FormArray } from '@ngneat/reactive-forms';
 import { expectTypeOf } from 'expect-type';
-import { Observable, of, Subscription } from 'rxjs';
+import {
+  Observable,
+  of,
+  Subscription
+} from 'rxjs';
 import { FormControl } from '../formControl';
 import { FormGroup } from '../formGroup';
-import { AbstractControl } from '../types';
-import { Errors, errors, pattern, patternAsync, required, requiredAsync, User, user, NestedForm } from './mocks.spec';
+import {
+  Errors,
+  errors,
+  pattern,
+  patternAsync,
+  required,
+  requiredAsync,
+  User,
+  user,
+  NestedForm,
+  nestedFormValue,
+  NestedFormControls
+} from './mocks.spec';
 import { Validators } from '@angular/forms';
 
 test('control should be constructed with abstract controls', () => {
-  expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl() });
+  expectTypeOf(FormGroup).toBeConstructibleWith({name: new FormControl()});
 });
 
 test('control should be constructed with null', () => {
@@ -16,24 +31,105 @@ test('control should be constructed with null', () => {
 });
 
 test('control should be constructed according to generic type', () => {
-  const a = new FormGroup<NestedForm>({ a: new FormControl(22), b: new FormControl({ a: '', c: [3] }) });
+  const a = new FormGroup<NestedForm>({
+    a: new FormControl(22),
+    b: new FormControl({
+      a: '',
+      c: [3]
+    })
+  });
   const b = new FormGroup<NestedForm>({
     a: new FormControl(22),
-    b: new FormGroup({ a: new FormControl('3'), c: new FormArray([new FormControl(2)]) })
+    b: new FormGroup({
+      a: new FormControl('3'),
+      c: new FormArray([new FormControl(2)])
+    })
   });
   const c = new FormGroup<NestedForm>({
     a: new FormControl(22),
-    b: new FormGroup({ a: new FormControl('3'), c: new FormArray([new FormControl(33)]) }),
-    c: new FormArray([new FormGroup({ a: new FormControl(3) })])
+    b: new FormGroup({
+      a: new FormControl('3'),
+      c: new FormArray([new FormControl(33)])
+    }),
+    c: new FormArray([new FormGroup({a: new FormControl(3)})])
   });
   const d = new FormGroup<NestedForm>({
     a: new FormControl(22),
-    b: new FormGroup({ a: new FormControl('3'), c: new FormArray([new FormControl(33)]) }),
-    c: new FormControl([{ a: 3 }])
+    b: new FormGroup({
+      a: new FormControl('3'),
+      c: new FormArray([new FormControl(33)])
+    }),
+    c: new FormControl([{a: 3}])
   });
 });
 
-test('control value should be of type User', () => {
+test('control should be constructed according to generic controls type', () => {
+  const a = new FormGroup<{
+    a: FormControl<number>,
+    b: FormControl<{
+      a: string;
+      c: number[];
+    }>
+  }>({
+    a: new FormControl(22),
+    b: new FormControl({
+      a: '',
+      c: [3]
+    })
+  })
+  const b = new FormGroup<{
+    a: FormControl<number>,
+    b: FormGroup<{
+      a: FormControl<string>;
+      c: FormArray<number>;
+    }>
+  }>({
+    a: new FormControl(22),
+    b: new FormGroup<{ a: FormControl, c: FormArray<number> }>({
+      a: new FormControl('3'),
+      c: new FormArray<number>([new FormControl(2)])
+    })
+  })
+  const c = new FormGroup<{
+    a: FormControl<number>,
+    b: FormGroup<{
+      a: FormControl<string>,
+      c: FormArray<FormControl<number>>
+    }>,
+    c: FormArray<FormGroup<{
+      a: FormControl<number>,
+    }>>,
+  }>({
+    a: new FormControl(22),
+    b: new FormGroup<{ a: FormControl, c: FormArray }>({
+      a: new FormControl('3'),
+      c: new FormArray([new FormControl(33)])
+    }),
+    c: new FormArray([new FormGroup({a: new FormControl(3)})])
+  });
+  const d = new FormGroup<{
+    a: FormControl<number>,
+    b: FormGroup<{
+      a: FormControl<string>,
+      c: FormArray<FormControl<number>>,
+    }>,
+    c: FormControl<{ a: number }[]>
+  }>({
+    a: new FormControl(22),
+    b: new FormGroup<{ a: FormControl, c: FormArray }>({
+      a: new FormControl('3'),
+      c: new FormArray([new FormControl(33)])
+    }),
+    c: new FormControl([{a: 3}])
+  });
+});
+
+test('control value should be of type corresponding to the controls type', () => {
+  const control = new FormGroup<NestedFormControls>(null);
+  expectTypeOf<NestedForm>(control.value).toEqualTypeOf(nestedFormValue);
+});
+
+test('control value should be of type User when generic is of type User', () => {
   const control = new FormGroup<User>(null);
   expectTypeOf(control.value).toEqualTypeOf(user);
 });
@@ -41,6 +137,11 @@ test('control value should be of type User', () => {
 test('control valueChanges$ should be of type stream of Users', () => {
   const control = new FormGroup<User>(null);
   expectTypeOf(control.value$).toMatchTypeOf(new Observable<User>());
+});
+
+test('control valueChanges$ should be of type stream of the controls type', () => {
+  const control = new FormGroup<NestedFormControls>(null);
+  expectTypeOf(control.value$).toMatchTypeOf(new Observable<NestedForm>());
 });
 
 test('control toucheChanges$ should be of type stream of boolean', () => {
@@ -55,8 +156,28 @@ test('control dirtyChanges$ should be of type stream of boolean', () => {
 
 test('get control should accept a type of given generic keys', () => {
   const control = new FormGroup<User>(null);
-  expectTypeOf(control.getControl('id')).toMatchTypeOf(new FormControl<number>() as AbstractControl<any>);
+  expectTypeOf(control.getControl('id')).toMatchTypeOf(new FormControl<number>());
 });
+
+test('get control should return a typed control, when supplying up to 2 keys in path', () => {
+  const controls = new FormGroup<NestedFormControls>(null);
+  expectTypeOf(controls.getControl('b')).toMatchTypeOf(new FormGroup<{
+    a: FormControl<string>,
+    c: FormArray<FormControl<number>>,
+  }>(null));
+  expectTypeOf(controls.getControl('c', 0)).toMatchTypeOf(new FormGroup<{a: number}>(null));
+  expectTypeOf(controls.getControl('b', 'c')).toMatchTypeOf(new FormArray<FormControl<number>>([]));
+})
+
+test('get should return a typed control, when supplying up to 2 keys in path', () => {
+  const controls = new FormGroup<NestedFormControls>(null);
+  expectTypeOf(controls.get(['b'])).toMatchTypeOf(new FormGroup<{
+    a: FormControl<string>,
+    c: FormArray<FormControl<number>>,
+  }>(null));
+  expectTypeOf(controls.get(['c', 0])).toMatchTypeOf(new FormGroup<{a: number}>(null));
+  expectTypeOf(controls.get(['b', 'c'])).toMatchTypeOf(new FormArray<FormControl<number>>([]));
+})
 
 test('control select parameter should be of type stream of given type', () => {
   const control = new FormGroup<User>(null);
@@ -66,7 +187,10 @@ test('control select parameter should be of type stream of given type', () => {
 
 test('control setValue should accept value of type User or stream of User', () => {
   const control = new FormGroup<User>(null);
-  const anotherUser = { id: 2, name: 'Netanel' };
+  const anotherUser = {
+    id: 2,
+    name: 'Netanel'
+  };
   expectTypeOf(control.setValue)
     .parameter(0)
     .not.toBeAny();
@@ -155,7 +279,7 @@ test('should be able to support array of validators', () => {
 });
 
 test('should support nested objects', () => {
-  const control = new FormGroup<{ user: User }>({ user: new FormControl<User>() });
+  const control = new FormGroup<{ user: User }>({user: new FormControl<User>()});
   expectTypeOf(control.get(['user']).value.id).toBeNumber();
   expectTypeOf(control.get(['user', 'id']).value).toBeNumber();
 });
