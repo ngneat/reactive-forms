@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, FormArray } from '@ngneat/reactive-forms';
-// import { FormGroup, FormControl } from '@angular/forms';
-
-// REACTIVE FORMS EDIT! // TODO: revert this
 
 interface Profile {
   firstName: string;
