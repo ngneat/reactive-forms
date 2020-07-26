@@ -55,7 +55,6 @@ export class FormBuilder extends NgFormBuilder {
       }
     }
 
-    // Todo: dan remove the any
     return new FormGroup(controls, { asyncValidators, updateOn, validators });
   }
 

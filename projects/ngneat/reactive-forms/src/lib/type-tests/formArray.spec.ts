@@ -1,9 +1,25 @@
 import { expectTypeOf } from 'expect-type';
-import { Observable, of, Subscription } from 'rxjs';
+import {
+  Observable,
+  of,
+  Subscription
+} from 'rxjs';
 import { FormArray } from '../formArray';
 import { FormControl } from '../formControl';
 import { FormGroup } from '../formGroup';
-import { User, user, Errors, required, pattern, patternAsync, requiredAsync, errors } from './mocks.spec';
+import {
+  User,
+  user,
+  Errors,
+  required,
+  pattern,
+  patternAsync,
+  requiredAsync,
+  errors,
+  NestedForm,
+  NestedFormControls,
+  nestedFormValue
+} from './mocks.spec';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormArray).toBeConstructibleWith([new FormControl<User>()]);
@@ -14,9 +30,19 @@ test('control value should be of type User[]', () => {
   expectTypeOf(control.value).toEqualTypeOf([user]);
 });
 
+test('control value should be constructed according to generic control type', () => {
+  const control = new FormArray<FormGroup<NestedFormControls>>([]);
+  expectTypeOf<NestedForm[]>(control.value).toEqualTypeOf([nestedFormValue]);
+})
+
 test('control valueChanges$ should be of type stream of User[]', () => {
   const control = new FormArray<User>([]);
   expectTypeOf(control.value$).toMatchTypeOf(new Observable<User[]>());
+});
+
+test('control valueChanges$ should be of type stream of the controls type', () => {
+  const control = new FormArray<FormGroup<NestedFormControls>>([]);
+  expectTypeOf(control.value$).toMatchTypeOf(new Observable<NestedForm[]>());
 });
 
 test('control toucheChanges$ should be of type stream of boolean', () => {
@@ -132,7 +158,10 @@ test('should be able to insert groups', () => {
     0,
     new FormGroup<User>({ id: new FormControl(1) })
   );
-  control.setControl(1, new FormGroup<any>({}));
+  control.setControl(
+    0,
+    new FormGroup<User>({ id: new FormControl(2) })
+  );
 });
 
 test('should be able to set value to controls', () => {
@@ -157,7 +186,7 @@ test('should be able to set value to groups', () => {
 });
 
 test('should be able to set value to control inside group', () => {
-  const control = new FormArray<User>([]);
+  const control = new FormArray<FormGroup<User>>([]);
   control.setControl(
     0,
     new FormGroup<User>({ id: new FormControl<number>() })
@@ -166,5 +195,5 @@ test('should be able to set value to control inside group', () => {
     .at(0)
     .get('id')
     .setValue(3);
-  expectTypeOf((control.at(0) as FormGroup<User>).getControl('id').value).toBeNumber();
+  expectTypeOf((control.at(0)).getControl('id').value).toBeNumber();
 });

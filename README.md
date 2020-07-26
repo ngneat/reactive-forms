@@ -47,18 +47,31 @@ Let's take a look at all the neat things we provide:
 
 ## Control Type
 
-Each `AbstractControl` takes a generic, which serves as the `type` for any method exposed by Angular or this library:
 
+Each `AbstractControl` takes a generic, which can be neither the value `type` (all `AbstractControl`s) or the type of the controls (`FormGroup`/`FormArray`). This type is than used to enhance every method exposed by Angular or this library. 
 Use it with a `FormControl`:
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl('');
+const control = new FormControl<string>('');
 control.valueChanges.subscribe(value => {
   // value is typed as string
 });
 ```
+
+Use it with a `FormArray`:
+
+```ts
+import { FormArray, FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormArray<string>([new FormControl()]);
+
+control.value$.subscribe(value => {
+  // value is typed as string[]
+});
+```
+
 
 Use it with a `FormGroup`:
 
@@ -89,17 +102,36 @@ profileForm.setValue(new Profile());
 profileForm.patchValue({ firstName: 'Netanel' });
 ```
 
-Use it with a `FormArray`:
+Or alternatively, with the controls as the generic type:
 
 ```ts
-import { FormArray, FormControl } from '@ngneat/reactive-forms';
+import { FormGroup } from '@ngneat/reactive-forms';
 
-const control = new FormArray<string>([new FormControl()]);
+interface ProfileControls {
+  firstName: string; // Note that for primitive types the type "FormControl" is infered, so no need to write that.
+  lastName: string;
+  address: FormGroup<
+    street: string,
+    city: string,
+  >;
+}
 
-control.value$.subscribe(value => {
-  // value is typed as string[]
+const profileForm = new FormGroup<ProfileControls>({
+  firstName: new FormControl(''),
+  lastName: new FormControl(''),
+  address: new FormGroup({
+    street: new FormControl(''),
+    city: new FormControl('')
+  })
 });
+
+// typed as Profile
+profileForm.setValue(new Profile());
+// typed as Partial<Profile>
+profileForm.patchValue({ firstName: 'Netanel' });
 ```
+
+(Note supplying the controls type will enable you to access individual controls later with type inference, and avoid unneeded casting.)
 
 ## Control Queries
 
@@ -342,23 +374,24 @@ control.setDisable(false);
 ### `getControl()`
 
 A method with `typed` parameters which obtains a reference to a specific control.
+When supplying the controls type, type inference for the returned control will be available for up to 2 keys in path. (Thus, for example `getControl('a', 'b', 'c')` will always return `AbstractControl` )  
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
 
-const group = new FormGroup<Profile>(...);
-const address = group.getControl('name') as FormGroup<Profile['address']>;
-const city = group.getControl('address', 'city') as FormControl<string>;
+const group = new FormGroup<ProfileControls>(...);
+const address: FormControl<string> = group.getControl('name');
+const city: FormControl<string> = group.getControl('address', 'city');
 ```
 
-**Note that the return type should still be inferred.**
+Note that if you're only passing the "value" type (e.g. `FormGroup<Profile>`), this method will always return AbstractControl. In that case the return type might need to be inferred.
 
 ### Control Path
 
 The **array** path variation of `hasError()`, `getError()`, and `get()` is now `typed`:
 
 ```ts
-const num = group.get(['phone', 'num']) as FormControl<string>;
+const num = group.get(['phone', 'num']);
 const hasError = group.hasError('required', ['phone', 'num']);
 const getError = group.getError('required', ['phone', 'num']);
 ```
