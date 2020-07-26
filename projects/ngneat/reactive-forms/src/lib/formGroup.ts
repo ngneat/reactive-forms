@@ -41,6 +41,7 @@ import {
   ControlsOfValue
 } from './types';
 import { coerceArray } from './utils';
+import { FormArray } from './formArray';
 
 export class FormGroup<T extends Obj = any,
   E extends object = any> extends NgFormGroup {
@@ -76,7 +77,7 @@ export class FormGroup<T extends Obj = any,
 
   get<K1 extends keyof ControlsValue<T>>(path?: [K1]): ControlsOfValue<T>[K1];
   get<K1 extends keyof ControlsValue<T>,
-    K2 extends (ControlsOfValue<T>[K1] extends FormGroup ? keyof ControlsOfValue<T>[K1]['controls'] : never)>(path?: [K1, K2]): ControlsOfValue<T>[K1] extends FormGroup
+    K2 extends (ControlsOfValue<T>[K1] extends FormGroup | FormArray ? keyof ControlsOfValue<T>[K1]['controls'] : never)>(path?: [K1, K2]): ControlsOfValue<T>[K1] extends FormGroup | FormArray
     ? ControlsOfValue<T>[K1]['controls'][K2]
     : never;
   get<K1 extends keyof ControlsValue<T>,
@@ -92,10 +93,10 @@ export class FormGroup<T extends Obj = any,
 
   getControl<P1 extends keyof ControlsValue<T>>(path?: P1): ControlsOfValue<T>[P1];
   getControl<P1 extends keyof ControlsValue<T>,
-    P2 extends (ControlsOfValue<T>[P1] extends FormGroup ? keyof ControlsOfValue<T>[P1]['controls'] : never)>(
+    P2 extends (ControlsOfValue<T>[P1] extends FormGroup | FormArray ? keyof ControlsOfValue<T>[P1]['controls'] : never)>(
     prop1: P1,
     prop2: P2,
-  ): ControlsOfValue<T>[P1] extends FormGroup
+  ): ControlsOfValue<T>[P1] extends FormGroup | FormArray
     ? ControlsOfValue<T>[P1]['controls'][P2]
     : never;
   getControl<P1 extends keyof ControlsValue<T>,

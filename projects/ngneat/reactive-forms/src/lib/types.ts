@@ -88,17 +88,9 @@ export type ControlsValue<T extends object> = {
  * Converts a value / form control to form control
  * Converting non-control types to AbstractControl of the type
  *
- * The intermediate type is to solve the issue of T being any, thus assignable to all condition and creating a union type
+ * The intermediate type is to solve the issue of T being any, thus assignable to all condition and resulting in the "any" type.
  * */
-type ControlOfValueWithPotentialUnion<T> = T extends FormControl
-    ? FormControl<T['value']>
-    : T extends FormGroup
-      ? FormGroup<T['value']>
-      : T extends FormArray
-        ? FormArray<T['value']>
-        : T extends AbstractControl
-          ? AbstractControl<T['value']>
-          : AbstractControl<T>
+type ControlOfValueWithPotentialUnion<T> = T extends AbstractControl ? T : T extends number | string ? FormControl<T> : AbstractControl<T>
 export type ControlOfValue<T> = AbstractControl extends ControlOfValueWithPotentialUnion<T> ? AbstractControl<ControlOfValueWithPotentialUnion<T>['value']> : ControlOfValueWithPotentialUnion<T>;
 
 /**
