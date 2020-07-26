@@ -384,9 +384,7 @@ const address: FormControl<string> = group.getControl('name');
 const city: FormControl<string> = group.getControl('address', 'city');
 ```
 
-(Note that if you're only passing the value type (`FormGroup<Profile>`), this method will always return AbstractControl)
-
-**Note that the return type should still be inferred.**
+Note that if you're only passing the "value" type (e.g. `FormGroup<Profile>`), this method will always return AbstractControl. In that case the return type might need to be inferred.
 
 ### Control Path
 
