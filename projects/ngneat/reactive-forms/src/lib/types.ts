@@ -71,27 +71,43 @@ export type ExtractAbstractControl<T, U> = T extends KeyValueControls<any>
   ? { [K in keyof U]: AbstractControl<U[K]> }
   : T;
 
+/*
+ * Convert a Control type or a value type
+ * Leaving non-control types as is
+ * */
+export type ControlValue<T> = T extends FormControl | FormGroup | FormArray | AbstractControl ? T['value'] : T;
+
 /**
-* Convert an object of a FormGroup's "value" or "controls" to its "value"
-* */
-export type ControlsValue<C extends object> = {
-  [key in keyof C]: C[key] extends FormControl | FormGroup | FormArray | AbstractControl ? C[key]['value'] : C[key];
+ * Convert an object of a FormGroup's "value" or "controls" to its "value"
+ * */
+export type ControlsValue<T extends object> = {
+  [K in keyof T]: ControlValue<T[K]>
 };
 
 /**
+ * Converts a value / form control to form control
+ * Converting non-control types to AbstractControl of the type
+ *
+ * Note the first condition (T extends any) is used to avoid creation of union types in case T is any.
+ * */
+export type ControlOfValue<T> = T extends any
+  ? AbstractControl
+  : T extends FormControl
+    ? FormControl<T['value']>
+    : T extends FormGroup
+      ? FormGroup<T['value']>
+      : T extends FormArray
+        ? FormArray<T['value']>
+        : T extends AbstractControl
+          ? AbstractControl<T['value']>
+          : AbstractControl<T>
+
+/**
  * Convert an object of a FormGroup's "value" or "controls" to "controls".
- * Converting any non-control type to AbstractControl
-* */
+ * Converting non-control types to AbstractControl of the type
+ * */
 export type ControlsOfValue<T extends Obj> = {
-  [K in keyof T]: T[K] extends FormControl
-    ? FormControl<T[K]['value']>
-    : T[K] extends FormGroup
-      ? FormGroup<T[K]['value']>
-      : T[K] extends FormArray
-        ? FormArray<T[K]['value']>
-        : T[K] extends AbstractControl
-          ? AbstractControl<T[K]['value']>
-          : AbstractControl<T[K]>
+  [K in keyof T]: ControlOfValue<T[K]>
 };
 
 /**
