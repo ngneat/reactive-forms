@@ -88,11 +88,9 @@ export type ControlsValue<T extends object> = {
  * Converts a value / form control to form control
  * Converting non-control types to AbstractControl of the type
  *
- * Note the first condition (T extends any) is used to avoid creation of union types in case T is any.
+ * The intermediate type is to solve the issue of T being any, thus assignable to all condition and creating a union type
  * */
-export type ControlOfValue<T> = T extends any
-  ? AbstractControl
-  : T extends FormControl
+type ControlOfValueWithPotentialUnion<T> = T extends FormControl
     ? FormControl<T['value']>
     : T extends FormGroup
       ? FormGroup<T['value']>
@@ -101,6 +99,7 @@ export type ControlOfValue<T> = T extends any
         : T extends AbstractControl
           ? AbstractControl<T['value']>
           : AbstractControl<T>
+export type ControlOfValue<T> = AbstractControl extends ControlOfValueWithPotentialUnion<T> ? AbstractControl<ControlOfValueWithPotentialUnion<T>['value']> : ControlOfValueWithPotentialUnion<T>;
 
 /**
  * Convert an object of a FormGroup's "value" or "controls" to "controls".

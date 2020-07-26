@@ -1,9 +1,22 @@
 import { expectTypeOf } from 'expect-type';
-import { Observable, of, Subscription } from 'rxjs';
+import {
+  Observable,
+  of,
+  Subscription
+} from 'rxjs';
 import { FormArray } from '../formArray';
 import { FormControl } from '../formControl';
 import { FormGroup } from '../formGroup';
-import { User, user, Errors, required, pattern, patternAsync, requiredAsync, errors } from './mocks.spec';
+import {
+  User,
+  user,
+  Errors,
+  required,
+  pattern,
+  patternAsync,
+  requiredAsync,
+  errors
+} from './mocks.spec';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormArray).toBeConstructibleWith([new FormControl<User>()]);
