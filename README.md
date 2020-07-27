@@ -28,7 +28,8 @@ Let's take a look at all the neat things we provide:
 ✅ Provides Reactive Queries <br>
 ✅ Provides Helpful Methods <br>
 ✅ Typed and DRY `ControlValueAccessor` <br>
-✅ Typed `FormBuilder`
+✅ Typed `FormBuilder` <br>
+✅ Persist the form's value to a storage (e.g. local storage)
 
 ```
 👉 npm install @ngneat/reactive-forms
@@ -42,6 +43,7 @@ Let's take a look at all the neat things we provide:
 - [Control Errors](#control-errors)
 - [ControlValueAccessor](#control-value-accessor)
 - [Form Builder](#form-builder)
+- [Persist Form](#persist-form)
 - [ESLint Rule](#eslint-rule)
 - [Migration](#migration)
 
@@ -434,6 +436,77 @@ interface User {
 // We'll get an error because "id" does not exist in type `User`
 const userGroup: FormGroup<User> = fb.group({ id: 1, userName: 'User', email: 'Email' });
 ```
+
+## Persist Form
+
+Automatically persist value changes of a `FormGroup` via a storage, like local storage, by calling the `persist` function.
+
+```ts
+const group = new FormGroup<Profile>();
+group.persist('profile').subscribe(value => ...);
+```
+
+The `persist` function will also set the `FromGroup` value to the latest state available in the storage before subscribing to value changes.
+
+### `PersistOptions`
+
+Change the target storage or `debounceTime` value by providing options as a second argument in the `persist` function call.
+
+| Option              | Description                                           | Default               |
+|---------------------|-------------------------------------------------------|-----------------------|
+| `debounceTime`      | Update delay in ms between value changes              | 250                   |
+| `manager`           | A manager implementing the `PersistManager` interface | `LocalStorageManager` |
+| `arrControlFactory` | Factory functions for `FormArray`                     |                       |
+
+### Default stores
+
+By default the library provides `LocalStorageManager` and `SessionStorageManager`.
+
+### Custom store
+
+It is possible to store the form value into a custom storage, like a state store; just implement the `PersistManager` interface and use it when calling the `persist` function.
+
+```ts
+export class StateStoreManager<T> implements PersistManager<T> {
+    setValue(key: string, data: T): void {
+        this.store.upsert(key, value);
+    }
+
+    getValue(key: string): T {
+        this.store.getValue(key);
+    }
+}
+
+export class FormComponent implements OnInit {
+    group = new FormGroup<Profile>();
+
+    ngOnInit() {
+        this.group.persist('profile', { manager: new StateStoreManager() }).subscribe();
+    }
+}
+```
+
+### Using `FormArray` Controls.
+
+When working with a `FormArray`, it's required to pass a `factory` function that defines how to create the `controls` inside the `FormArray`.
+
+```ts
+interface Profile {
+    skills: string[];
+}
+
+const group = new FormGroup<Profile>({
+    skills: new FormArray([])
+});
+
+group.persist('profile', {
+    arrControlFactory: {
+        skills: value => new FormControl(value)
+    }
+});
+```
+
+Becuase the form is strongly typed, you can only configure factories for properties that are of type `Array`. The library makes it also possible to correclty infer the type of `value` for the factory function.
 
 ## ESLint Rule
 
