@@ -133,6 +133,28 @@ profileForm.patchValue({ firstName: 'Netanel' });
 
 (Note supplying the controls type will enable you to access individual controls later with type inference, and avoid unneeded casting.)
 
+Another handy type, is the `FlatControls` type, which quickly enables you to set a FormGroup based on a type interface, in which every property is a `FormControl`.
+
+```ts
+interface Profile {
+  firstName: string;
+  lastName: string;
+  address: {
+    street: string;
+    city: string;
+  };
+}
+
+const profileForm = new FormGroup<FlatControls<Profile>>({
+  firstName: new FormControl(''),
+  lastName: new FormControl(''),
+  address: new FormControl({
+    street: '',
+    city: ''
+  })
+});
+```
+
 ## Control Queries
 
 ### `value$`

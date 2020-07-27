@@ -58,19 +58,6 @@ export type OrBoxedValue<T> = T | BoxedValue<T>;
 export type Obj = { [key: string]: any };
 type ArrayType<T> = T extends Array<infer R> ? R : any;
 
-export type KeyValueControls<T extends Obj> = {
-  [K in keyof T]: T[K] extends FormControl<T[K]>
-    ? FormControl<T[K]>
-    : T[K] extends FormGroup<T[K]>
-      ? FormGroup<T[K]>
-      : T[K] extends FormArray<ArrayType<T[K]>>
-        ? FormArray<ArrayType<T[K]>>
-        : AbstractControl<T[K]>;
-};
-export type ExtractAbstractControl<T, U> = T extends KeyValueControls<any>
-  ? { [K in keyof U]: AbstractControl<U[K]> }
-  : T;
-
 /*
  * Convert a Control type or a value type
  * Leaving non-control types as is
@@ -81,7 +68,7 @@ export type ControlValue<T> = T extends FormControl | FormGroup | FormArray | Ab
  * Convert an object of a FormGroup's "value" or "controls" to its "value"
  * */
 export type ControlsValue<T extends object> = {
-  [K in keyof T]: ControlValue<T[K]>
+  [K in keyof T]: ControlValue<T[K]>;
 };
 
 /**
@@ -90,15 +77,21 @@ export type ControlsValue<T extends object> = {
  *
  * The intermediate type is to solve the issue of T being any, thus assignable to all condition and resulting in the "any" type.
  * */
-type ControlOfValueWithPotentialUnion<T> = T extends AbstractControl ? T : T extends number | string ? FormControl<T> : AbstractControl<T>
-export type ControlOfValue<T> = AbstractControl extends ControlOfValueWithPotentialUnion<T> ? AbstractControl<ControlOfValueWithPotentialUnion<T>['value']> : ControlOfValueWithPotentialUnion<T>;
+type ControlOfValueWithPotentialUnion<T> = T extends AbstractControl
+  ? T
+  : T extends number | string | boolean | null | undefined
+  ? FormControl<T>
+  : AbstractControl<T>;
+export type ControlOfValue<T> = AbstractControl extends ControlOfValueWithPotentialUnion<T>
+  ? AbstractControl<ControlOfValueWithPotentialUnion<T>['value']>
+  : ControlOfValueWithPotentialUnion<T>;
 
 /**
  * Convert an object of a FormGroup's "value" or "controls" to "controls".
  * Converting non-control types to AbstractControl of the type
  * */
 export type ControlsOfValue<T extends Obj> = {
-  [K in keyof T]: ControlOfValue<T[K]>
+  [K in keyof T]: ControlOfValue<T[K]>;
 };
 
 /**
