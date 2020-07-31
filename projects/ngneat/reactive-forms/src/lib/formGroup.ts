@@ -1,6 +1,6 @@
 import { FormGroup as NgFormGroup, FormArray as NgFormArray } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, tap, take, switchMap } from 'rxjs/operators';
 import {
   controlDisabled$,
   controlDisabledWhile,
@@ -37,7 +37,7 @@ import {
   PersistOptions,
   ControlFactoryMap
 } from './types';
-import { coerceArray } from './utils';
+import { coerceArray, wrapIntoObservable } from './utils';
 import { PersistManager } from './persistManager';
 import { LocalStorageManager } from './localStorageManager';
 import { FormArray } from './formArray';
@@ -279,17 +279,24 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
 
   persist(key: string, { debounceTime, manager, arrControlFactory }: PersistOptions<T>): Observable<T> {
     const persistManager = manager || new LocalStorageManager();
-    this.restore(key, persistManager, arrControlFactory);
-    return persistValue$(this, key, {
-      debounceTime: debounceTime || 250,
-      manager: persistManager
-    });
+    return this.restore(key, persistManager, arrControlFactory).pipe(
+      switchMap(() =>
+        persistValue$(this, key, {
+          debounceTime: debounceTime || 250,
+          manager: persistManager
+        })
+      )
+    );
   }
 
-  private restore(key: string, manager: PersistManager<T>, arrControlFactory: ControlFactoryMap<T>) {
-    const value = manager.getValue(key);
-    if (!value) return;
-    handleFormArrays(this, value, arrControlFactory);
-    this.patchValue(value, { emitEvent: false });
+  private restore(key: string, manager: PersistManager<T>, arrControlFactory: ControlFactoryMap<T>): Observable<T> {
+    return wrapIntoObservable<T>(manager.getValue(key)).pipe(
+      take(1),
+      tap(value => {
+        if (!value) return;
+        handleFormArrays(this, value, arrControlFactory);
+        this.patchValue(value, { emitEvent: false });
+      })
+    );
   }
 }

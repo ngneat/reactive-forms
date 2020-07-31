@@ -1,6 +1,6 @@
 import { ValidationErrors, FormArray as NgFormArray } from '@angular/forms';
 import { defer, merge, Observable, of, Subscription } from 'rxjs';
-import { distinctUntilChanged, map, tap, debounceTime } from 'rxjs/operators';
+import { distinctUntilChanged, map, tap, debounceTime, switchMap } from 'rxjs/operators';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
@@ -13,7 +13,7 @@ import {
   PersistOptions,
   ControlFactoryMap
 } from './types';
-import { coerceArray, isNil } from './utils';
+import { coerceArray, isNil, wrapIntoObservable } from './utils';
 
 function getControlValue<T>(control: AbstractControl<T>): T {
   if ((control as any).getRawValue) {
@@ -130,7 +130,7 @@ export function hasErrorAndDirty<T>(control: AbstractControl<T>, error: string, 
 
 export function markAllDirty<T>(control: FormArray<T> | FormGroup<T>): void {
   control.markAsDirty({ onlySelf: true });
-  (control as any)._forEachChild(control => control.markAllAsDirty?.());
+  (control as any)._forEachChild(control => control.markAllAsDirty());
 }
 
 export function selectControlValue$<T, R>(
@@ -143,7 +143,7 @@ export function selectControlValue$<T, R>(
 export function persistValue$<T>(control: FormGroup<T>, key: string, options: PersistOptions<T>): Observable<T> {
   return control.valueChanges.pipe(
     debounceTime(options.debounceTime),
-    tap(value => options.manager.setValue(key, value))
+    switchMap(value => wrapIntoObservable(options.manager.setValue(key, value)))
   );
 }
 

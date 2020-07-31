@@ -17,8 +17,9 @@ describe('LocalStorageManager', () => {
     const person = { name: 'ewan', phone: { num: 5550153, prefix: 288 } };
     const spy = jest.spyOn(localStorage, 'setItem').mockImplementation(() => {});
     const storageManager = createStorageManager();
-    storageManager.setValue('key', person);
+    const response = storageManager.setValue('key', person);
     expect(spy).toHaveBeenCalledWith('key', JSON.stringify(person));
+    expect(response).toEqual(person);
   });
 
   it('should get value', () => {
