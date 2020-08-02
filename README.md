@@ -29,7 +29,7 @@ Let's take a look at all the neat things we provide:
 ✅ Provides Helpful Methods <br>
 ✅ Typed and DRY `ControlValueAccessor` <br>
 ✅ Typed `FormBuilder` <br>
-✅ Persist the form's value to a storage (e.g. local storage)
+✅ Persist the form's state to local storage
 
 ```
 👉 npm install @ngneat/reactive-forms
@@ -439,11 +439,11 @@ const userGroup: FormGroup<User> = fb.group({ id: 1, userName: 'User', email: 'E
 
 ## Persist Form
 
-Automatically persist value changes of a `FormGroup` via a storage, like local storage, by calling the `persist` function.
+Automatically persist the `FormGroup`'s value to the given storage:
 
 ```ts
 const group = new FormGroup<Profile>();
-group.persist('profile').subscribe(value => ...);
+const unsubscribe = group.persist('profile').subscribe();
 ```
 
 The `persist` function will also set the `FromGroup` value to the latest state available in the storage before subscribing to value changes.
@@ -458,31 +458,26 @@ Change the target storage or `debounceTime` value by providing options as a seco
 | `manager`           | A manager implementing the `PersistManager` interface | `LocalStorageManager` |
 | `arrControlFactory` | Factory functions for `FormArray`                     |                       |
 
-### Default stores
 
-By default the library provides `LocalStorageManager` and `SessionStorageManager`.
-
-### Custom store
-
-It is possible to store the form value into a custom storage, like a state store; just implement the `PersistManager` interface and use it when calling the `persist` function.
+By default the library provides `LocalStorageManager` and `SessionStorageManager`. It's possible to store the form value into a custom storage. Just implement the `PersistManager` interface, and use it when calling the `persist` function.
 
 ```ts
 export class StateStoreManager<T> implements PersistManager<T> {
-    setValue(key: string, data: T): void {
-        this.store.upsert(key, value);
-    }
+  setValue(key: string, data: T) {
+     ...
+  }
 
-    getValue(key: string): T {
-        this.store.getValue(key);
-    }
+  getValue(key: string) {
+    ...
+  }
 }
 
 export class FormComponent implements OnInit {
-    group = new FormGroup<Profile>();
+  group = new FormGroup<Profile>();
 
-    ngOnInit() {
-        this.group.persist('profile', { manager: new StateStoreManager() }).subscribe();
-    }
+  ngOnInit() {
+    this.group.persist('profile', { manager: new StateStoreManager() }).subscribe();
+  }
 }
 ```
 
@@ -492,17 +487,17 @@ When working with a `FormArray`, it's required to pass a `factory` function that
 
 ```ts
 interface Profile {
-    skills: string[];
+  skills: string[];
 }
 
 const group = new FormGroup<Profile>({
-    skills: new FormArray([])
+  skills: new FormArray([])
 });
 
 group.persist('profile', {
-    arrControlFactory: {
-        skills: value => new FormControl(value)
-    }
+  arrControlFactory: {
+     skills: value => new FormControl(value)
+  }
 });
 ```
 
