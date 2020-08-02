@@ -448,7 +448,7 @@ const unsubscribe = group.persist('profile').subscribe();
 
 The `persist` function will also set the `FromGroup` value to the latest state available in the storage before subscribing to value changes.
 
-### `PersistOptions`
+##### `PersistOptions`
 
 Change the target storage or `debounceTime` value by providing options as a second argument in the `persist` function call.
 
@@ -481,7 +481,7 @@ export class FormComponent implements OnInit {
 }
 ```
 
-### Using `FormArray` Controls.
+##### Using `FormArray` Controls.
 
 When working with a `FormArray`, it's required to pass a `factory` function that defines how to create the `controls` inside the `FormArray`.
 
