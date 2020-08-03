@@ -1,4 +1,4 @@
-import { FormGroup as NgFormGroup, FormArray as NgFormArray } from '@angular/forms';
+import { FormGroup as NgFormGroup } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, tap, take, switchMap } from 'rxjs/operators';
 import {
@@ -33,10 +33,14 @@ import {
   Validator,
   ValidatorOrOpts,
   ControlsValue,
-  ControlsOfValue
+  ControlsOfValue,
+  PersistOptions,
+  ControlFactoryMap
 } from './types';
-import { coerceArray } from './utils';
+import { coerceArray, wrapIntoObservable } from './utils';
 import { FormArray } from './formArray';
+import { LocalStorageManager } from './localStorageManager';
+import { PersistManager } from './persistManager';
 
 export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
   readonly value: ControlsValue<T>;
