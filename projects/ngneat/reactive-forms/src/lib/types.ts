@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
+import { PersistManager } from './persistManager';
 
 export type ValidationErrors<T = NgValidationErrors> = T;
 export type ValidatorFn<T = any, E = any> = (control: AbstractControl<T>) => ValidationErrors<E> | null;
@@ -112,3 +113,15 @@ export type ControlsOfValue<T extends Obj> = {
 export type FlatControls<T extends Object> = {
   [key in keyof T]: FormControl<T[key]>;
 };
+
+export type ArrayKeys<T> = { [K in keyof T]: T[K] extends Array<any> ? K : never }[keyof T];
+export type ControlFactory<T> = (value: T) => AbstractControl<T>;
+export type ControlFactoryMap<T> = {
+  [K in ArrayKeys<T>]?: ControlFactory<ArrayType<T[K]>>;
+};
+
+export interface PersistOptions<T> {
+  debounceTime?: number;
+  manager?: PersistManager<T>;
+  arrControlFactory?: ControlFactoryMap<T>;
+}

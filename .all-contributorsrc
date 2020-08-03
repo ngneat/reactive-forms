@@ -64,6 +64,16 @@
         "test",
         "tool"
       ]
+    },
+    {
+      "login": "tehshin",
+      "name": "tehshin",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/876923?v=4",
+      "profile": "https://github.com/tehshin",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
