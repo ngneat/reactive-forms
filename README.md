@@ -28,7 +28,8 @@ Let's take a look at all the neat things we provide:
 ✅ Provides Reactive Queries <br>
 ✅ Provides Helpful Methods <br>
 ✅ Typed and DRY `ControlValueAccessor` <br>
-✅ Typed `FormBuilder`
+✅ Typed `FormBuilder` <br>
+✅ Persist the form's state to local storage
 
 ```
 👉 npm install @ngneat/reactive-forms
@@ -42,6 +43,7 @@ Let's take a look at all the neat things we provide:
 - [Control Errors](#control-errors)
 - [ControlValueAccessor](#control-value-accessor)
 - [Form Builder](#form-builder)
+- [Persist Form](#persist-form)
 - [ESLint Rule](#eslint-rule)
 - [Migration](#migration)
 
@@ -435,6 +437,72 @@ interface User {
 const userGroup: FormGroup<User> = fb.group({ id: 1, userName: 'User', email: 'Email' });
 ```
 
+## Persist Form
+
+Automatically persist the `FormGroup`'s value to the given storage:
+
+```ts
+const group = new FormGroup<Profile>();
+const unsubscribe = group.persist('profile').subscribe();
+```
+
+The `persist` function will also set the `FromGroup` value to the latest state available in the storage before subscribing to value changes.
+
+##### `PersistOptions`
+
+Change the target storage or `debounceTime` value by providing options as a second argument in the `persist` function call.
+
+| Option              | Description                                           | Default               |
+|---------------------|-------------------------------------------------------|-----------------------|
+| `debounceTime`      | Update delay in ms between value changes              | 250                   |
+| `manager`           | A manager implementing the `PersistManager` interface | `LocalStorageManager` |
+| `arrControlFactory` | Factory functions for `FormArray`                     |                       |
+
+
+By default the library provides `LocalStorageManager` and `SessionStorageManager`. It's possible to store the form value into a custom storage. Just implement the `PersistManager` interface, and use it when calling the `persist` function.
+
+```ts
+export class StateStoreManager<T> implements PersistManager<T> {
+  setValue(key: string, data: T) {
+     ...
+  }
+
+  getValue(key: string) {
+    ...
+  }
+}
+
+export class FormComponent implements OnInit {
+  group = new FormGroup<Profile>();
+
+  ngOnInit() {
+    this.group.persist('profile', { manager: new StateStoreManager() }).subscribe();
+  }
+}
+```
+
+##### Using `FormArray` Controls.
+
+When working with a `FormArray`, it's required to pass a `factory` function that defines how to create the `controls` inside the `FormArray`.
+
+```ts
+interface Profile {
+  skills: string[];
+}
+
+const group = new FormGroup<Profile>({
+  skills: new FormArray([])
+});
+
+group.persist('profile', {
+  arrControlFactory: {
+     skills: value => new FormControl(value)
+  }
+});
+```
+
+Becuase the form is strongly typed, you can only configure factories for properties that are of type `Array`. The library makes it also possible to correclty infer the type of `value` for the factory function.
+
 ## ESLint Rule
 
 We provide a special lint rule that forbids the imports of any token we expose, such as the following:
@@ -474,12 +542,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/danzrou"><img src="https://avatars3.githubusercontent.com/u/6433766?v=4" width="100px;" alt=""/><br /><sub><b>Dan Roujinsky</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=danzrou" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=danzrou" title="Documentation">📖</a> <a href="#ideas-danzrou" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt=""/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=theblushingcrow" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Documentation">📖</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Tests">⚠️</a> <a href="#tool-itayod" title="Tools">🔧</a></td>
+    <td align="center"><a href="https://github.com/tehshin"><img src="https://avatars1.githubusercontent.com/u/876923?v=4" width="100px;" alt=""/><br /><sub><b>tehshin</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=tehshin" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=tehshin" title="Documentation">📖</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

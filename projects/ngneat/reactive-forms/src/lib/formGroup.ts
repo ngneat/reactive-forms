@@ -1,6 +1,6 @@
 import { FormGroup as NgFormGroup } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, switchMap, take, tap } from 'rxjs/operators';
 import {
   controlDisabled$,
   controlDisabledWhile,
@@ -11,18 +11,23 @@ import {
   controlValueChanges$,
   disableControl,
   enableControl,
+  handleFormArrays,
   hasErrorAndDirty,
   hasErrorAndTouched,
   markAllDirty,
   mergeControlAsyncValidators,
   mergeControlValidators,
+  persistValue$,
   selectControlValue$,
   validateControlOn
 } from './control-actions';
+import { LocalStorageManager } from './localStorageManager';
+import { PersistManager } from './persistManager';
 import {
   AbstractControl,
   AsyncValidator,
   ControlEventOptions,
+  ControlFactoryMap,
   ControlOptions,
   ControlState,
   EmitEvent,
@@ -31,9 +36,11 @@ import {
   KeyValueControls,
   Obj,
   OnlySelf,
+  PersistOptions,
   Validator,
   ValidatorOrOpts
 } from './types';
+import { wrapIntoObservable } from './utils';
 
 export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
   readonly value!: T;
@@ -267,5 +274,28 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
 
   setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
+  }
+
+  persist(key: string, { debounceTime, manager, arrControlFactory }: PersistOptions<T>): Observable<T> {
+    const persistManager = manager || new LocalStorageManager();
+    return this.restore(key, persistManager, arrControlFactory).pipe(
+      switchMap(() =>
+        persistValue$(this, key, {
+          debounceTime: debounceTime || 250,
+          manager: persistManager
+        })
+      )
+    );
+  }
+
+  private restore(key: string, manager: PersistManager<T>, arrControlFactory: ControlFactoryMap<T>): Observable<T> {
+    return wrapIntoObservable<T>(manager.getValue(key)).pipe(
+      take(1),
+      tap(value => {
+        if (!value) return;
+        handleFormArrays(this, value, arrControlFactory);
+        this.patchValue(value, { emitEvent: false });
+      })
+    );
   }
 }
