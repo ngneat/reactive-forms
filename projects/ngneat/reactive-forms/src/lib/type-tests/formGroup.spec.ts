@@ -104,7 +104,7 @@ test('control should be constructed according to generic controls type', () => {
       a: new FormControl('3'),
       c: new FormArray([new FormControl(33)])
     }),
-    c: new FormArray([new FormGroup({ a: new FormControl(3) })])
+    c: new FormArray([new FormGroup<{ a: FormControl<number> }>({ a: new FormControl(3) })])
   });
   const d = new FormGroup<{
     a: FormControl<number>;
