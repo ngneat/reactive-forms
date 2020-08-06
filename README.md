@@ -501,7 +501,7 @@ group.persist('profile', {
 });
 ```
 
-Becuase the form is strongly typed, you can only configure factories for properties that are of type `Array`. The library makes it also possible to correclty infer the type of `value` for the factory function.
+Because the form is strongly typed, you can only configure factories for properties that are of type `Array`. The library makes it also possible to correctly infer the type of `value` for the factory function.
 
 ## ESLint Rule
 
