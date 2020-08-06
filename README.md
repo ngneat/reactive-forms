@@ -29,7 +29,8 @@ Let's take a look at all the neat things we provide:
 ✅ Provides Helpful Methods <br>
 ✅ Typed and DRY `ControlValueAccessor` <br>
 ✅ Typed `FormBuilder` <br>
-✅ Persist the form's state to local storage
+✅ Persist the form's state to local storage <br>
+✅ Compatible with Angular versions 8+
 
 ```
 👉 npm install @ngneat/reactive-forms
