@@ -437,6 +437,21 @@ interface User {
 const userGroup: FormGroup<User> = fb.group({ id: 1, userName: 'User', email: 'Email' });
 ```
 
+_note:_ While the FormGroups/FormControls/etc created with our FormBuilder will have all additions, currently TS will not infer this, so one should still 'cast' them again on use:
+
+```ts
+const group = fb.group({
+  userName: null,
+  email: null
+});
+
+// will get TS error
+group.controls.email.errors$.subscribe();
+
+// will not get TS error
+(group.controls.email as FormControl<string>).errors$.subscribe();
+```
+
 ## Persist Form
 
 Automatically persist the `FormGroup`'s value to the given storage:
