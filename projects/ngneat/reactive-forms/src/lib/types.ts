@@ -1,9 +1,7 @@
 import {
   AbstractControl as NgAbstractControl,
   AbstractControlOptions as NgAbstractControlOptions,
-  AsyncValidatorFn as NgAsyncValidatorFn,
-  ValidationErrors as NgValidationErrors,
-  ValidatorFn as NgValidatorFn
+  ValidationErrors as NgValidationErrors
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormArray } from './formArray';
@@ -13,13 +11,15 @@ import { PersistManager } from './persistManager';
 
 export type ValidationErrors<T = NgValidationErrors> = T;
 
-export interface ValidatorFn<T = any, E = ValidationErrors> extends NgValidatorFn {
+export type ValidatorFn<T = any, E = ValidationErrors> = {
   (control: AbstractControl<T>): ValidationErrors<E> | null;
-}
+};
 
-export interface AsyncValidatorFn<T = any, E = any> extends NgAsyncValidatorFn {
-  (control: AbstractControl<T>): Promise<ValidationErrors<E> | null> | Observable<ValidationErrors<E> | null>;
-}
+export type AsyncValidatorFn<T = any, E = any> = {
+  (control: AbstractControl<T> | FormControl<T> | FormGroup<T> | FormArray<T>):
+    | Promise<ValidationErrors<E> | null>
+    | Observable<ValidationErrors<E> | null>;
+};
 
 export interface AbstractControlOptions<T = any, E = any> extends NgAbstractControlOptions {
   validators?: ValidatorFn<T, E> | ValidatorFn<T, E>[] | null;

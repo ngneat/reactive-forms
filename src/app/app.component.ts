@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, FormArray } from '@ngneat/reactive-forms';
-// import { FormGroup, FormControl } from '@angular/forms';
 
 interface Profile {
   firstName: string;
   lastName: string;
   skills: string[];
-  controlArray: string[],
+  controlArray: string[];
   controlObject: {
-    key: string
-  },
+    key: string;
+  };
   address: {
     street: string;
     city: string;
@@ -27,7 +26,7 @@ export class AppComponent {
     lastName: new FormControl(''),
     skills: new FormArray([]),
     controlArray: new FormControl([]),
-    controlObject: new FormControl({value: { key: ''}}),
+    controlObject: new FormControl({ value: { key: '' } }),
     address: new FormGroup({
       street: new FormControl(''),
       city: new FormControl('')
@@ -45,7 +44,7 @@ export class AppComponent {
   });
 
   ngOnInit() {
-    this.profileForm.patchValue({firstName: 'Netanel'});
+    this.profileForm.patchValue({ firstName: 'Netanel' });
   }
 
   get skills() {

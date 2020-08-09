@@ -1,18 +1,21 @@
-import { ValidationErrors, FormArray as NgFormArray } from '@angular/forms';
+import { FormArray as NgFormArray, ValidationErrors } from '@angular/forms';
 import { defer, merge, Observable, of, Subscription } from 'rxjs';
-import { distinctUntilChanged, map, tap, debounceTime, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
 import {
   AbstractControl,
-  ControlOptions,
+  ArrayKeys,
   AsyncValidatorFn,
-  ControlState,
-  ValidatorFn,
+  ControlFactory,
+  ControlFactoryMap,
+  ControlOptions,
   ControlPath,
+  ControlState,
+  Obj,
   PersistOptions,
-  ControlFactoryMap
+  ValidatorFn
 } from './types';
 import { coerceArray, isNil, wrapIntoObservable } from './utils';
 
@@ -151,15 +154,15 @@ export function selectControlValue$<T, R>(
 
 export function persistValue$<T>(control: FormGroup<T>, key: string, options: PersistOptions<T>): Observable<T> {
   return control.valueChanges.pipe(
-    debounceTime(options.debounceTime),
-    switchMap(value => wrapIntoObservable(options.manager.setValue(key, value)))
+    debounceTime(options.debounceTime!),
+    switchMap(value => wrapIntoObservable(options.manager!.setValue(key, value)))
   );
 }
 
-export function handleFormArrays<T>(
+export function handleFormArrays<T extends Obj>(
   control: AbstractControl<T>,
   formValue: T,
-  arrControlFactory: ControlFactoryMap<T>
+  arrControlFactory: ControlFactoryMap<T> | undefined
 ) {
   Object.keys(formValue).forEach(controlName => {
     const value = formValue[controlName];
@@ -168,7 +171,7 @@ export function handleFormArrays<T>(
         throw new Error(`Please provide arrControlFactory for ${controlName}`);
       }
       const current = control.get(controlName) as NgFormArray;
-      const fc = arrControlFactory[controlName];
+      const fc = arrControlFactory[controlName as ArrayKeys<T>] as ControlFactory<T[ArrayKeys<T>]>;
       clearFormArray(current);
       value.forEach((v, i) => current.insert(i, fc(v)));
     }
