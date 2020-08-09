@@ -1,9 +1,10 @@
-import { fakeAsync, tick, flush } from '@angular/core/testing';
-import { of, Subject, Observable, timer, from } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
+import { ValidatorFn } from '@ngneat/reactive-forms';
+import { Observable, of, Subject, timer } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import { FormArray } from './formArray';
-import { switchMap } from 'rxjs/operators';
 import { wrapIntoObservable } from './utils';
 
 type Person = {
@@ -15,7 +16,7 @@ type Person = {
   skills: string[];
 };
 
-const errorFn = group => {
+const errorFn = () => {
   return { isInvalid: true };
 };
 
@@ -240,7 +241,7 @@ describe('FormGroup', () => {
 
   it('should validateOn', () => {
     const control = createGroup();
-    const subject = new Subject<object>();
+    const subject = new Subject<object | null>();
     control.validateOn(subject);
     subject.next({ someError: true });
     expect(control.errors).toEqual({ someError: true });
@@ -288,8 +289,8 @@ describe('FormGroup', () => {
 
   it('should errorChanges$', () => {
     const control = createGroup();
-    const validator = (control: FormGroup<Person>) =>
-      control.getRawValue().name === 'Test' ? { invalidName: true } : null;
+    const validator: ValidatorFn = control =>
+      (control as FormGroup).getRawValue().name === 'Test' ? { invalidName: true } : null;
     control.setValidators(validator);
     const spy = jest.fn();
     control.errors$.subscribe(spy);
@@ -321,8 +322,10 @@ describe('FormGroup', () => {
         expect(persistManager.setValue).toHaveBeenCalledTimes(2);
         expect(persistManager.setValue).toHaveBeenLastCalledWith('key', control.value);
         if (tickMs) {
+          // @ts-ignore
           expect(persistValue).toBeFalsy();
           tick(tickMs);
+          // @ts-ignore
           expect(persistValue.name).toEqual('ewan mc');
         }
       })

@@ -1,8 +1,9 @@
+import { ValidatorFn } from '@ngneat/reactive-forms';
 import { of, Subject } from 'rxjs';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 
-const errorFn = group => {
+const errorFn = () => {
   return { isInvalid: true };
 };
 
@@ -160,7 +161,7 @@ describe('FormArray', () => {
   it('should validateOn', () => {
     const control = createArray();
 
-    const subject = new Subject<object>();
+    const subject = new Subject<object | null>();
     control.validateOn(subject);
     subject.next({ someError: true });
     expect(control.errors).toEqual({ someError: true });
@@ -204,7 +205,7 @@ describe('FormArray', () => {
   it('should errorChanges$', () => {
     const control = createArray();
     const spy = jest.fn();
-    const validator = (control: FormArray) => (control.length < 4 ? { minimum: 4 } : null);
+    const validator: ValidatorFn = control => ((control as FormArray).length < 4 ? { minimum: 4 } : null);
     control.setValidators(validator);
     control.errors$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith({ minimum: 4 });
