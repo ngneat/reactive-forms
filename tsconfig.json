@@ -10,7 +10,6 @@
     "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
-    "strict": true,
     "target": "es2015",
     "lib": ["es2018", "dom"],
     "paths": {
