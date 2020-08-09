@@ -288,7 +288,11 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     );
   }
 
-  private restore(key: string, manager: PersistManager<T>, arrControlFactory: ControlFactoryMap<T>): Observable<T> {
+  private restore(
+    key: string,
+    manager: PersistManager<T>,
+    arrControlFactory: ControlFactoryMap<T> | undefined
+  ): Observable<T> {
     return wrapIntoObservable<T>(manager.getValue(key)).pipe(
       take(1),
       tap(value => {
