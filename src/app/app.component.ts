@@ -13,6 +13,7 @@ interface Profile {
     street: string;
     city: string;
   };
+  isVegetarian: boolean;
 }
 
 @Component({
@@ -30,7 +31,8 @@ export class AppComponent {
     address: new FormGroup({
       street: new FormControl(''),
       city: new FormControl('')
-    })
+    }),
+    isVegetarian: new FormControl()
   });
 
   ngOnInit() {

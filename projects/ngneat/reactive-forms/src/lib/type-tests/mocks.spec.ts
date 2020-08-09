@@ -1,10 +1,6 @@
 import { of } from 'rxjs';
 import { ControlsOfValue } from '../types';
-import {
-  FormControl,
-  FormGroup,
-  FormArray
-} from '@ngneat/reactive-forms';
+import { FormControl, FormGroup, FormArray } from '@ngneat/reactive-forms';
 
 export interface NestedForm {
   a: number;
@@ -13,15 +9,16 @@ export interface NestedForm {
     c: number[];
   };
   c?: { a: number }[];
+  d?: boolean;
 }
 
 export interface NestedFormControls {
-  a: FormControl<number>,
+  a: FormControl<number>;
   b: FormGroup<{
-    a: FormControl<string>,
-    c: FormArray<FormControl<number>>,
-  }>,
-  c: FormArray<FormGroup<{ a: number }>>
+    a: FormControl<string>;
+    c: FormArray<FormControl<number>>;
+  }>;
+  c: FormArray<FormGroup<{ a: number }>>;
 }
 
 export interface User {
@@ -37,10 +34,10 @@ export const nestedFormValue: NestedForm = {
   a: 1,
   b: {
     a: '1',
-    c: [1],
+    c: [1]
   },
-  c: [{a: 2}],
-}
+  c: [{ a: 2 }]
+};
 export const errors: Errors = { required: true, pattern: { requiredPattern: '*', actualValue: '*' } };
 export const required = control => ({ required: true });
 export const pattern = control => ({ pattern: { requiredPattern: '*', actualValue: '*' } });

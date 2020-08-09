@@ -77,10 +77,12 @@ export type ControlsValue<T extends object> = {
  * Converting non-control types to AbstractControl of the type
  *
  * The intermediate type is to solve the issue of T being any, thus assignable to all condition and resulting in the "any" type.
+ *
+ * Note the use of an array is to prevent to use of distributive conditional types. (https://github.com/microsoft/TypeScript/issues/37279)
  * */
-type ControlOfValueWithPotentialUnion<T> = T extends AbstractControl
+type ControlOfValueWithPotentialUnion<T> = [T] extends [AbstractControl]
   ? T
-  : T extends number | string | boolean | null | undefined
+  : [T] extends [number | string | boolean | null | undefined]
   ? FormControl<T>
   : AbstractControl<T>;
 export type ControlOfValue<T> = AbstractControl extends ControlOfValueWithPotentialUnion<T>

@@ -33,7 +33,8 @@ test('control should be constructed according to generic type', () => {
     b: new FormControl({
       a: '',
       c: [3]
-    })
+    }),
+    d: new FormControl<boolean>()
   });
   const b = new FormGroup<NestedForm>({
     a: new FormControl(22),
