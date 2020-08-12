@@ -313,7 +313,7 @@ describe('FormGroup', () => {
             return tickMs ? timer(tickMs).pipe(switchMap(() => of(value))) : value;
           })
         };
-        let persistValue: Person;
+        let persistValue: Person = null;
         control.persist('key', { debounceTime, manager: persistManager }).subscribe(value => (persistValue = value));
         control.getControl('name').setValue('ewan');
         tick(debounceTime);
@@ -322,10 +322,8 @@ describe('FormGroup', () => {
         expect(persistManager.setValue).toHaveBeenCalledTimes(2);
         expect(persistManager.setValue).toHaveBeenLastCalledWith('key', control.value);
         if (tickMs) {
-          // @ts-ignore
           expect(persistValue).toBeFalsy();
           tick(tickMs);
-          // @ts-ignore
           expect(persistValue.name).toEqual('ewan mc');
         }
       })
