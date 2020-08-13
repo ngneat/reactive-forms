@@ -33,7 +33,7 @@ import {
   Validator,
   ValidatorOrOpts,
   ControlsValue,
-  ControlsOfValue,
+  AbstractControlsOf,
   PersistOptions,
   ControlFactoryMap
 } from './types';
@@ -61,7 +61,11 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   readonly status$ = controlStatusChanges$<ControlsValue<T>>(this);
   readonly errors$ = controlErrorChanges$<E>(this);
 
-  constructor(public controls: ControlsOfValue<T>, validatorOrOpts?: ValidatorOrOpts, asyncValidator?: AsyncValidator) {
+  constructor(
+    public controls: AbstractControlsOf<T>,
+    validatorOrOpts?: ValidatorOrOpts,
+    asyncValidator?: AsyncValidator
+  ) {
     super(controls, validatorOrOpts, asyncValidator);
   }
 
@@ -73,13 +77,15 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     return super.getRawValue();
   }
 
-  get<K1 extends keyof ControlsValue<T>>(path?: [K1]): ControlsOfValue<T>[K1];
+  get<K1 extends keyof ControlsValue<T>>(path?: [K1]): AbstractControlsOf<T>[K1];
   get<
     K1 extends keyof ControlsValue<T>,
-    K2 extends ControlsOfValue<T>[K1] extends FormGroup | FormArray ? keyof ControlsOfValue<T>[K1]['controls'] : never
+    K2 extends AbstractControlsOf<T>[K1] extends FormGroup | FormArray
+      ? keyof AbstractControlsOf<T>[K1]['controls']
+      : never
   >(
     path?: [K1, K2]
-  ): ControlsOfValue<T>[K1] extends FormGroup | FormArray ? ControlsOfValue<T>[K1]['controls'][K2] : never;
+  ): AbstractControlsOf<T>[K1] extends FormGroup | FormArray ? AbstractControlsOf<T>[K1]['controls'][K2] : never;
   get<K1 extends keyof ControlsValue<T>, K2 extends keyof ControlsValue<T>[K1]>(
     path?: [K1, K2]
   ): AbstractControl<ControlsValue<T>[K1][K2]>;
@@ -93,14 +99,16 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     return super.get(path);
   }
 
-  getControl<P1 extends keyof ControlsValue<T>>(path?: P1): ControlsOfValue<T>[P1];
+  getControl<P1 extends keyof ControlsValue<T>>(path?: P1): AbstractControlsOf<T>[P1];
   getControl<
     P1 extends keyof ControlsValue<T>,
-    P2 extends ControlsOfValue<T>[P1] extends FormGroup | FormArray ? keyof ControlsOfValue<T>[P1]['controls'] : never
+    P2 extends AbstractControlsOf<T>[P1] extends FormGroup | FormArray
+      ? keyof AbstractControlsOf<T>[P1]['controls']
+      : never
   >(
     prop1: P1,
     prop2: P2
-  ): ControlsOfValue<T>[P1] extends FormGroup | FormArray ? ControlsOfValue<T>[P1]['controls'][P2] : never;
+  ): AbstractControlsOf<T>[P1] extends FormGroup | FormArray ? AbstractControlsOf<T>[P1]['controls'][P2] : never;
   getControl<P1 extends keyof ControlsValue<T>, P2 extends keyof ControlsValue<T>[P1]>(
     prop1: P1,
     prop2: P2
@@ -115,7 +123,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     return this.get(names);
   }
 
-  addControl<K extends ExtractStrings<T>>(name: K, control: ControlsOfValue<T>[K]): void {
+  addControl<K extends ExtractStrings<T>>(name: K, control: AbstractControlsOf<T>[K]): void {
     super.addControl(name, control);
   }
 
@@ -127,7 +135,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     return super.contains(controlName);
   }
 
-  setControl<K extends ExtractStrings<T>>(name: K, control: ControlsOfValue<T>[K]): void {
+  setControl<K extends ExtractStrings<T>>(name: K, control: AbstractControlsOf<T>[K]): void {
     super.setControl(name, control);
   }
 

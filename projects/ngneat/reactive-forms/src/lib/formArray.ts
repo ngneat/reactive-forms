@@ -1,14 +1,6 @@
 import { FormArray as NgFormArray } from '@angular/forms';
-import {
-  isObservable,
-  Observable,
-  Subject,
-  Subscription
-} from 'rxjs';
-import {
-  distinctUntilChanged,
-  map
-} from 'rxjs/operators';
+import { isObservable, Observable, Subject, Subscription } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import {
   controlDisabled$,
   controlDisabledWhile,
@@ -36,7 +28,7 @@ import {
   Validator,
   ValidatorOrOpts,
   ControlValue,
-  ControlOfValue
+  AbstractControlOf
 } from './types';
 import { coerceArray } from './utils';
 
@@ -60,7 +52,7 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   readonly errors$ = controlErrorChanges$<E>(this);
 
   constructor(
-    public controls: Array<ControlOfValue<T>>,
+    public controls: Array<AbstractControlOf<T>>,
     validatorOrOpts?: ValidatorOrOpts,
     asyncValidator?: AsyncValidator
   ) {
@@ -75,13 +67,16 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     return super.getRawValue();
   }
 
-  at(index: number): ControlOfValue<T> {
-    return super.at(index) as ControlOfValue<T>;
+  at(index: number): AbstractControlOf<T> {
+    return super.at(index) as AbstractControlOf<T>;
   }
 
   setValue(valueOrObservable: Observable<ControlValue<T>[]>, options?: ControlEventOptions): Subscription;
   setValue(valueOrObservable: ControlValue<T>[], options?: ControlEventOptions): void;
-  setValue(valueOrObservable: ControlValue<T>[] | Observable<ControlValue<T>[]>, options?: ControlEventOptions): Subscription | void {
+  setValue(
+    valueOrObservable: ControlValue<T>[] | Observable<ControlValue<T>[]>,
+    options?: ControlEventOptions
+  ): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.setValue(value, options));
     }
@@ -99,15 +94,15 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     super.patchValue(valueOrObservable as T[], options);
   }
 
-  push(control: ControlOfValue<T>): void {
+  push(control: AbstractControlOf<T>): void {
     return super.push(control);
   }
 
-  insert(index: number, control: ControlOfValue<T>): void {
+  insert(index: number, control: AbstractControlOf<T>): void {
     return super.insert(index, control);
   }
 
-  setControl(index: number, control: ControlOfValue<T>): void {
+  setControl(index: number, control: AbstractControlOf<T>): void {
     return super.setControl(index, control);
   }
 

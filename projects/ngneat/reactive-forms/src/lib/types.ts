@@ -8,6 +8,7 @@ import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
 import { PersistManager } from './persistManager';
+import { NestedForm } from './type-tests/mocks.spec';
 
 export type ValidationErrors<T = NgValidationErrors> = T;
 export type ValidatorFn<T = any, E = any> = (control: AbstractControl<T>) => ValidationErrors<E> | null;
@@ -72,6 +73,10 @@ export type ControlsValue<T extends object> = {
   [K in keyof T]: ControlValue<T[K]>;
 };
 
+type Primitive = number | string | boolean | null | undefined;
+
+type UnwrapArray<T> = T extends Array<infer U> ? U : never;
+
 /**
  * Converts a value / form control to form control
  * Converting non-control types to AbstractControl of the type
@@ -80,21 +85,21 @@ export type ControlsValue<T extends object> = {
  *
  * Note the use of an array is to prevent to use of distributive conditional types. (https://github.com/microsoft/TypeScript/issues/37279)
  * */
-type ControlOfValueWithPotentialUnion<T> = [T] extends [AbstractControl]
+type AbstractControlOfWithPotentialUnion<T> = [T] extends [AbstractControl]
   ? T
-  : [T] extends [number | string | boolean | null | undefined]
+  : [T] extends [Primitive]
   ? FormControl<T>
   : AbstractControl<T>;
-export type ControlOfValue<T> = AbstractControl extends ControlOfValueWithPotentialUnion<T>
-  ? AbstractControl<ControlOfValueWithPotentialUnion<T>['value']>
-  : ControlOfValueWithPotentialUnion<T>;
+export type AbstractControlOf<T> = AbstractControl extends AbstractControlOfWithPotentialUnion<T>
+  ? AbstractControl<AbstractControlOfWithPotentialUnion<T>['value']>
+  : AbstractControlOfWithPotentialUnion<T>;
 
 /**
  * Convert an object of a FormGroup's "value" or "controls" to "controls".
  * Converting non-control types to AbstractControl of the type
  * */
-export type ControlsOfValue<T extends Obj> = {
-  [K in keyof T]: ControlOfValue<T[K]>;
+export type AbstractControlsOf<T extends Obj> = {
+  [K in keyof T]: AbstractControlOf<T[K]>;
 };
 
 /**
@@ -112,8 +117,37 @@ export type ControlsOfValue<T extends Obj> = {
  *   phone: new FormControl<{num: number, prefix: number}>(),
  * });
  * */
-export type FlatControls<T extends Object> = {
+export type FlatControlsOf<T extends Object> = {
   [key in keyof T]: FormControl<T[key]>;
+};
+
+/**
+ * Use with FormGroup you want a FormControl for a primitive, a FormGroup for an object, and a FormArray for an array
+ *
+ * @example
+ * new FormGroup<DeepControls<{
+ *   name: string;
+ *   phone: {
+ *      num: number;
+ *      prefix: number;
+ *   };
+ *   children: string[],
+ * }>>({
+ *   name: new FormControl<string>(),
+ *   phone: new FormGroup({
+ *     num: new FormControl<number>(),
+ *     prefix: new FormControl<number>(),
+ *   }),
+ *   children: new FormArray([ new FormControl<number>() ])
+ * });
+ * */
+export type DeepControlOf<T> = [T] extends [any[]]
+  ? FormArray<DeepControlOf<UnwrapArray<T>>>
+  : [T] extends [object]
+  ? FormGroup<DeepControlsOf<T>>
+  : FormControl<T>;
+export type DeepControlsOf<T extends Object> = {
+  [key in keyof T]: DeepControlOf<T[key]>;
 };
 
 export type ArrayKeys<T> = { [K in keyof T]: T[K] extends Array<any> ? K : never }[keyof T];

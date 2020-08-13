@@ -17,7 +17,7 @@ import {
   NestedFormControls
 } from './mocks.spec';
 import { Validators } from '@angular/forms';
-import { FlatControls } from '../types';
+import { FlatControlsOf, DeepControlsOf } from '../types';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl() });
@@ -124,15 +124,50 @@ test('control should be constructed according to generic controls type', () => {
   });
 });
 
-test('control should be constructed according to generic control type with FlatControls interface', () => {
-  const a = new FormGroup<FlatControls<NestedForm>>({
+test('control should be constructed according to generic control type with FlatControlsOf interface', () => {
+  const a = new FormGroup<FlatControlsOf<Required<NestedForm>>>({
     a: new FormControl<number>(),
     b: new FormControl<{
       a: string;
       c: number[];
     }>(),
-    c: new FormControl<{ a: number }[]>()
+    c: new FormControl<{ a: number }[]>(),
+    d: new FormControl<boolean>()
   });
+  expectTypeOf<{
+    a: FormControl<number>;
+    b: FormControl<{
+      a: string;
+      c: number[];
+    }>;
+    c: FormControl<{ a: number }[]>;
+    d: FormControl<boolean>;
+  }>(a.controls);
+});
+
+test('control should be constructed according to type with DeepControlsOf interface', () => {
+  const a = new FormGroup<DeepControlsOf<Required<NestedForm>>>({
+    a: new FormControl<number>(),
+    b: new FormGroup<DeepControlsOf<NestedForm['b']>>({
+      a: new FormControl<string>(),
+      c: new FormArray<FormControl<number>>([])
+    }),
+    c: new FormArray<FormGroup<{ a: FormControl<number> }>>([
+      new FormGroup<{ a: FormControl<number> }>({
+        a: new FormControl<number>()
+      })
+    ]),
+    d: new FormControl<boolean>()
+  });
+  expectTypeOf<{
+    a: FormControl<number>;
+    b: FormGroup<{
+      a: FormControl<string>;
+      c: FormArray<FormControl<number>>;
+    }>;
+    c: FormArray<FormGroup<{ a: FormControl<number> }>>;
+    d: FormControl<boolean>;
+  }>(a.controls);
 });
 
 test('control value should be of type corresponding to the controls type', () => {
