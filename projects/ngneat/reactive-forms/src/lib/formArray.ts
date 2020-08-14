@@ -190,4 +190,12 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
   }
+
+  remove(value: T) {
+    throw Error('NotImplemented');
+  }
+
+  removeWhen(predicate: (element: AbstractControl<T>) => boolean) {
+    throw Error('NotImplemented');
+  }
 }
