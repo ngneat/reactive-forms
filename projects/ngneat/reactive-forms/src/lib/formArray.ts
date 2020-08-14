@@ -192,10 +192,16 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   }
 
   remove(value: T) {
-    throw Error('NotImplemented');
+    this.removeWhen(v => v.value === value);
   }
 
   removeWhen(predicate: (element: AbstractControl<T>) => boolean) {
-    throw Error('NotImplemented');
+    const toRemove: number[] = [];
+    for (let i = 0; i < this.length; ++i) {
+      if (predicate(this.at(i))) {
+        toRemove.push(i);
+      }
+    }
+    toRemove.sort((idx1, idx2) => idx2 - idx1).forEach(idx => this.removeAt(idx));
   }
 }
