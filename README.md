@@ -356,6 +356,32 @@ const city = group.getControl('address', 'city') as FormControl<string>;
 
 **Note that the return type should still be inferred.**
 
+### FormArray methods
+
+### remove()
+
+Remove a control from an array based on its value
+
+```ts
+import { FormArray } from '@ngneat/reactive-forms';
+
+const array = new FormArray<string>(...);
+// Remove empty strings
+array.remove('')
+```
+
+### removeIf()
+
+Remove a control from an array based on a predicate
+
+```ts
+import { FormArray } from '@ngneat/reactive-forms';
+
+const array = new FormArray<Profile>(...);
+// Only keep addresses in NYC
+array.removeIf((control) => control.get('address').get('city').value !== 'New York')
+```
+
 ### Control Path
 
 The **array** path variation of `hasError()`, `getError()`, and `get()` is now `typed`:
