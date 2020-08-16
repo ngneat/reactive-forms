@@ -213,6 +213,7 @@ describe('FormArray', () => {
     control.push(new FormControl('Phone'));
     expect(spy).toHaveBeenCalledWith(null);
   });
+
   it('should remove', () => {
     const control = createArray();
     control.clear();
@@ -224,7 +225,8 @@ describe('FormArray', () => {
     control.remove('Name');
     expect(control.getRawValue()).toEqual(['Phone', 'Address']);
   });
-  it('should removeWhen', () => {
+
+  it('should removeIf', () => {
     const control = createArray();
     control.clear();
     control.push(new FormControl('FirstName'));
@@ -237,7 +239,8 @@ describe('FormArray', () => {
     control.removeWhen(elt => elt.value.match(/Name$/) != null);
     expect(control.getRawValue()).toEqual(['Phone', 'StreetNumber', 'ZipCode']);
   });
-  it('should removeWhen', () => {
+
+  it('should removeIf with nested form groups', () => {
     const control = createArray();
     control.clear();
     control.push(new FormGroup({ type: new FormControl('Jedi'), name: new FormControl('Luke') }));
