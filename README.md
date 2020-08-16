@@ -46,6 +46,7 @@ Let's take a look at all the neat things we provide:
 - [Persist Form](#persist-form)
 - [ESLint Rule](#eslint-rule)
 - [Migration](#migration)
+- [Compatibility](#compatibility)
 
 ## Control Type
 
@@ -492,6 +493,21 @@ interface User {
 const userGroup: FormGroup<User> = fb.group({ id: 1, userName: 'User', email: 'Email' });
 ```
 
+_note:_ While the FormGroups/FormControls/etc created with our FormBuilder will have all additions, currently TS will not infer this, so one should still 'cast' them again on use:
+
+```ts
+const group = fb.group({
+  userName: null,
+  email: null
+});
+
+// will get TS error
+group.controls.email.errors$.subscribe();
+
+// will not get TS error
+(group.controls.email as FormControl<string>).errors$.subscribe();
+```
+
 ## Persist Form
 
 Automatically persist the `FormGroup`'s value to the given storage:
@@ -556,7 +572,7 @@ group.persist('profile', {
 });
 ```
 
-Becuase the form is strongly typed, you can only configure factories for properties that are of type `Array`. The library makes it also possible to correclty infer the type of `value` for the factory function.
+Because the form is strongly typed, you can only configure factories for properties that are of type `Array`. The library makes it also possible to correctly infer the type of `value` for the factory function.
 
 ## ESLint Rule
 
@@ -583,6 +599,10 @@ ng g @ngneat/reactive-forms:migrate
 
 Further information about the script can be found [here](https://github.com/ngneat/reactive-forms/tree/master/schematics/src/migrate/migration.md).
 
+## Compatibility
+
+Reactive-forms is compatible with Angular versions 8 and later.
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -598,6 +618,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt=""/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=theblushingcrow" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Documentation">📖</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Tests">⚠️</a> <a href="#tool-itayod" title="Tools">🔧</a></td>
     <td align="center"><a href="https://github.com/tehshin"><img src="https://avatars1.githubusercontent.com/u/876923?v=4" width="100px;" alt=""/><br /><sub><b>tehshin</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=tehshin" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=tehshin" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/MilesHeise"><img src="https://avatars1.githubusercontent.com/u/29102438?v=4" width="100px;" alt=""/><br /><sub><b>Miles Heise</b></sub></a><br /> <a href="https://github.com/@ngneat/reactive-forms/commits?author=MilesHeise" title="Documentation">📖</a></td>
   </tr>
 </table>
 

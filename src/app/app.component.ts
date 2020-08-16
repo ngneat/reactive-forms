@@ -35,6 +35,16 @@ export class AppComponent {
     isVegetarian: new FormControl()
   });
 
+  legacyForm = new FormGroup({
+    firstName: new FormControl(''),
+    skills: new FormArray([]),
+    lastName: new FormControl(''),
+    address: new FormGroup({
+      street: new FormControl(''),
+      city: new FormControl('')
+    })
+  });
+
   ngOnInit() {
     this.profileForm.patchValue({ firstName: 'Netanel' });
   }
