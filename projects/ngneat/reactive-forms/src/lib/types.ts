@@ -67,7 +67,18 @@ type ArrayType<T> = T extends Array<infer R> ? R : any;
 export type ControlValue<T> = T extends FormControl | FormGroup | FormArray | AbstractControl ? T['value'] : T;
 
 /**
- * Convert an object of a FormGroup's "value" or "controls" to its "value"
+ * Convert
+ * an
+ * object
+ * of
+ * a
+ * FormGroup's
+ * "value"
+ * or
+ * "controls"
+ * to
+ * its
+ * "value"
  * */
 export type ControlsValue<T extends object> = {
   [K in keyof T]: ControlValue<T[K]>;
@@ -78,12 +89,44 @@ type Primitive = number | string | boolean | null | undefined;
 type UnwrapArray<T> = T extends Array<infer U> ? U : never;
 
 /**
- * Converts a value / form control to form control
- * Converting non-control types to AbstractControl of the type
+ * Converts
+ * a
+ * value
+ * /
+ * form
+ * control
+ * to
+ * form
+ * control
+ * Converting
+ * non-control
+ * types
+ * to
+ * AbstractControl of the type
  *
- * The intermediate type is to solve the issue of T being any, thus assignable to all condition and resulting in the "any" type.
+ * The
+ * intermediate
+ * type
+ * is
+ * to
+ * solve
+ * the
+ * issue
+ * of
+ * T
+ * being any, thus assignable to all condition and resulting in the "any" type.
  *
- * Note the use of an array is to prevent to use of distributive conditional types. (https://github.com/microsoft/TypeScript/issues/37279)
+ * Note
+ * the
+ * use
+ * of
+ * an
+ * array
+ * is
+ * to
+ * prevent
+ * to
+ * use of distributive conditional types. (https://github.com/microsoft/TypeScript/issues/37279)
  * */
 type AbstractControlOfWithPotentialUnion<T> = [T] extends [AbstractControl]
   ? T
@@ -95,26 +138,65 @@ export type AbstractControlOf<T> = AbstractControl extends AbstractControlOfWith
   : AbstractControlOfWithPotentialUnion<T>;
 
 /**
- * Convert an object of a FormGroup's "value" or "controls" to "controls".
- * Converting non-control types to AbstractControl of the type
+ * Convert
+ * an
+ * object
+ * of
+ * a
+ * FormGroup's
+ * "value"
+ * or
+ * "controls"
+ * to
+ * "controls".
+ * Converting
+ * non-control
+ * types
+ * to
+ * AbstractControl
+ * of
+ * the
+ * type
  * */
 export type AbstractControlsOf<T extends Obj> = {
   [K in keyof T]: AbstractControlOf<T[K]>;
 };
 
 /**
- * Use with FormGroup you want a regular FormControl for each property
+ * Use
+ * with
+ * FormGroup
+ * you
+ * want
+ * a
+ * regular
+ * FormControl
+ * for
+ * each
+ * property
  *
  * @example
- * new FormGroup<FlatControls<{
- *   name: string;
- *   phone: {
- *      num: number;
- *      prefix: number;
+ * new
+ *   FormGroup<FlatControls<{
+ *   name:
+ *   string;
+ *   phone:
+ *   {
+ *   num:
+ *   number;
+ *   prefix:
+ *   number;
  *   };
  * }>>({
- *   name: new FormControl<string>(),
- *   phone: new FormControl<{num: number, prefix: number}>(),
+ *   name:
+ *   new
+ *   FormControl<string>(),
+ *   phone:
+ *   new
+ *   FormControl<{num:
+ *   number,
+ *   prefix:
+ *   number}>(),
  * });
  * */
 export type FlatControlsOf<T extends Object> = {
@@ -122,32 +204,59 @@ export type FlatControlsOf<T extends Object> = {
 };
 
 /**
- * Use with FormGroup you want a FormControl for a primitive, a FormGroup for an object, and a FormArray for an array
+ * Use
+ * with
+ * FormGroup
+ * you
+ * want
+ * a
+ * FormControl
+ * for
+ * a
+ * primitive,
+ * a FormGroup for an object, and a FormArray for an array
  *
  * @example
- * new FormGroup<DeepControls<{
- *   name: string;
- *   phone: {
- *      num: number;
- *      prefix: number;
+ * new
+ *   FormGroup<ControlsOf<{
+ *   name:
+ *   string;
+ *   phone:
+ *   {
+ *   num:
+ *   number;
+ *   prefix:
+ *   number;
  *   };
- *   children: string[],
+ *   children:
+ *   string[],
  * }>>({
- *   name: new FormControl<string>(),
- *   phone: new FormGroup({
- *     num: new FormControl<number>(),
- *     prefix: new FormControl<number>(),
+ *   name:
+ *   new
+ *   FormControl<string>(),
+ *   phone:
+ *   new
+ *   FormGroup({
+ *   num:
+ *   new
+ *   FormControl<number>(),
+ *   prefix: new FormControl<number>(),
  *   }),
- *   children: new FormArray([ new FormControl<number>() ])
+ *   children:
+ *   new
+ *   FormArray([
+ *   new
+ *   FormControl<number>()
+ *   ])
  * });
  * */
-export type DeepControlOf<T> = [T] extends [any[]]
-  ? FormArray<DeepControlOf<UnwrapArray<T>>>
+export type ControlOf<T> = [T] extends [any[]]
+  ? FormArray<ControlOf<UnwrapArray<T>>>
   : [T] extends [object]
-  ? FormGroup<DeepControlsOf<T>>
+  ? FormGroup<ControlsOf<T>>
   : FormControl<T>;
-export type DeepControlsOf<T extends Object> = {
-  [key in keyof T]: DeepControlOf<T[key]>;
+export type ControlsOf<T extends Object, TOverrides extends Partial<AbstractControlsOf<T>> = {}> = {
+  [key in keyof T]: unknown extends TOverrides[key] ? ControlOf<T[key]> : TOverrides[key];
 };
 
 export type ArrayKeys<T> = { [K in keyof T]: T[K] extends Array<any> ? K : never }[keyof T];

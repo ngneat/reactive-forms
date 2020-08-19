@@ -1,4 +1,4 @@
-import { FormArray } from '@ngneat/reactive-forms';
+import { FormArray } from '../formArray';
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '../formControl';
@@ -17,7 +17,7 @@ import {
   NestedFormControls
 } from './mocks.spec';
 import { Validators } from '@angular/forms';
-import { FlatControlsOf, DeepControlsOf } from '../types';
+import { FlatControlsOf, ControlsOf } from '../types';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl() });
@@ -145,10 +145,10 @@ test('control should be constructed according to generic control type with FlatC
   }>(a.controls);
 });
 
-test('control should be constructed according to type with DeepControlsOf interface', () => {
-  const a = new FormGroup<DeepControlsOf<Required<NestedForm>>>({
+test('control should be constructed according to type with ControlsOf interface', () => {
+  const a = new FormGroup<ControlsOf<Required<NestedForm>>>({
     a: new FormControl<number>(),
-    b: new FormGroup<DeepControlsOf<NestedForm['b']>>({
+    b: new FormGroup<ControlsOf<NestedForm['b']>>({
       a: new FormControl<string>(),
       c: new FormArray<FormControl<number>>([])
     }),
@@ -166,6 +166,34 @@ test('control should be constructed according to type with DeepControlsOf interf
       c: FormArray<FormControl<number>>;
     }>;
     c: FormArray<FormGroup<{ a: FormControl<number> }>>;
+    d: FormControl<boolean>;
+  }>(a.controls);
+});
+
+test('control should be constructed according to type with ControlsOf interface', () => {
+  const a = new FormGroup<
+    ControlsOf<
+      Required<NestedForm>,
+      {
+        c: FormControl<{ a: number }[]>;
+      }
+    >
+  >({
+    a: new FormControl<number>(),
+    b: new FormGroup<ControlsOf<NestedForm['b']>>({
+      a: new FormControl<string>(),
+      c: new FormArray<FormControl<number>>([])
+    }),
+    c: new FormControl<{ a: number }[]>(),
+    d: new FormControl<boolean>()
+  });
+  expectTypeOf<{
+    a: FormControl<number>;
+    b: FormGroup<{
+      a: FormControl<string>;
+      c: FormArray<FormControl<number>>;
+    }>;
+    c: FormControl<{ a: number }[]>;
     d: FormControl<boolean>;
   }>(a.controls);
 });
