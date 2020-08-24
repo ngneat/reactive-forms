@@ -589,9 +589,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt=""/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=theblushingcrow" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Documentation">📖</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Tests">⚠️</a> <a href="#tool-itayod" title="Tools">🔧</a></td>
     <td align="center"><a href="https://github.com/tehshin"><img src="https://avatars1.githubusercontent.com/u/876923?v=4" width="100px;" alt=""/><br /><sub><b>tehshin</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=tehshin" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=tehshin" title="Documentation">📖</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/MilesHeise"><img src="https://avatars1.githubusercontent.com/u/29102438?v=4" width="100px;" alt=""/><br /><sub><b>Miles Heise</b></sub></a><br /> <a href="https://github.com/@ngneat/reactive-forms/commits?author=MilesHeise" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://mario.arnautou.fr/"><img src="https://avatars2.githubusercontent.com/u/10983824?v=4" width="100px;" alt=""/><br /><sub><b>Mario Arnautou</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=MarioArnt" title="Code">💻</a></td>
   </tr>
 </table>
 
