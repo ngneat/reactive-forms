@@ -190,4 +190,17 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
   }
+
+  remove(value: T): void {
+    this.removeWhen(v => v.value === value);
+  }
+
+  removeWhen(predicate: (element: AbstractControl<T>) => boolean): void {
+    const toRemove: number[] = [];
+    for (let i = this.length - 1; i >= 0; --i) {
+      if (predicate(this.at(i))) {
+        this.removeAt(i);
+      }
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import { of, Subject } from 'rxjs';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
+import { FormGroup } from '@angular/forms';
 
 const errorFn = group => {
   return { isInvalid: true };
@@ -211,5 +212,50 @@ describe('FormArray', () => {
     control.push(new FormControl('Name'));
     control.push(new FormControl('Phone'));
     expect(spy).toHaveBeenCalledWith(null);
+  });
+
+  it('should remove', () => {
+    const control = createArray();
+    control.clear();
+    control.push(new FormControl('Name'));
+    control.push(new FormControl('Name'));
+    control.push(new FormControl('Phone'));
+    control.push(new FormControl('Name'));
+    control.push(new FormControl('Address'));
+    control.remove('Name');
+    expect(control.getRawValue()).toEqual(['Phone', 'Address']);
+  });
+
+  it('should removeIf', () => {
+    const control = createArray();
+    control.clear();
+    control.push(new FormControl('FirstName'));
+    control.push(new FormControl('LastName'));
+    control.push(new FormControl('Phone'));
+    control.push(new FormControl('MiddleName'));
+    control.push(new FormControl('StreetNumber'));
+    control.push(new FormControl('StreetName'));
+    control.push(new FormControl('ZipCode'));
+    control.removeWhen(elt => elt.value.match(/Name$/) != null);
+    expect(control.getRawValue()).toEqual(['Phone', 'StreetNumber', 'ZipCode']);
+  });
+
+  it('should removeIf with nested form groups', () => {
+    const control = createArray();
+    control.clear();
+    control.push(new FormGroup({ type: new FormControl('Jedi'), name: new FormControl('Luke') }));
+    control.push(new FormGroup({ type: new FormControl('Sith'), name: new FormControl('Vader') }));
+    control.push(new FormGroup({ type: new FormControl('Jedi'), name: new FormControl('Yoda') }));
+    control.push(new FormGroup({ type: new FormControl('Jedi'), name: new FormControl('Obi-Wan') }));
+    control.push(new FormGroup({ type: new FormControl('Sith'), name: new FormControl('Doku') }));
+    control.push(new FormGroup({ type: new FormControl('Jedi'), name: new FormControl('Windu') }));
+    control.push(new FormGroup({ type: new FormControl('Sith'), name: new FormControl('Palpatine') }));
+    control.removeWhen(elt => elt.get('type').value === 'Sith');
+    expect(control.getRawValue()).toEqual([
+      { type: 'Jedi', name: 'Luke' },
+      { type: 'Jedi', name: 'Yoda' },
+      { type: 'Jedi', name: 'Obi-Wan' },
+      { type: 'Jedi', name: 'Windu' }
+    ]);
   });
 });
