@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com///compare/v1.1.0...v1.2.0) (2020-08-24)
+
+
+### Features
+
+* **form-array:** implement remove helpers ([0011944](https://github.com///commit/0011944e4300107bbb3a067cb018795f413d4132))
+
+
+### Tests
+
+* **form-array:** write spec for remove helpers ([419c8c2](https://github.com///commit/419c8c246ac8de9ab340efb79284ada30919fc7d))
+
 ## [1.1.0](https://github.com///compare/v1.0.0...v1.1.0) (2020-08-02)
 
 
