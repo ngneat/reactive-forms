@@ -37,7 +37,7 @@ import {
   PersistOptions,
   ControlFactoryMap
 } from './types';
-import { coerceArray, wrapIntoObservable } from './utils';
+import { coerceArray, wrapIntoObservable, mergeErrors, removeError } from './utils';
 import { PersistManager } from './persistManager';
 import { LocalStorageManager } from './localStorageManager';
 import { FormArray } from './formArray';
@@ -215,13 +215,11 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   }
 
   mergeErrors(errors: Partial<E>, opts: EmitEvent = {}): void {
-    this.setErrors(
-      {
-        ...this.errors,
-        ...errors
-      },
-      opts
-    );
+    this.setErrors(mergeErrors<E>(this.errors, errors), opts);
+  }
+
+  removeError(key: keyof E, opts: EmitEvent = {}): void {
+    this.setErrors(removeError<E>(this.errors, key), opts);
   }
 
   getError<K extends keyof E, K1 extends keyof T>(errorCode: K, path?: [K1]): E[K] | null;

@@ -236,6 +236,13 @@ describe('FormGroup', () => {
     expect(control.errors).toEqual({ isInvalid: true, customError: true });
   });
 
+  it('should removeError', () => {
+    const control = createGroup();
+    control.setErrors({ customError: true, otherError: true });
+    control.removeError('otherError');
+    expect(control.errors).toEqual({ customError: true });
+  });
+
   it('should setValidators', () => {
     const control = createGroup();
     spyOn(control, 'setValidators');

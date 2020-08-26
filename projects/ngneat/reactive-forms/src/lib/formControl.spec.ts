@@ -197,10 +197,37 @@ describe('FormControl', () => {
     expect(control.errors).toEqual({ customError: true });
   });
 
-  it('should mergeErrors', () => {
+  it('should mergeErrors with previous errors', () => {
     const control = new FormControl<string>('', Validators.required);
     control.mergeErrors({ customError: true });
     expect(control.errors).toEqual({ required: true, customError: true });
+  });
+
+  it('should mergeErrors when no previous errors', () => {
+    const control = new FormControl<string>('');
+    control.mergeErrors({ customError: true });
+    expect(control.errors).toEqual({ customError: true });
+  });
+
+  it('should removeError correctly with two existing errors', () => {
+    const control = new FormControl<string>('');
+    control.setErrors({ customError: true, otherError: true });
+    control.removeError('otherError');
+    expect(control.errors).toEqual({ customError: true });
+  });
+
+  it('should removeError correctly last error', () => {
+    const control = new FormControl<string>('');
+    control.setErrors({ customError: true });
+    control.removeError('customError');
+    expect(control.errors).toEqual(null);
+  });
+
+  it('should removeError with not existing errors', () => {
+    const control = new FormControl<string>('');
+    control.setErrors({ customError: true });
+    control.removeError('notExisting');
+    expect(control.errors).toEqual({ customError: true });
   });
 
   it('should setDisable', () => {

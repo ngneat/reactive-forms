@@ -29,7 +29,7 @@ import {
   Validator,
   ValidatorOrOpts
 } from './types';
-import { coerceArray } from './utils';
+import { coerceArray, mergeErrors, removeError } from './utils';
 
 export class FormArray<T = any, E extends object = any> extends NgFormArray {
   readonly value: T[];
@@ -172,13 +172,11 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   }
 
   mergeErrors(errors: Partial<E>, opts: EmitEvent = {}): void {
-    this.setErrors(
-      {
-        ...this.errors,
-        ...errors
-      },
-      opts
-    );
+    this.setErrors(mergeErrors<E>(this.errors, errors), opts);
+  }
+
+  removeError(key: keyof E, opts: EmitEvent = {}): void {
+    this.setErrors(removeError<E>(this.errors, key), opts);
   }
 
   getError<K extends ExtractStrings<E>>(errorCode: K, path?: ControlPath) {

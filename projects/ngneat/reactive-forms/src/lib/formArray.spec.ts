@@ -196,6 +196,13 @@ describe('FormArray', () => {
     expect(control.errors).toEqual({ isInvalid: true, customError: true });
   });
 
+  it('should removeError', () => {
+    const control = createArray();
+    control.setErrors({ customError: true, otherError: true });
+    control.removeError('otherError');
+    expect(control.errors).toEqual({ customError: true });
+  });
+
   it('should setEnable', () => {
     const control = createArray();
 
