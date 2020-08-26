@@ -214,6 +214,16 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     return super.setErrors(errors, opts);
   }
 
+  mergeErrors(errors: Partial<E>, opts: EmitEvent = {}): void {
+    this.setErrors(
+      {
+        ...this.errors,
+        ...errors
+      },
+      opts
+    );
+  }
+
   getError<K extends keyof E, K1 extends keyof T>(errorCode: K, path?: [K1]): E[K] | null;
   getError<K extends keyof E, K1 extends keyof T, K2 extends keyof T[K1]>(errorCode: K, path?: [K1, K2]): E[K] | null;
   getError<K extends keyof E, K1 extends keyof T, K2 extends keyof T[K1], K3 extends keyof T[K1][K2]>(

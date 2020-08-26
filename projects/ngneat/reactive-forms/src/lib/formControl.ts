@@ -146,6 +146,16 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     return super.setErrors(errors, opts);
   }
 
+  mergeErrors(errors: Partial<E>, opts: EmitEvent = {}): void {
+    this.setErrors(
+      {
+        ...this.errors,
+        ...errors
+      },
+      opts
+    );
+  }
+
   hasErrorAndTouched(error: ExtractStrings<E>): boolean {
     return hasErrorAndTouched(this, error);
   }

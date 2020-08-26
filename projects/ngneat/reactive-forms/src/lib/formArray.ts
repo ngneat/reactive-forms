@@ -171,6 +171,16 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     return super.setErrors(errors, opts);
   }
 
+  mergeErrors(errors: Partial<E>, opts: EmitEvent = {}): void {
+    this.setErrors(
+      {
+        ...this.errors,
+        ...errors
+      },
+      opts
+    );
+  }
+
   getError<K extends ExtractStrings<E>>(errorCode: K, path?: ControlPath) {
     return super.getError(errorCode, path) as E[K] | null;
   }

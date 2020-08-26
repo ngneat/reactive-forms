@@ -184,6 +184,18 @@ describe('FormArray', () => {
     expect(control.hasErrorAndDirty('isInvalid')).toBeTruthy();
   });
 
+  it('should setErrors', () => {
+    const control = createArray(true);
+    control.setErrors({ customError: true });
+    expect(control.errors).toEqual({ customError: true });
+  });
+
+  it('should mergeErrors', () => {
+    const control = createArray(true);
+    control.mergeErrors({ customError: true });
+    expect(control.errors).toEqual({ isInvalid: true, customError: true });
+  });
+
   it('should setEnable', () => {
     const control = createArray();
 

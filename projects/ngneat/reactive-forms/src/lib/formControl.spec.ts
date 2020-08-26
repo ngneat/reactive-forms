@@ -191,6 +191,18 @@ describe('FormControl', () => {
     expect(control.enabled).toBe(false);
   });
 
+  it('should setErrors', () => {
+    const control = new FormControl<string>('', Validators.required);
+    control.setErrors({ customError: true });
+    expect(control.errors).toEqual({ customError: true });
+  });
+
+  it('should mergeErrors', () => {
+    const control = new FormControl<string>('', Validators.required);
+    control.mergeErrors({ customError: true });
+    expect(control.errors).toEqual({ required: true, customError: true });
+  });
+
   it('should setDisable', () => {
     const control = new FormControl<string>();
     control.setDisable();
