@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com///compare/v1.2.0...v1.3.0) (2020-08-27)
+
+
+### Features
+
+* add a helper to remove error by key ([64cabc6](https://github.com///commit/64cabc6dc3f26b973d1941260b766dbd1cae7e21))
+* provide a mergeErrors helper method ([e6c9a82](https://github.com///commit/e6c9a82a4c9af5af3e83ebd0d63a090154217320))
+
+
+### Bug Fixes
+
+* better mergeErrors(null) support ([9925e49](https://github.com///commit/9925e49555bd536802f310708e8c979f68f83614))
+
 ## [1.2.0](https://github.com///compare/v1.1.0...v1.2.0) (2020-08-24)
 
 
