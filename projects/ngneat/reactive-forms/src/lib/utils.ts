@@ -25,12 +25,13 @@ export function wrapIntoObservable<T>(value: T | Promise<T> | Observable<T>): Ob
 }
 
 export function mergeErrors<E>(existing: Partial<E>, toAdd: Partial<E>) {
-  return existing
-    ? {
-        ...existing,
-        ...toAdd
-      }
-    : toAdd;
+  if (!existing && !toAdd) {
+    return null;
+  }
+  return {
+    ...existing,
+    ...toAdd
+  };
 }
 
 export function removeError<E>(errors: E, key: keyof E) {

@@ -209,6 +209,12 @@ describe('FormControl', () => {
     expect(control.errors).toEqual({ customError: true });
   });
 
+  it('should mergeErrors when no previous errors and null is given', () => {
+    const control = new FormControl<string>('');
+    control.mergeErrors(null);
+    expect(control.errors).toEqual(null);
+  });
+
   it('should removeError correctly with two existing errors', () => {
     const control = new FormControl<string>('');
     control.setErrors({ customError: true, otherError: true });
