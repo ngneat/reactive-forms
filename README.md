@@ -358,7 +358,7 @@ const city = group.getControl('address', 'city') as FormControl<string>;
 
 ### `mergeErrors()`
 
-A helper method to merge validation errors. Unlike `setErrors()`, this will not overwrite errors already held by the control.
+Merge validation errors. Unlike `setErrors()`, this will not overwrite errors already held by the control.
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
@@ -369,7 +369,7 @@ group.mergeErrors({ customError: true });
 
 ### `removeError()`
 
-A helper method to remove an error by key from the control.
+Remove an error by key from the control.
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
