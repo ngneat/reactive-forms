@@ -356,6 +356,28 @@ const city = group.getControl('address', 'city') as FormControl<string>;
 
 **Note that the return type should still be inferred.**
 
+### `mergeErrors()`
+
+Merge validation errors. Unlike `setErrors()`, this will not overwrite errors already held by the control.
+
+```ts
+import { FormGroup } from '@ngneat/reactive-forms';
+
+const group = new FormGroup<Profile>(...);
+group.mergeErrors({ customError: true });
+```
+
+### `removeError()`
+
+Remove an error by key from the control.
+
+```ts
+import { FormGroup } from '@ngneat/reactive-forms';
+
+const group = new FormGroup<Profile>(...);
+group.removeError('customError');
+```
+
 ### FormArray methods
 
 ### remove()

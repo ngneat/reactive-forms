@@ -23,3 +23,24 @@ export function wrapIntoObservable<T>(value: T | Promise<T> | Observable<T>): Ob
 
   return of(value);
 }
+
+export function mergeErrors<E>(existing: Partial<E>, toAdd: Partial<E>) {
+  if (!existing && !toAdd) {
+    return null;
+  }
+  return {
+    ...existing,
+    ...toAdd
+  };
+}
+
+export function removeError<E>(errors: E, key: keyof E) {
+  if (!errors) {
+    return null;
+  }
+  const updatedErrors = {
+    ...errors
+  };
+  delete updatedErrors[key];
+  return Object.keys(updatedErrors).length > 0 ? updatedErrors : null;
+}

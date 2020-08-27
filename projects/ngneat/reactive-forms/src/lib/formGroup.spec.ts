@@ -224,6 +224,25 @@ describe('FormGroup', () => {
     expect(control.reset).toHaveBeenCalled();
   });
 
+  it('should setErrors', () => {
+    const control = createGroup(true);
+    control.setErrors({ customError: true });
+    expect(control.errors).toEqual({ customError: true });
+  });
+
+  it('should mergeErrors', () => {
+    const control = createGroup(true);
+    control.mergeErrors({ customError: true });
+    expect(control.errors).toEqual({ isInvalid: true, customError: true });
+  });
+
+  it('should removeError', () => {
+    const control = createGroup();
+    control.setErrors({ customError: true, otherError: true });
+    control.removeError('otherError');
+    expect(control.errors).toEqual({ customError: true });
+  });
+
   it('should setValidators', () => {
     const control = createGroup();
     spyOn(control, 'setValidators');
