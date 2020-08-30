@@ -30,7 +30,7 @@ import {
   ControlValue,
   AbstractControlOf
 } from './types';
-import { coerceArray } from './utils';
+import { coerceArray, mergeErrors, removeError } from './utils';
 
 export class FormArray<T = any, E extends object = any> extends NgFormArray {
   readonly value: ControlValue<T>[];
@@ -175,6 +175,14 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     return super.setErrors(errors, opts);
   }
 
+  mergeErrors(errors: Partial<E>, opts: EmitEvent = {}): void {
+    this.setErrors(mergeErrors<E>(this.errors, errors), opts);
+  }
+
+  removeError(key: keyof E, opts: EmitEvent = {}): void {
+    this.setErrors(removeError<E>(this.errors, key), opts);
+  }
+
   getError<K extends ExtractStrings<E>>(errorCode: K, path?: ControlPath) {
     return super.getError(errorCode, path) as E[K] | null;
   }
@@ -193,5 +201,18 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
 
   setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
+  }
+
+  remove(value: T): void {
+    this.removeWhen(v => v.value === value);
+  }
+
+  removeWhen(predicate: (element: AbstractControl<T>) => boolean): void {
+    const toRemove: number[] = [];
+    for (let i = this.length - 1; i >= 0; --i) {
+      if (predicate(this.at(i))) {
+        this.removeAt(i);
+      }
+    }
   }
 }
