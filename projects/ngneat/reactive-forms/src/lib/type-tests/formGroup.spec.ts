@@ -17,7 +17,7 @@ import {
   NestedFormControls
 } from './mocks.spec';
 import { Validators } from '@angular/forms';
-import { FlatControlsOf, ControlsOf } from '../types';
+import { ControlsOf } from '../types';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl() });
@@ -122,27 +122,6 @@ test('control should be constructed according to generic controls type', () => {
     }),
     c: new FormControl([{ a: 3 }])
   });
-});
-
-test('control should be constructed according to generic control type with FlatControlsOf interface', () => {
-  const a = new FormGroup<FlatControlsOf<Required<NestedForm>>>({
-    a: new FormControl<number>(),
-    b: new FormControl<{
-      a: string;
-      c: number[];
-    }>(),
-    c: new FormControl<{ a: number }[]>(),
-    d: new FormControl<boolean>()
-  });
-  expectTypeOf<{
-    a: FormControl<number>;
-    b: FormControl<{
-      a: string;
-      c: number[];
-    }>;
-    c: FormControl<{ a: number }[]>;
-    d: FormControl<boolean>;
-  }>(a.controls);
 });
 
 test('control should be constructed according to type with ControlsOf interface', () => {
