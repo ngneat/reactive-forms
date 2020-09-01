@@ -207,7 +207,7 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     this.removeWhen(v => v.value === value);
   }
 
-  removeWhen(predicate: (element: AbstractControl<T>) => boolean): void {
+  removeWhen(predicate: (element: AbstractControlOf<T>) => boolean): void {
     const toRemove: number[] = [];
     for (let i = this.length - 1; i >= 0; --i) {
       if (predicate(this.at(i))) {
