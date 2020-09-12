@@ -19,6 +19,7 @@ import {
 import {
   AbstractControl,
   AsyncValidator,
+  AsyncValidatorFn,
   ControlEventOptions,
   ControlOptions,
   ControlPath,
@@ -27,6 +28,7 @@ import {
   ExtractStrings,
   OnlySelf,
   Validator,
+  ValidatorFn,
   ValidatorOrOpts
 } from './types';
 import { coerceArray, mergeErrors, removeError } from './utils';
@@ -49,6 +51,20 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   readonly enabled$ = controlEnabled$(this);
   readonly status$ = controlStatusChanges$(this);
   readonly errors$ = controlErrorChanges$<E>(this);
+
+  get asyncValidator(): AsyncValidatorFn<T[]> | null {
+    return super.asyncValidator;
+  }
+  set asyncValidator(asyncValidator: AsyncValidatorFn<T[]> | null) {
+    super.asyncValidator = asyncValidator;
+  }
+
+  get validator(): ValidatorFn<T[]> | null {
+    return super.validator;
+  }
+  set validator(validator: ValidatorFn<T[]> | null) {
+    super.validator = validator;
+  }
 
   constructor(
     public controls: Array<AbstractControl<T>>,
