@@ -1,6 +1,6 @@
-import { FormGroup as NgFormGroup, FormArray as NgFormArray } from '@angular/forms';
+import { FormGroup as NgFormGroup } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
-import { distinctUntilChanged, tap, take, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, switchMap, take, tap } from 'rxjs/operators';
 import {
   controlDisabled$,
   controlDisabledWhile,
@@ -11,19 +11,23 @@ import {
   controlValueChanges$,
   disableControl,
   enableControl,
+  handleFormArrays,
   hasErrorAndDirty,
   hasErrorAndTouched,
   markAllDirty,
   mergeControlValidators,
-  selectControlValue$,
-  validateControlOn,
   persistValue$,
-  handleFormArrays
+  selectControlValue$,
+  validateControlOn
 } from './control-actions';
+import { LocalStorageManager } from './localStorageManager';
+import { PersistManager } from './persistManager';
 import {
   AbstractControl,
   AsyncValidator,
+  AsyncValidatorFn,
   ControlEventOptions,
+  ControlFactoryMap,
   ControlOptions,
   ControlState,
   EmitEvent,
@@ -32,15 +36,12 @@ import {
   KeyValueControls,
   Obj,
   OnlySelf,
-  Validator,
-  ValidatorOrOpts,
   PersistOptions,
-  ControlFactoryMap
+  Validator,
+  ValidatorFn,
+  ValidatorOrOpts
 } from './types';
-import { coerceArray, wrapIntoObservable, mergeErrors, removeError } from './utils';
-import { PersistManager } from './persistManager';
-import { LocalStorageManager } from './localStorageManager';
-import { FormArray } from './formArray';
+import { coerceArray, mergeErrors, removeError, wrapIntoObservable } from './utils';
 
 export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
   readonly value: T;
@@ -60,6 +61,20 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   readonly enabled$ = controlEnabled$<T>(this);
   readonly status$ = controlStatusChanges$<T>(this);
   readonly errors$ = controlErrorChanges$<E>(this);
+
+  get asyncValidator(): AsyncValidatorFn<T> | null {
+    return super.asyncValidator;
+  }
+  set asyncValidator(asyncValidator: AsyncValidatorFn<T> | null) {
+    super.asyncValidator = asyncValidator;
+  }
+
+  get validator(): ValidatorFn<T> | null {
+    return super.validator;
+  }
+  set validator(validator: ValidatorFn<T> | null) {
+    super.validator = validator;
+  }
 
   constructor(
     public controls: ExtractAbstractControl<KeyValueControls<T>, T>,
