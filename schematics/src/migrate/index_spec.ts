@@ -6,9 +6,10 @@ const collectionPath = path.join(__dirname, '../collection.json');
 
 describe('schematics', () => {
   it('works', () => {
+    const spy = jest.fn();
     const runner = new SchematicTestRunner('schematics', collectionPath);
-    const tree = runner.runSchematic('schematics', {}, Tree.empty());
 
-    expect(tree.files).toEqual([]);
+    runner.runSchematicAsync('schematics', {}, Tree.empty()).subscribe(spy);
+    expect(spy).toEqual([]);
   });
 });
