@@ -52,6 +52,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
+  private errorsSubject = new Subject<Partial<E>>();
 
   touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
   dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
@@ -60,7 +61,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   readonly disabled$ = controlDisabled$<T>(this);
   readonly enabled$ = controlEnabled$<T>(this);
   readonly status$ = controlStatusChanges$<T>(this);
-  readonly errors$ = controlErrorChanges$<E>(this);
+  readonly errors$ = controlErrorChanges$<E>(this, this.errorsSubject.asObservable());
 
   get asyncValidator(): AsyncValidatorFn<T> | null {
     return super.asyncValidator;
@@ -226,6 +227,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   }
 
   setErrors(errors: Partial<E> | null, opts: EmitEvent = {}) {
+    this.errorsSubject.next(errors);
     return super.setErrors(errors, opts);
   }
 
