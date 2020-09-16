@@ -66,9 +66,13 @@ export function controlStatusChanges$<T>(control: AbstractControl<T>): Observabl
   );
 }
 
-export function controlErrorChanges$<E>(control: AbstractControl): Observable<E | null> {
+export function controlErrorChanges$<E>(
+  control: AbstractControl,
+  errors$: Observable<Partial<E>>
+): Observable<E | null> {
   return merge(
     defer(() => of(control.errors as E)),
+    errors$ as Observable<E>,
     control.valueChanges.pipe(
       map(() => control.errors as E),
       distinctUntilChanged((a, b) => compareErrors(a, b))

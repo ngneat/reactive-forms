@@ -42,6 +42,7 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
+  private errorsSubject = new Subject<Partial<E>>();
 
   readonly touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
   readonly dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
@@ -50,7 +51,7 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   readonly disabled$ = controlDisabled$(this);
   readonly enabled$ = controlEnabled$(this);
   readonly status$ = controlStatusChanges$(this);
-  readonly errors$ = controlErrorChanges$<E>(this);
+  readonly errors$ = controlErrorChanges$<E>(this, this.errorsSubject.asObservable());
 
   get asyncValidator(): AsyncValidatorFn<T[]> | null {
     return super.asyncValidator;
@@ -184,6 +185,7 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   }
 
   setErrors(errors: Partial<E> | null, opts: EmitEvent = {}) {
+    this.errorsSubject.next(errors);
     return super.setErrors(errors, opts);
   }
 

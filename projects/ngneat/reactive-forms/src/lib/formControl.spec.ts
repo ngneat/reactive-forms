@@ -249,10 +249,16 @@ describe('FormControl', () => {
     const spy = jest.fn();
     control.errors$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith({ required: true });
+    spy.mockReset();
     control.patchValue(null);
     control.patchValue('');
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledTimes(1);
+    spy.mockReset();
     control.patchValue('Test');
     expect(spy).toHaveBeenCalledWith(null);
+    spy.mockReset();
+
+    control.setErrors({ myError: 'So wrong' });
+    expect(spy).toHaveBeenCalledWith({ myError: 'So wrong' });
   });
 });
