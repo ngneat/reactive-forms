@@ -3,7 +3,7 @@ import {
   AbstractControlOptions as NgAbstractControlOptions,
   ValidationErrors as NgValidationErrors
 } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
