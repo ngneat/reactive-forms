@@ -62,7 +62,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   readonly disabled$ = controlDisabled$<ControlsValue<T>>(this);
   readonly enabled$ = controlEnabled$<ControlsValue<T>>(this);
   readonly status$ = controlStatusChanges$<ControlsValue<T>>(this);
-  readonly errors$ = controlErrorChanges$<E>(this);
+  readonly errors$ = controlErrorChanges$<E>(this, this.errorsSubject.asObservable());
 
   get asyncValidator(): AsyncValidatorFn<T> | null {
     return super.asyncValidator;
