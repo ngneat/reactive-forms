@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com///compare/v1.3.0...v1.3.1) (2020-09-16)
+
+
+### Bug Fixes
+
+* make sure errors$ is nexted when setErrors is called manually ([ce820fc](https://github.com///commit/ce820fc2bf49c63989b02a45166c6bab97fa199e))
+
 ## [1.3.0](https://github.com///compare/v1.2.0...v1.3.0) (2020-08-27)
 
 

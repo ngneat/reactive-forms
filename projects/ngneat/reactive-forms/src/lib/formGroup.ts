@@ -1,6 +1,6 @@
 import { FormGroup as NgFormGroup } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
-import { distinctUntilChanged, tap, take, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, switchMap, take, tap } from 'rxjs/operators';
 import {
   controlDisabled$,
   controlDisabledWhile,
@@ -11,19 +11,23 @@ import {
   controlValueChanges$,
   disableControl,
   enableControl,
+  handleFormArrays,
   hasErrorAndDirty,
   hasErrorAndTouched,
   markAllDirty,
   mergeControlValidators,
-  selectControlValue$,
-  validateControlOn,
   persistValue$,
-  handleFormArrays
+  selectControlValue$,
+  validateControlOn
 } from './control-actions';
+import { LocalStorageManager } from './localStorageManager';
+import { PersistManager } from './persistManager';
 import {
   AbstractControl,
   AsyncValidator,
+  AsyncValidatorFn,
   ControlEventOptions,
+  ControlFactoryMap,
   ControlOptions,
   ControlState,
   EmitEvent,
@@ -35,12 +39,10 @@ import {
   ControlsValue,
   AbstractControlsOf,
   PersistOptions,
-  ControlFactoryMap
+  ValidatorFn
 } from './types';
-import { coerceArray, wrapIntoObservable, mergeErrors, removeError } from './utils';
-import { PersistManager } from './persistManager';
+import { coerceArray, mergeErrors, removeError, wrapIntoObservable } from './utils';
 import { FormArray } from './formArray';
-import { LocalStorageManager } from './localStorageManager';
 
 export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
   readonly value: ControlsValue<T>;
@@ -51,6 +53,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
+  private errorsSubject = new Subject<Partial<E>>();
 
   touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
   dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
@@ -60,6 +63,20 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   readonly enabled$ = controlEnabled$<ControlsValue<T>>(this);
   readonly status$ = controlStatusChanges$<ControlsValue<T>>(this);
   readonly errors$ = controlErrorChanges$<E>(this);
+
+  get asyncValidator(): AsyncValidatorFn<T> | null {
+    return super.asyncValidator;
+  }
+  set asyncValidator(asyncValidator: AsyncValidatorFn<T> | null) {
+    super.asyncValidator = asyncValidator;
+  }
+
+  get validator(): ValidatorFn<T> | null {
+    return super.validator;
+  }
+  set validator(validator: ValidatorFn<T> | null) {
+    super.validator = validator;
+  }
 
   constructor(
     public controls: AbstractControlsOf<T>,
@@ -234,6 +251,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   }
 
   setErrors(errors: Partial<E> | null, opts: EmitEvent = {}) {
+    this.errorsSubject.next(errors);
     return super.setErrors(errors, opts);
   }
 

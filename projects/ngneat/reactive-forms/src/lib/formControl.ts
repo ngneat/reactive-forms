@@ -27,6 +27,7 @@ import {
   OnlySelf,
   OrBoxedValue,
   Validator,
+  ValidatorFn,
   ValidatorOrOpts
 } from './types';
 import { coerceArray, mergeErrors, removeError } from './utils';
@@ -34,13 +35,13 @@ import { coerceArray, mergeErrors, removeError } from './utils';
 export class FormControl<T = any, E extends object = any> extends NgFormControl {
   readonly value: T;
   readonly errors: E | null;
-  readonly asyncValidator: AsyncValidatorFn<T>;
   readonly valueChanges: Observable<T>;
   readonly status: ControlState;
   readonly statusChanges: Observable<ControlState>;
 
   private touchChanges = new Subject<boolean>();
   private dirtyChanges = new Subject<boolean>();
+  private errorsSubject = new Subject<Partial<E>>();
 
   readonly touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
   readonly dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
@@ -49,7 +50,21 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   readonly disabled$ = controlDisabled$<T>(this);
   readonly enabled$ = controlEnabled$<T>(this);
   readonly status$ = controlStatusChanges$<T>(this);
-  readonly errors$ = controlErrorChanges$<E>(this);
+  readonly errors$ = controlErrorChanges$<E>(this, this.errorsSubject.asObservable());
+
+  get asyncValidator(): AsyncValidatorFn<T> | null {
+    return super.asyncValidator;
+  }
+  set asyncValidator(asyncValidator: AsyncValidatorFn<T> | null) {
+    super.asyncValidator = asyncValidator;
+  }
+
+  get validator(): ValidatorFn<T> | null {
+    return super.validator;
+  }
+  set validator(validator: ValidatorFn<T> | null) {
+    super.validator = validator;
+  }
 
   constructor(formState?: OrBoxedValue<T>, validatorOrOpts?: ValidatorOrOpts, asyncValidator?: AsyncValidator) {
     super(formState, validatorOrOpts, asyncValidator);
@@ -143,6 +158,7 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   }
 
   setErrors(errors: Partial<E> | null, opts: EmitEvent = {}) {
+    this.errorsSubject.next(errors);
     return super.setErrors(errors, opts);
   }
 

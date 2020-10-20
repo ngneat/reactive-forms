@@ -313,8 +313,12 @@ describe('FormGroup', () => {
     const spy = jest.fn();
     control.errors$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(null);
+    spy.mockReset();
     control.patchValue({ name: 'Test' });
     expect(spy).toHaveBeenCalledWith({ invalidName: true });
+    spy.mockReset();
+    control.setErrors({ myError: 'So wrong' });
+    expect(spy).toHaveBeenCalledWith({ myError: 'So wrong' });
   });
 
   describe('.persist()', () => {

@@ -228,9 +228,13 @@ describe('FormArray', () => {
     control.setValidators(validator);
     control.errors$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith({ minimum: 4 });
+    spy.mockReset();
     control.push(new FormControl('Name'));
     control.push(new FormControl('Phone'));
     expect(spy).toHaveBeenCalledWith(null);
+    spy.mockReset();
+    control.setErrors({ myError: 'So wrong' });
+    expect(spy).toHaveBeenCalledWith({ myError: 'So wrong' });
   });
 
   it('should remove', () => {
