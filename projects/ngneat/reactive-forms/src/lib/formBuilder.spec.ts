@@ -17,7 +17,11 @@ describe('FormBuilder', () => {
 
   describe('group', () => {
     it('should accept an object', () => {
-      const group: FormGroup<User> = fb.group({ name: 'ngneat', id: 1, address: fb.group({ city: 'Hello' }) });
+      const group: FormGroup<User> = fb.group({
+        name: 'ngneat',
+        id: 1,
+        address: fb.group<{ city: string }>({ city: 'Hello' })
+      });
       expect(group.getRawValue()).toEqual({ name: 'ngneat', id: 1, address: { city: 'Hello' } });
     });
 
@@ -25,14 +29,18 @@ describe('FormBuilder', () => {
       const group = fb.group<User>({
         name: ['ngneat', Validators.required],
         id: [{ value: 1, disabled: true }],
-        address: fb.group({ city: 'Hello' })
+        address: fb.group<{ city: string }>({ city: 'Hello' })
       });
 
       expect(group.getRawValue()).toEqual({ name: 'ngneat', id: 1, address: { city: 'Hello' } });
     });
 
     it('should have extended keys', () => {
-      const group: FormGroup<User> = fb.group({ name: 'ngneat', id: 1, address: fb.group({ city: '' }) });
+      const group: FormGroup<User> = fb.group({
+        name: 'ngneat',
+        id: 1,
+        address: fb.group<{ city: string }>({ city: '' })
+      });
       const keys: (keyof FormGroup)[] = [
         'getControl',
         'enabledWhile',
@@ -90,7 +98,9 @@ describe('FormBuilder', () => {
   });
 
   it('should array', () => {
-    const array = fb.array<User>([fb.group({ name: 'ngneat', id: 1, address: fb.group({ city: 'ngneat' }) })]);
+    const array = fb.array<User>([
+      fb.group<User>({ name: 'ngneat', id: 1, address: fb.group<{ city: string }>({ city: 'ngneat' }) })
+    ]);
     expect(array.getRawValue()).toEqual([
       {
         name: 'ngneat',
