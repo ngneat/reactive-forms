@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, FormArray } from '@ngneat/reactive-forms';
-// import { FormGroup, FormControl } from '@angular/forms';
 
 interface Profile {
   firstName: string;
@@ -14,6 +13,7 @@ interface Profile {
     street: string;
     city: string;
   };
+  isVegetarian: boolean;
 }
 
 @Component({
@@ -31,7 +31,8 @@ export class AppComponent {
     address: new FormGroup({
       street: new FormControl(''),
       city: new FormControl('')
-    })
+    }),
+    isVegetarian: new FormControl()
   });
 
   legacyForm = new FormGroup({

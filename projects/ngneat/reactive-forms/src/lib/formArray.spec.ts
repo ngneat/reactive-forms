@@ -264,7 +264,7 @@ describe('FormArray', () => {
   });
 
   it('should removeIf with nested form groups', () => {
-    const control = createArray();
+    const control = new FormArray([]);
     control.clear();
     control.push(new FormGroup({ type: new FormControl('Jedi'), name: new FormControl('Luke') }));
     control.push(new FormGroup({ type: new FormControl('Sith'), name: new FormControl('Vader') }));

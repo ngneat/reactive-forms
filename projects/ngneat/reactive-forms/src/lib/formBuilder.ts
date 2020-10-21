@@ -3,7 +3,14 @@ import { FormBuilder as NgFormBuilder } from '@angular/forms';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
-import { AbstractControlOptions, AsyncValidatorFn, AbstractControl, OrBoxedValue, ValidatorFn } from './types';
+import {
+  AbstractControlOptions,
+  AsyncValidatorFn,
+  AbstractControl,
+  OrBoxedValue,
+  ValidatorFn,
+  ControlsOf
+} from './types';
 
 function isAbstractControlOptions<T>(
   options: AbstractControlOptions<T> | { [key: string]: any }
@@ -55,7 +62,6 @@ export class FormBuilder extends NgFormBuilder {
       }
     }
 
-    // Todo: dan remove the any
     return new FormGroup(controls, { asyncValidators, updateOn, validators });
   }
 
