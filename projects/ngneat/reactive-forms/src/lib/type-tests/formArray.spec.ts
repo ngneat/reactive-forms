@@ -1,9 +1,5 @@
 import { expectTypeOf } from 'expect-type';
-import {
-  Observable,
-  of,
-  Subscription
-} from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { FormArray } from '../formArray';
 import { FormControl } from '../formControl';
 import { FormGroup } from '../formGroup';
@@ -33,7 +29,7 @@ test('control value should be of type User[]', () => {
 test('control value should be constructed according to generic control type', () => {
   const control = new FormArray<FormGroup<NestedFormControls>>([]);
   expectTypeOf<NestedForm[]>(control.value).toEqualTypeOf([nestedFormValue]);
-})
+});
 
 test('control valueChanges$ should be of type stream of User[]', () => {
   const control = new FormArray<User>([]);
@@ -70,6 +66,11 @@ test('control setValue should accept value of type User[] or stream of User[]', 
 test('control patchValue should accept value of type User[] or stream of User[]', () => {
   const control = new FormArray<User>([]);
   expectTypeOf(control.patchValue(of([user]))).toEqualTypeOf(new Subscription());
+});
+
+test('control patchValue should accept nested partials', () => {
+  const control = new FormArray<NestedForm>([]);
+  expectTypeOf(control.patchValue(of([{ b: { c: [2] } }]))).toEqualTypeOf(new Subscription());
 });
 
 test('control disableWhile should return subscription', () => {
@@ -195,5 +196,5 @@ test('should be able to set value to control inside group', () => {
     .at(0)
     .get('id')
     .setValue(3);
-  expectTypeOf((control.at(0)).getControl('id').value).toBeNumber();
+  expectTypeOf(control.at(0).getControl('id').value).toBeNumber();
 });

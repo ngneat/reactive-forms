@@ -278,6 +278,18 @@ describe('with generic', () => {
     control.setValidators([required, pattern]);
   });
 
+  test('control patchValue should accept nested partials', () => {
+    const control = new FormGroup<NestedForm>({
+      a: new FormControl(22),
+      b: new FormControl({
+        a: '',
+        c: [3]
+      }),
+      d: new FormControl<boolean>()
+    });
+    expectTypeOf(control.patchValue(of({ b: { c: [4] } }))).toEqualTypeOf(new Subscription());
+  });
+
   test('should be able to set async validators', () => {
     const control = new FormGroup<User, Errors>(null);
     control.setAsyncValidators([requiredAsync, patternAsync]);

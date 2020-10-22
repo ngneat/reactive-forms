@@ -30,7 +30,8 @@ import {
   ValidatorOrOpts,
   ControlValue,
   AbstractControlOf,
-  ValidatorFn
+  ValidatorFn,
+  DeepPartial
 } from './types';
 import { coerceArray, mergeErrors, removeError } from './utils';
 
@@ -101,8 +102,11 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     super.setValue(valueOrObservable, options);
   }
 
-  patchValue(valueOrObservable: Observable<Partial<ControlValue<T>>[]>, options?: ControlEventOptions): Subscription;
-  patchValue(valueOrObservable: Partial<ControlValue<T>>[], options?: ControlEventOptions): void;
+  patchValue(
+    valueOrObservable: Observable<DeepPartial<ControlValue<T>>[]>,
+    options?: ControlEventOptions
+  ): Subscription;
+  patchValue(valueOrObservable: DeepPartial<ControlValue<T>>[], options?: ControlEventOptions): void;
   patchValue(valueOrObservable: any, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe((value: T[]) => super.patchValue(value, options));

@@ -39,7 +39,8 @@ import {
   ControlsValue,
   AbstractControlsOf,
   PersistOptions,
-  ValidatorFn
+  ValidatorFn,
+  DeepPartial
 } from './types';
 import { coerceArray, mergeErrors, removeError, wrapIntoObservable } from './utils';
 import { FormArray } from './formArray';
@@ -166,8 +167,8 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     super.setValue(valueOrObservable, options);
   }
 
-  patchValue(valueOrObservable: Observable<Partial<ControlsValue<T>>>, options?: ControlEventOptions): Subscription;
-  patchValue(valueOrObservable: Partial<ControlsValue<T>>, options?: ControlEventOptions): void;
+  patchValue(valueOrObservable: Observable<DeepPartial<ControlsValue<T>>>, options?: ControlEventOptions): Subscription;
+  patchValue(valueOrObservable: DeepPartial<ControlsValue<T>>, options?: ControlEventOptions): void;
   patchValue(valueOrObservable: any, options?: ControlEventOptions): Subscription | void {
     if (isObservable(valueOrObservable)) {
       return valueOrObservable.subscribe(value => super.patchValue(value, options));
@@ -217,7 +218,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     markAllDirty(this);
   }
 
-  reset(formState?: Partial<ControlsValue<T>>, options?: ControlEventOptions): void {
+  reset(formState?: DeepPartial<ControlsValue<T>>, options?: ControlEventOptions): void {
     super.reset(formState, options);
   }
 
