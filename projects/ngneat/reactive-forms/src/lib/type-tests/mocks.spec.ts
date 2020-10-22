@@ -1,5 +1,7 @@
 import { of } from 'rxjs';
-import { FormControl, FormGroup, FormArray } from '@ngneat/reactive-forms';
+import { FormControl } from '../formControl';
+import { FormGroup } from '../formGroup';
+import { FormArray } from '../formArray';
 
 export interface NestedForm {
   a: number;
