@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com///compare/v1.3.1...v1.4.0) (2020-10-22)
+
+
+### Features
+
+* support exact control types in FormGroup and FormArray ([#35](https://github.com//undefined/issues/35)) ([0734d55](https://github.com///commit/0734d558f322efb97da2455466ba0e2f47282899))
+
 ### [1.3.1](https://github.com///compare/v1.3.0...v1.3.1) (2020-09-16)
 
 
