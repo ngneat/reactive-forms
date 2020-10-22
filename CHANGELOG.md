@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com///compare/v1.4.0...v1.4.1) (2020-10-22)
+
+
+### Bug Fixes
+
+* 🐛 add ControlOf type to public API ([6c44f38](https://github.com///commit/6c44f38f9b324c223e5ae61e2e525483f6749a83))
+
 ## [1.4.0](https://github.com///compare/v1.3.1...v1.4.0) (2020-10-22)
 
 
