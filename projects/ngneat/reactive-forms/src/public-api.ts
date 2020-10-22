@@ -9,7 +9,8 @@ export {
   NgValidatorsErrors,
   ControlFactory,
   ControlFactoryMap,
-  PersistOptions
+  PersistOptions,
+  ControlOf
 } from './lib/types';
 export { ControlValueAccessor } from './lib/controlValueAccessor';
 export { PersistManager } from './lib/persistManager';
