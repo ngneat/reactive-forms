@@ -77,6 +77,8 @@ type Primitive = number | string | boolean | null | undefined;
 
 type UnwrapArray<T> = T extends Array<infer U> ? U : never;
 
+type ExcludeControls<T> = Exclude<T, FormControl | FormGroup | FormArray>;
+
 /**
  * Converts a value / form control to form control
  * Converting non-control types to AbstractControl of the type
@@ -89,6 +91,9 @@ type AbstractControlOfWithPotentialUnion<T> = [T] extends [AbstractControl]
   ? T
   : [T] extends [Primitive]
   ? FormControl<T>
+  : // in case we got no generic in the constructor, resolve the type as Abstract<T>.
+  T extends unknown
+  ? AbstractControl<ExcludeControls<T>>
   : AbstractControl<T>;
 export type AbstractControlOf<T> = AbstractControl extends AbstractControlOfWithPotentialUnion<T>
   ? AbstractControl<AbstractControlOfWithPotentialUnion<T>['value']>
