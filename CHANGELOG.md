@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.3](https://github.com/ngneat/reactive-forms/compare/v1.4.2...v1.4.3) (2020-10-27)
+
+
+### Bug Fixes
+
+* 🐛 resolve control type when no generic given ([#57](https://github.com/ngneat/reactive-forms/issues/57)) ([8eb1fa4](https://github.com/ngneat/reactive-forms/commit/8eb1fa40a0f523ef3d41a6fef771a981186cb7da))
+
 ### [1.4.2](https://github.com/ngneat/reactive-forms/compare/v1.4.1...v1.4.2) (2020-10-22)
 
 
