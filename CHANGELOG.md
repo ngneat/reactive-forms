@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.4](https://github.com/ngneat/reactive-forms/compare/v1.4.3...v1.4.4) (2020-11-18)
+
+
+### Bug Fixes
+
+* accept deep partials in patchValue and reset methods ([#54](https://github.com/ngneat/reactive-forms/issues/54)) ([ee41c40](https://github.com/ngneat/reactive-forms/commit/ee41c401c1772993e2cf52bef3a95eef1e75537c))
+
 ### [1.4.3](https://github.com/ngneat/reactive-forms/compare/v1.4.2...v1.4.3) (2020-10-27)
 
 
