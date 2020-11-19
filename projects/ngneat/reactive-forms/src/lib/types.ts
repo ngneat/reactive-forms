@@ -8,7 +8,6 @@ import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
 import { PersistManager } from './persistManager';
-import { NestedForm } from './type-tests/mocks.spec';
 
 export type ValidationErrors<T = NgValidationErrors> = T;
 export type ValidatorFn<T = any, E = any> = (control: AbstractControl<T>) => ValidationErrors<E> | null;
@@ -93,9 +92,8 @@ type ExcludeControls<T> = Exclude<T, FormControl | FormGroup | FormArray>;
 type AbstractControlOfWithPotentialUnion<T> = [T] extends [AbstractControl]
   ? T
   : [T] extends [Primitive]
-  ? FormControl<T>
-  : // in case we got no generic in the constructor, resolve the type as Abstract<T>.
-  T extends unknown
+  ? FormControl<T> // in case we got no generic in the constructor, resolve the type as Abstract<T>.
+  : T extends unknown
   ? AbstractControl<ExcludeControls<T>>
   : AbstractControl<T>;
 export type AbstractControlOf<T> = AbstractControl extends AbstractControlOfWithPotentialUnion<T>
@@ -133,7 +131,10 @@ export type AbstractControlsOf<T extends Obj> = {
  *   ])
  * });
  * */
-export type ControlOf<T> = [T] extends [any[]]
+type ExtractAny<T> = T extends Extract<T, string & number & boolean & object & null & undefined> ? any : never;
+export type ControlOf<T> = [T] extends ExtractAny<T>
+  ? AbstractControl<T>
+  : [T] extends [any[]]
   ? FormArray<ControlOf<UnwrapArray<T>>>
   : [T] extends [object]
   ? FormGroup<ControlsOf<T>>
@@ -142,7 +143,7 @@ export type ControlsOf<T extends Object, TOverrides extends Partial<AbstractCont
   [key in keyof T]: unknown extends TOverrides[key] ? ControlOf<T[key]> : TOverrides[key];
 };
 
-export type ArrayKeys<T> = { [K in keyof T]: T[K] extends Array<any> ? K : never }[keyof T];
+export type ArrayKeys<T> = { [K in keyof T]: T[K] extends any[] ? K : never }[keyof T];
 export type ControlFactory<T> = (value: T) => AbstractControl<T>;
 export type ControlFactoryMap<T> = {
   [K in ArrayKeys<T>]?: ControlFactory<ArrayType<T[K]>>;
