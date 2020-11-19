@@ -282,6 +282,19 @@ describe('with generic', () => {
     control.setValidators([required, pattern]);
   });
 
+  test('control patchValue should accept any', () => {
+    const control = new FormGroup<NestedForm>({
+      a: new FormControl(22),
+      b: new FormControl({
+        a: '',
+        c: [3]
+      }),
+      d: new FormControl<boolean>(),
+      e: new FormControl('')
+    });
+    expectTypeOf(control.patchValue(of({ e: 2 }))).toEqualTypeOf(new Subscription());
+  });
+
   test('control patchValue should accept nested partials', () => {
     const control = new FormGroup<NestedForm>({
       a: new FormControl(22),

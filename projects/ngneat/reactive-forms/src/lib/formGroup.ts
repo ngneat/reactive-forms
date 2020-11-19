@@ -348,7 +348,7 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
       tap(value => {
         if (!value) return;
         handleFormArrays(this, value, arrControlFactory);
-        this.patchValue(value, { emitEvent: false });
+        this.patchValue(value as any, { emitEvent: false });
       })
     );
   }
