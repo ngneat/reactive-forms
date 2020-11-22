@@ -11,6 +11,7 @@ export interface NestedForm {
   };
   c?: { a: number }[];
   d?: boolean;
+  e?: any;
 }
 
 export interface NestedFormControls {

@@ -17,7 +17,7 @@ import {
   NestedFormControls
 } from './mocks.spec';
 import { Validators } from '@angular/forms';
-import { ControlsOf } from '../types';
+import { AbstractControl, ControlsOf } from '../types';
 
 test('control should be constructed with abstract controls', () => {
   expectTypeOf(FormGroup).toBeConstructibleWith({ name: new FormControl() });
@@ -136,7 +136,8 @@ describe('with generic', () => {
           a: new FormControl<number>()
         })
       ]),
-      d: new FormControl<boolean>()
+      d: new FormControl<boolean>(),
+      e: new FormControl()
     });
     expectTypeOf<{
       a: FormControl<number>;
@@ -146,6 +147,7 @@ describe('with generic', () => {
       }>;
       c: FormArray<FormGroup<{ a: FormControl<number> }>>;
       d: FormControl<boolean>;
+      e: AbstractControl;
     }>(a.controls);
   });
 
@@ -164,7 +166,8 @@ describe('with generic', () => {
         c: new FormArray<FormControl<number>>([])
       }),
       c: new FormControl<{ a: number }[]>(),
-      d: new FormControl<boolean>()
+      d: new FormControl<boolean>(),
+      e: new FormControl()
     });
     expectTypeOf<{
       a: FormControl<number>;
@@ -174,6 +177,7 @@ describe('with generic', () => {
       }>;
       c: FormControl<{ a: number }[]>;
       d: FormControl<boolean>;
+      e: AbstractControl;
     }>(a.controls);
   });
 
