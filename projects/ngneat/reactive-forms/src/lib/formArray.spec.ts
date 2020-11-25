@@ -1,7 +1,7 @@
 import { of, Subject } from 'rxjs';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
-import { FormGroup } from '@angular/forms';
+import { FormGroup } from './formGroup';
 
 const errorFn = group => {
   return { isInvalid: true };

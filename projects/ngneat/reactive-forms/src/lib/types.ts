@@ -37,8 +37,14 @@ export type EmitEvent = Pick<ControlOptions, 'emitEvent'>;
 export type ControlPath = Array<string | number> | string;
 export type ControlState = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED';
 
-export interface AbstractControl<T = any> extends NgAbstractControl {
+export interface AbstractControl<T = any, E extends object = any> extends NgAbstractControl {
   value: T;
+  errors: E;
+  touch$: Observable<boolean>;
+  dirty$: Observable<boolean>;
+  disabled$: Observable<boolean>;
+  enabled$: Observable<boolean>;
+  status$: Observable<ControlState>;
 }
 
 export type ExtractStrings<T> = Extract<keyof T, string>;

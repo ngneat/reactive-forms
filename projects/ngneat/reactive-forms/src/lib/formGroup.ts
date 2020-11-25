@@ -56,8 +56,8 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   private dirtyChanges = new Subject<boolean>();
   private errorsSubject = new Subject<Partial<E>>();
 
-  touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
-  dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
+  readonly touch$ = this.touchChanges.asObservable().pipe(distinctUntilChanged());
+  readonly dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
   readonly value$ = controlValueChanges$<ControlsValue<T>>(this);
   readonly disabled$ = controlDisabled$<ControlsValue<T>>(this);
