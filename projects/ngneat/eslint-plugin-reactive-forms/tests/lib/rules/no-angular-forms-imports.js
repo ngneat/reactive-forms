@@ -18,7 +18,10 @@ var ruleTester = new RuleTester({ parserOptions: { sourceType: 'module', ecmaVer
 ruleTester.run('no-angular-forms-imports', rule, {
   valid: [
     { code: "import { FormGroup } from '@ngneat/reactive-forms';" },
-    { code: "import { FormBuilder } from '@ngneat/reactive-forms';" }
+    { code: "import { FormBuilder } from '@ngneat/reactive-forms';" },
+    { code: "import { AbstractControlDir } from '@angular/forms';" },
+    { code: "import { AbstractControlDir, Validators } from '@angular/forms';" },
+    { code: "import { FormControlDirective, Validators } from '@angular/forms';" }
   ],
 
   invalid: [
@@ -86,15 +89,6 @@ ruleTester.run('no-angular-forms-imports', rule, {
       ]
     },
     {
-      code: "import { Validator } from '@angular/forms';",
-      output: "import { Validator } from '@ngneat/reactive-forms';",
-      errors: [
-        {
-          messageId: 'avoidImport'
-        }
-      ]
-    },
-    {
       code: "import { ValidatorFn } from '@angular/forms';",
       output: "import { ValidatorFn } from '@ngneat/reactive-forms';",
       errors: [
@@ -104,26 +98,8 @@ ruleTester.run('no-angular-forms-imports', rule, {
       ]
     },
     {
-      code: "import { Validators } from '@angular/forms';",
-      output: "import { Validators } from '@ngneat/reactive-forms';",
-      errors: [
-        {
-          messageId: 'avoidImport'
-        }
-      ]
-    },
-    {
       code: "import { FormArray, FormBuilder } from '@angular/forms';",
       output: "import { FormArray, FormBuilder } from '@ngneat/reactive-forms';",
-      errors: [
-        {
-          messageId: 'avoidImport'
-        }
-      ]
-    },
-    {
-      code: "import { Validator, Validators, ValidatorFn } from '@angular/forms';",
-      output: "import { ValidatorFn, Validators, Validator } from '@ngneat/reactive-forms';",
       errors: [
         {
           messageId: 'avoidImport'

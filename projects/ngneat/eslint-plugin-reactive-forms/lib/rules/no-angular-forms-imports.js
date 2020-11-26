@@ -37,6 +37,7 @@ module.exports = {
       'FormGroup',
       'ValidatorFn'
     ];
+    const importTextReg = new RegExp(`(${acceptedFormTypes.join('|')})[,|\\s|\\}]`);
 
     //----------------------------------------------------------------------
     // Helpers
@@ -65,7 +66,7 @@ module.exports = {
     function checkAngularFormImport(node) {
       const importText = source.getText(node);
       if (importText.includes(searchTerm)) {
-        return acceptedFormTypes.some(formType => importText.includes(formType));
+        return importText.match(importTextReg);
       }
       return false;
     }
@@ -75,7 +76,8 @@ module.exports = {
       let newImport = 'import {';
 
       acceptedFormTypes.forEach(formType => {
-        if (oldImport.includes(formType)) {
+        const match = new RegExp(`(${formType})[,|\\s|\\}]`);
+        if (oldImport.match(match)) {
           newImport += ` ${formType},`;
           const regex = new RegExp(`(${formType})+(,)*`);
           oldImport = oldImport.replace(regex, '');
