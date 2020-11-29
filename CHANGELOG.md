@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/ngneat/reactive-forms/compare/v1.4.4...v1.5.0) (2020-11-29)
+
+
+### Features
+
+* 🎸 enrich abstract control type ([2a018eb](https://github.com/ngneat/reactive-forms/commit/2a018ebab77de330d1636020c00b49214f46fd06))
+
+
+### Bug Fixes
+
+* handle 'any' values properly in 'ControlOf' ([#60](https://github.com/ngneat/reactive-forms/issues/60)) ([779e083](https://github.com/ngneat/reactive-forms/commit/779e0830df22a0fb389958d1df31d3700c84584d))
+* handle 'any' values properly in 'patchValue' ([#59](https://github.com/ngneat/reactive-forms/issues/59)) ([0ccdd2e](https://github.com/ngneat/reactive-forms/commit/0ccdd2ef2299ba6543fcb6e5fa3371bab873bbf4))
+
 ### [1.4.4](https://github.com/ngneat/reactive-forms/compare/v1.4.3...v1.4.4) (2020-11-18)
 
 
