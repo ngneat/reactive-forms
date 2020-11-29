@@ -61,10 +61,7 @@ export interface NgValidatorsErrors {
 
 export type BoxedValue<T> = { value: T; disabled?: boolean };
 export type OrBoxedValue<T> = T | BoxedValue<T>;
-export type DeepPartial<T> = {
-  [P in keyof T]?: DeepPartial<T[P]>;
-};
-
+export type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] };
 export type Obj = { [key: string]: any };
 type ArrayType<T> = T extends Array<infer R> ? R : any;
 
