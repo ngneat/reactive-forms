@@ -10,9 +10,11 @@ import { FormGroup } from './formGroup';
 import { PersistManager } from './persistManager';
 
 export type ValidationErrors<T = NgValidationErrors> = T;
-export type ValidatorFn<T = any, E = any> = (control: AbstractControl<T>) => ValidationErrors<E> | null;
+export type ValidatorFn<T = any, E = any> = (
+  control: AbstractControl<T> | NgAbstractControl
+) => ValidationErrors<E> | null;
 export type AsyncValidatorFn<T = any, E = any> = (
-  control: AbstractControl<T>
+  control: AbstractControl<T> | NgAbstractControl
 ) => Promise<ValidationErrors<E> | null> | Observable<ValidationErrors<E> | null>;
 
 export interface AbstractControlOptions<T = any, E = any> extends NgAbstractControlOptions {
