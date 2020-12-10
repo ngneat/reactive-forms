@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.1](https://github.com/ngneat/reactive-forms/compare/v1.5.0...v1.5.1) (2020-12-10)
+
+
+### Bug Fixes
+
+* typescript 4.0 breaking changes ([#62](https://github.com/ngneat/reactive-forms/issues/62)) ([ecc1d6f](https://github.com/ngneat/reactive-forms/commit/ecc1d6f7b27d403a832d4bf12ec0bcabedbd3b22))
+
 ## [1.5.0](https://github.com/ngneat/reactive-forms/compare/v1.4.4...v1.5.0) (2020-11-29)
 
 
