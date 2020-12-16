@@ -13,8 +13,10 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@phenomnomnominal/tsquery": "4.1.0",
     "tslib": "^2.0.0"
+  },
+  "devDependencies": {
+    "@phenomnomnominal/tsquery": "4.1.0"
   },
   "publishConfig": {
     "access": "public"

@@ -12,23 +12,21 @@
   "scripts": {
     "test": "mocha tests --recursive"
   },
-  "dependencies": {
-    "requireindex": "1.1.0"
-  },
   "devDependencies": {
     "eslint": "4.18.2",
-    "mocha": "3.1.2"
+    "mocha": "3.1.2",
+    "requireindex": "1.1.0"
   },
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/reactive-forms/issue"
+    "url": "https://github.com/ngneat/reactive-forms/issues"
   },
-  "homepage": "https://github.com/reactive-forms#readme",
+  "homepage": "https://github.com/ngneat/reactive-forms#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/reactive-forms"
+    "url": "https://github.com/ngneat/reactive-forms"
   }
 }
