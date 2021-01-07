@@ -185,4 +185,12 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   setDisable(disable = true, opts?: ControlEventOptions) {
     disableControl(this, disable, opts);
   }
+
+  patchEnable(enable = true, opts?: ControlEventOptions): void {
+    enableControl(this, enable, opts);
+  }
+
+  patchDisable(disable = true, opts?: ControlEventOptions): void {
+    disableControl(this, disable, opts);
+  }
 }

@@ -225,6 +225,22 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     disableControl(this, disable, opts);
   }
 
+  patchEnable(value: boolean[], opts?: ControlEventOptions): void {
+    value.forEach((newValue: boolean, index: number) => {
+      if (this.at(index)) {
+        enableControl(this.at(index), newValue, opts);
+      }
+    });
+  }
+
+  patchDisable(value: boolean[], opts?: ControlEventOptions): void {
+    value.forEach((newValue: boolean, index: number) => {
+      if (this.at(index)) {
+        disableControl(this.at(index), newValue, opts);
+      }
+    });
+  }
+
   remove(value: T): void {
     this.removeWhen(v => v.value === value);
   }

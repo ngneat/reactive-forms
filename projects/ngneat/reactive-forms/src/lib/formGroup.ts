@@ -330,6 +330,22 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     disableControl(this, disable, opts);
   }
 
+  patchEnable(value: { [key: string]: any }, opts?: ControlEventOptions): void {
+    Object.keys(value).forEach(name => {
+      if (this.controls[name]) {
+        enableControl(this.controls[name], value[name], opts);
+      }
+    });
+  }
+
+  patchDisable(value: { [key: string]: any }, opts?: ControlEventOptions): void {
+    Object.keys(value).forEach(name => {
+      if (this.controls[name]) {
+        disableControl(this.controls[name], value[name], opts);
+      }
+    });
+  }
+
   persist(key: string, { debounceTime, manager, arrControlFactory }: PersistOptions<T>): Observable<T> {
     const persistManager = manager || new LocalStorageManager();
     return this.restore(key, persistManager, arrControlFactory).pipe(

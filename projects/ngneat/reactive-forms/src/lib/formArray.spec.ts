@@ -221,6 +221,22 @@ describe('FormArray', () => {
     expect(control.enabled).toBe(true);
   });
 
+  it('should patchEnable', () => {
+    const control = createArray();
+    control.patchEnable([false, false]);
+    expect(control.enabled).toBe(false);
+    control.patchEnable([true, true]);
+    expect(control.enabled).toBe(true);
+  });
+
+  it('should patchDisable', () => {
+    const control = createArray();
+    control.patchDisable([false, false]);
+    expect(control.enabled).toBe(true);
+    control.patchDisable([true, true]);
+    expect(control.enabled).toBe(false);
+  });
+
   it('should errorChanges$', () => {
     const control = createArray();
     const spy = jest.fn();

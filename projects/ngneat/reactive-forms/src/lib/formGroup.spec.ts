@@ -297,6 +297,38 @@ describe('FormGroup', () => {
     expect(control.enabled).toBe(true);
   });
 
+  it('should patchEnable', () => {
+    const control = createGroup();
+    control.patchEnable({
+      name: true,
+      phone: false
+    });
+    expect(control.get('name').enabled).toBe(true);
+    expect(control.get('phone').enabled).toBe(false);
+    control.patchEnable({
+      name: false,
+      phone: true
+    });
+    expect(control.get('name').enabled).toBe(false);
+    expect(control.get('phone').enabled).toBe(true);
+  });
+
+  it('should patchDisable', () => {
+    const control = createGroup();
+    control.patchDisable({
+      name: true,
+      phone: false
+    });
+    expect(control.get('name').enabled).toBe(false);
+    expect(control.get('phone').enabled).toBe(true);
+    control.patchDisable({
+      name: false,
+      phone: true
+    });
+    expect(control.get('name').enabled).toBe(true);
+    expect(control.get('phone').enabled).toBe(false);
+  });
+
   it('should getControl', () => {
     const control = createGroup();
     const nameControl = control.getControl('name');

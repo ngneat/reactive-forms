@@ -191,6 +191,14 @@ describe('FormControl', () => {
     expect(control.enabled).toBe(false);
   });
 
+  it('should patchEnable', () => {
+    const control = new FormControl<string>();
+    control.patchEnable();
+    expect(control.enabled).toBe(true);
+    control.patchEnable(false);
+    expect(control.enabled).toBe(false);
+  });
+
   it('should setErrors', () => {
     const control = new FormControl<string>('', Validators.required);
     control.setErrors({ customError: true });
@@ -241,6 +249,14 @@ describe('FormControl', () => {
     control.setDisable();
     expect(control.enabled).toBe(false);
     control.setDisable(false);
+    expect(control.enabled).toBe(true);
+  });
+
+  it('should patchDisable', () => {
+    const control = new FormControl<string>();
+    control.patchDisable();
+    expect(control.enabled).toBe(false);
+    control.patchDisable(false);
     expect(control.enabled).toBe(true);
   });
 
