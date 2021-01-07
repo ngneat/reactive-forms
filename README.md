@@ -374,6 +374,34 @@ control.setDisable();
 control.setDisable(false);
 ```
 
+### `patchEnable()`
+
+Sets whether the list of controls is `enabled` (true) or `disabled` (false).
+
+```ts
+import { FormGroup } from '@ngneat/reactive-forms';
+
+const control = new FormGroup<Person>();
+control.patchEnable({
+  firstName: true,
+  secondaryName: false,
+});
+```
+
+### `patchDisable()`
+
+Sets whether the list of controls is `disabled` (true) or `enabled` (false).
+
+```ts
+import { FormGroup } from '@ngneat/reactive-forms';
+
+const control = new FormGroup<Person>();
+control.patchDisable({
+  firstName: true,
+  secondaryName: false,
+});
+```
+
 ### `getControl()`
 
 A method with `typed` parameters which obtains a reference to a specific control.
