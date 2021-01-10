@@ -232,8 +232,8 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     super.updateValueAndValidity();
   }
 
-  validateOn(observableValidation: Observable<null | object>) {
-    return validateControlOn(this, observableValidation);
+  validateOn(observableValidation: Observable<null | object>, merge: boolean = false) {
+    return validateControlOn(this, observableValidation, merge);
   }
 
   hasError<K1 extends keyof ControlsValue<T>>(errorCode: ExtractStrings<E>, path?: [K1]): boolean;

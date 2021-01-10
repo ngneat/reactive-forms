@@ -1,6 +1,6 @@
 import { ValidationErrors, FormArray as NgFormArray } from '@angular/forms';
 import { defer, merge, Observable, of, Subscription } from 'rxjs';
-import { distinctUntilChanged, map, tap, debounceTime, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, map, debounceTime, switchMap, pairwise, startWith } from 'rxjs/operators';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
@@ -116,9 +116,23 @@ export function mergeControlValidators<T, Control extends AbstractControl<T>>(
   control.updateValueAndValidity();
 }
 
-export function validateControlOn<T>(control: AbstractControl<T>, validation: Observable<null | object>): Subscription {
-  return validation.subscribe(maybeError => {
-    control.setErrors(maybeError);
+export function validateControlOn<T>(
+  control: FormGroup<T> | FormControl<T> | FormArray<T>,
+  validation: Observable<null | object>,
+  merge: boolean
+): Subscription {
+  return validation.pipe(startWith(null), pairwise()).subscribe(([previous, maybeError]) => {
+    if (merge) {
+      if (!maybeError && previous) {
+        Object.keys(previous).forEach(key => {
+          control.removeError(key);
+        });
+      } else {
+        control.mergeErrors(maybeError);
+      }
+    } else {
+      control.setErrors(maybeError);
+    }
   });
 }
 

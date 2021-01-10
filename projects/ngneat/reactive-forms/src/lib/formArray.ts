@@ -14,7 +14,8 @@ import {
   hasErrorAndDirty,
   hasErrorAndTouched,
   markAllDirty,
-  mergeControlValidators
+  mergeControlValidators,
+  validateControlOn
 } from './control-actions';
 import {
   AsyncValidator,
@@ -182,10 +183,8 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     super.updateValueAndValidity();
   }
 
-  validateOn(observableValidation: Observable<null | object>) {
-    return observableValidation.subscribe(maybeError => {
-      this.setErrors(maybeError);
-    });
+  validateOn(observableValidation: Observable<null | object>, merge: boolean = false) {
+    return validateControlOn(this, observableValidation, merge);
   }
 
   hasError(errorCode: ExtractStrings<E>, path?: ControlPath) {

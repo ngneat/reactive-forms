@@ -303,7 +303,7 @@ control.markAllAsDirty();
 
 ### `validateOn()`
 
-Takes an observable that emits a response, which is either `null` or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors)). The control's `setErrors()` method is called whenever the source emits.
+Takes an observable that emits a response, which is either `null` or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors)). The control's `setErrors()` method is called whenever the source emits. If you set the optional `merge` parameter to `true`, then `mergeErrors()` is called instead.
 
 ```ts
 const passwordValidator = combineLatest([

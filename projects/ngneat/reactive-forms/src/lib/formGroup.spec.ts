@@ -267,6 +267,17 @@ describe('FormGroup', () => {
     expect(control.errors).toEqual(null);
   });
 
+  it('should merge errors on validateOn', () => {
+    const control = createGroup();
+    const subject = new Subject<object>();
+    control.setErrors({ initialError: true });
+    control.validateOn(subject, true);
+    subject.next({ someError: true });
+    expect(control.errors).toEqual({ initialError: true, someError: true });
+    subject.next(null);
+    expect(control.errors).toEqual({ initialError: true });
+  });
+
   it('should hasErrorAndTouched', () => {
     const control = createGroup(true);
     expect(control.hasErrorAndTouched('isInvalid')).toBeFalsy();

@@ -145,8 +145,8 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     super.updateValueAndValidity();
   }
 
-  validateOn(observableValidation: Observable<null | object>) {
-    return validateControlOn(this, observableValidation);
+  validateOn(observableValidation: Observable<null | object>, merge: boolean = false) {
+    return validateControlOn(this, observableValidation, merge);
   }
 
   getError<K extends ExtractStrings<E>>(errorCode: K): E[K] | null {
