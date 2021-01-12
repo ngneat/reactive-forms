@@ -41,7 +41,7 @@ Let's take a look at all the neat things we provide:
 - [Control Queries](#control-queries)
 - [Control Methods](#control-methods)
 - [Control Errors](#control-errors)
-- [ControlValueAccessor](#control-value-accessor)
+- [ControlValueAccessor](#controlvalueaccessor)
 - [Form Builder](#form-builder)
 - [Persist Form](#persist-form)
 - [ESLint Rule](#eslint-rule)
