@@ -489,8 +489,8 @@ import { ControlValueAccessor } from '@ngneat/reactive-forms';
   ]
 })
 export class MyCheckboxComponent extends ControlValueAccessor<boolean> {
-  writeValue(value) {
-    // value is typed a boolean
+  writeValue(value: boolean) {
+
   }
 
   // `this.onChange`, and `this.onTouched` are already here!
