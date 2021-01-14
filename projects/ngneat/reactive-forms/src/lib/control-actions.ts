@@ -1,6 +1,6 @@
 import { ValidationErrors, FormArray as NgFormArray } from '@angular/forms';
 import { defer, merge, Observable, of, Subscription } from 'rxjs';
-import { distinctUntilChanged, map, tap, debounceTime, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, map, debounceTime, switchMap } from 'rxjs/operators';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
@@ -11,7 +11,8 @@ import {
   ValidatorFn,
   ControlPath,
   PersistOptions,
-  ControlFactoryMap
+  ControlFactoryMap,
+  UpdateValueAndValidityOptions
 } from './types';
 import { coerceArray, isNil, wrapIntoObservable } from './utils';
 
@@ -110,10 +111,11 @@ export function controlEnabledWhile<T>(
 
 export function mergeControlValidators<T, Control extends AbstractControl<T>>(
   control: Control,
-  validators: ValidatorFn<T> | ValidatorFn<T>[]
+  validators: ValidatorFn<T> | ValidatorFn<T>[],
+  options?: UpdateValueAndValidityOptions
 ): void {
   control.setValidators([control.validator, ...coerceArray(validators)]);
-  control.updateValueAndValidity();
+  control.updateValueAndValidity(options);
 }
 
 export function validateControlOn<T>(control: AbstractControl<T>, validation: Observable<null | object>): Subscription {
