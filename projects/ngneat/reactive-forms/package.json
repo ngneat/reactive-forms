@@ -1,7 +1,7 @@
 {
   "name": "@ngneat/reactive-forms",
   "description": "(Angular Reactive) Forms with Benefits",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "schematics": "./schematics/collection.json",
   "keywords": [
     "angular",
