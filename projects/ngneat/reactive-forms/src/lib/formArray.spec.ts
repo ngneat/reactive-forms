@@ -2,6 +2,7 @@ import { of, Subject } from 'rxjs';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
+import { diff } from './operators/diff';
 
 const errorFn = group => {
   return { isInvalid: true };
@@ -11,6 +12,55 @@ const createArray = (withError = false) => {
   return new FormArray<string>([new FormControl(''), new FormControl('')], withError ? errorFn : []);
 };
 
+describe('FormArray valueChanges$ diff() operator', () => {
+  const control = createArray();
+  const spy = jest.fn();
+  control.value$.pipe(diff()).subscribe(spy);
+
+  it('should be initialized', () => {
+    expect(spy).toHaveBeenCalledWith(['', '']);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should filter duplicated calls', () => {
+    control.patchValue(['1', '2']);
+    expect(spy).toHaveBeenCalledWith(['1', '2']);
+    control.patchValue(['1', '2']);
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+
+  it('should push new value', () => {
+    control.push(new FormControl('3'));
+    expect(spy).toHaveBeenCalledWith(['1', '2', '3']);
+    control.patchValue(['1', '2', '3']);
+    expect(spy).toHaveBeenCalledTimes(3);
+  });
+
+  it('should override previous values', () => {
+    control.patchValue(['2', '3', '4']);
+    expect(spy).toHaveBeenCalledWith(['2', '3', '4']);
+    expect(spy).toHaveBeenCalledTimes(4);
+  });
+
+  it('should clear control', () => {
+    control.removeAt(1);
+    expect(spy).toHaveBeenCalledWith(['2', '4']);
+    expect(spy).toHaveBeenCalledTimes(5);
+    control.removeAt(0);
+    expect(spy).toHaveBeenCalledWith(['4']);
+    expect(spy).toHaveBeenCalledTimes(6);
+    control.removeAt(0);
+    expect(spy).toHaveBeenCalledWith([]);
+    expect(spy).toHaveBeenCalledTimes(7);
+  });
+
+  it('should push empty value', () => {
+    control.push(new FormControl(''));
+    expect(spy).toHaveBeenCalledWith(['']);
+    expect(spy).toHaveBeenCalledTimes(8);
+  });
+});
+
 describe('FormArray', () => {
   it('should valueChanges$', () => {
     const control = createArray();
@@ -19,6 +69,12 @@ describe('FormArray', () => {
     expect(spy).toHaveBeenCalledWith(['', '']);
     control.patchValue(['1', '2']);
     expect(spy).toHaveBeenCalledWith(['1', '2']);
+    control.push(new FormControl('3'));
+    expect(spy).toHaveBeenCalledWith(['1', '2', '3']);
+    control.push(new FormControl(''));
+    expect(spy).toHaveBeenCalledWith(['1', '2', '3', '']);
+    control.removeAt(1);
+    expect(spy).toHaveBeenCalledWith(['1', '3', '']);
   });
 
   it('should disabledChanges$', () => {

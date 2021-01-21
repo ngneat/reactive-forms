@@ -1,10 +1,12 @@
-import { fakeAsync, tick, flush } from '@angular/core/testing';
-import { of, Subject, Observable, timer, from } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
+import { of, Subject, Observable, timer } from 'rxjs';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
 import { FormArray } from './formArray';
 import { switchMap } from 'rxjs/operators';
 import { wrapIntoObservable } from './utils';
+import { diff } from './operators/diff';
+import { AbstractControlOf } from './types';
 
 type Person = {
   name: string;
@@ -32,6 +34,68 @@ const createGroup = (withError = false) => {
     { validators: withError ? errorFn : [] }
   );
 };
+
+const createArray = <T>(elements: T[], withError = false): FormArray<T> => {
+  const controlList = elements.map(element => new FormControl<T>(element)) as Array<AbstractControlOf<T>>;
+  return new FormArray<T>(controlList, withError ? errorFn : []);
+};
+
+describe('FormGroup valueChanges$ diff() operator', () => {
+  const control = createGroup();
+  const spy = jest.fn();
+  control.value$.pipe(diff()).subscribe(spy);
+
+  it('should be initialized', () => {
+    expect(spy).toHaveBeenCalledWith({ name: null, phone: { num: null, prefix: null }, skills: [] });
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should filter duplicated calls', () => {
+    control.patchValue({ name: 'changed' });
+    expect(spy).toHaveBeenCalledWith({ name: 'changed' });
+    control.patchValue({ name: 'changed' });
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+
+  it('should allow deep FormGroup duplicated calls filtering', () => {
+    control.patchValue({ phone: { num: 1, prefix: 1 } });
+    expect(spy).toHaveBeenCalledWith({ phone: { num: 1, prefix: 1 } });
+    control.patchValue({ phone: { num: 1, prefix: 1 } });
+    expect(spy).toHaveBeenCalledTimes(3);
+  });
+
+  it('should allow deep FormArray duplicated calls filtering', () => {
+    control.setControl('skills', createArray(['driving']));
+    expect(spy).toHaveBeenCalledWith({ skills: ['driving'] });
+    control.setControl('skills', createArray(['driving']));
+    expect(spy).toHaveBeenCalledTimes(4);
+  });
+
+  it('should allow deep FormArray of numbers duplicated calls filtering', () => {
+    control.setControl('skills', createArray([1, 2] as any));
+    expect(spy).toHaveBeenCalledWith({ skills: [1, 2] });
+    control.setControl('skills', createArray([1, 2] as any));
+    expect(spy).toHaveBeenCalledTimes(5);
+  });
+
+  it('should allow deep FormControl null value use', () => {
+    control.patchValue({ name: null });
+    expect(spy).toHaveBeenCalledWith({ name: null });
+    expect(spy).toHaveBeenCalledTimes(6);
+  });
+
+  it('should allow deep FormArray of null values use', () => {
+    control.setControl('skills', createArray([null, null]));
+    expect(spy).toHaveBeenCalledWith({ skills: [null, null] });
+    expect(spy).toHaveBeenCalledTimes(7);
+  });
+
+  it('should allow deep FormGroup null value use', () => {
+    control.patchValue({ phone: { num: null } });
+    expect(spy).toHaveBeenCalledWith({ phone: { num: null } });
+    expect(spy).toHaveBeenCalledTimes(8);
+  });
+});
 
 describe('FormGroup', () => {
   it('should valueChanges$', () => {

@@ -2,6 +2,7 @@ import { of, Subject } from 'rxjs';
 import { FormControl } from './formControl';
 import { NgValidatorsErrors } from './types';
 import { Validators } from '@angular/forms';
+import { diff } from './operators/diff';
 
 const validatorExample = new FormControl<string, NgValidatorsErrors>('', {
   validators(control: FormControl<string>) {
@@ -12,6 +13,48 @@ const validatorExample = new FormControl<string, NgValidatorsErrors>('', {
       }
     };
   }
+});
+
+describe('FormControl valueChanges$ diff() operator', () => {
+  const control = new FormControl<string>();
+  const spy = jest.fn();
+  control.value$.pipe(diff()).subscribe(spy);
+
+  it('should be initialized', () => {
+    expect(spy).toHaveBeenCalledWith(null);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should filter duplicated calls', () => {
+    control.patchValue('patched');
+    expect(spy).toHaveBeenCalledWith('patched');
+    control.patchValue('patched');
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+
+  it('should push new value', () => {
+    control.patchValue('updated');
+    expect(spy).toHaveBeenCalledWith('updated');
+    expect(spy).toHaveBeenCalledTimes(3);
+  });
+
+  it('should push null value', () => {
+    control.patchValue(null);
+    expect(spy).toHaveBeenCalledWith(null);
+    expect(spy).toHaveBeenCalledTimes(4);
+  });
+
+  it('should push empty value', () => {
+    control.patchValue('');
+    expect(spy).toHaveBeenCalledWith('');
+    expect(spy).toHaveBeenCalledTimes(5);
+  });
+
+  it('should push number value', () => {
+    control.patchValue('0');
+    expect(spy).toHaveBeenCalledWith('0');
+    expect(spy).toHaveBeenCalledTimes(6);
+  });
 });
 
 describe('FormControl', () => {
