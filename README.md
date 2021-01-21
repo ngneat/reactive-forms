@@ -41,6 +41,7 @@ Let's take a look at all the neat things we provide:
 - [Control Queries](#control-queries)
 - [Control Methods](#control-methods)
 - [Control Errors](#control-errors)
+- [Control Operators](#control-operators)
 - [ControlValueAccessor](#control-value-accessor)
 - [Form Builder](#form-builder)
 - [Persist Form](#persist-form)
@@ -468,6 +469,48 @@ The library provides a type for the built-in Angular validators types:
 import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
 
 const control = new FormControl<string, NgValidatorsErrors>();
+```
+## Control Operators
+
+Each `valueChanges` or `values$` takes an operator `diff()`, which emits only changed parts of form:
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl<string>('');
+control.valueChanges
+  .pipe(diff())
+  .subscribe(value => {
+    // value is emited only if it has been changed
+  });
+```
+
+Use it with a `FormArray`:
+
+```ts
+import { FormArray, FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormArray<string>([new FormControl()]);
+control.value$
+  .pipe(diff())
+  .subscribe(value => {
+    // raw value is emited only if it has been changed
+  });
+```
+
+Use it with a `FormGroup`:
+
+```ts
+import { FormGroup, FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormGroup<string>({
+  name: new FormControl('')
+});
+control.value$
+  .pipe(diff())
+  .subscribe(value => {
+    // value is updated only if it has been changed
+  });
 ```
 
 ## ControlValueAccessor
