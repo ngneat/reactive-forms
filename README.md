@@ -23,6 +23,8 @@ Let's take a look at all the neat things we provide:
 
 ## 🔮 Features
 
+
+
 ✅ Offers (almost) seamless `FormControl`, `FormGroup`, `FormArray` Replacement<br>
 ✅ Allows Typed Forms! <br>
 ✅ Provides Reactive Queries <br>
@@ -42,7 +44,7 @@ Let's take a look at all the neat things we provide:
 - [Control Methods](#control-methods)
 - [Control Errors](#control-errors)
 - [Control Operators](#control-operators)
-- [ControlValueAccessor](#control-value-accessor)
+- [ControlValueAccessor](#controlvalueaccessor)
 - [Form Builder](#form-builder)
 - [Persist Form](#persist-form)
 - [ESLint Rule](#eslint-rule)
@@ -532,8 +534,8 @@ import { ControlValueAccessor } from '@ngneat/reactive-forms';
   ]
 })
 export class MyCheckboxComponent extends ControlValueAccessor<boolean> {
-  writeValue(value) {
-    // value is typed a boolean
+  writeValue(value: boolean) {
+
   }
 
   // `this.onChange`, and `this.onTouched` are already here!

@@ -40,7 +40,8 @@ import {
   AbstractControlsOf,
   PersistOptions,
   ValidatorFn,
-  DeepPartial
+  DeepPartial,
+  UpdateValueAndValidityOptions
 } from './types';
 import { coerceArray, mergeErrors, removeError, wrapIntoObservable } from './utils';
 import { FormArray } from './formArray';
@@ -185,13 +186,13 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: Validator) {
-    mergeControlValidators(this, validators);
+  mergeValidators(validators: Validator, options?: UpdateValueAndValidityOptions) {
+    mergeControlValidators(this, validators, options);
   }
 
-  mergeAsyncValidators(validators: AsyncValidator) {
+  mergeAsyncValidators(validators: AsyncValidator, options?: UpdateValueAndValidityOptions) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
-    this.updateValueAndValidity();
+    this.updateValueAndValidity(options);
   }
 
   markAsTouched(opts?: OnlySelf): void {
@@ -222,14 +223,14 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: Validator): void {
+  setValidators(newValidator: Validator, options?: UpdateValueAndValidityOptions): void {
     super.setValidators(newValidator);
-    super.updateValueAndValidity();
+    super.updateValueAndValidity(options);
   }
 
-  setAsyncValidators(newValidator: AsyncValidator): void {
+  setAsyncValidators(newValidator: AsyncValidator, options?: UpdateValueAndValidityOptions): void {
     super.setAsyncValidators(newValidator);
-    super.updateValueAndValidity();
+    super.updateValueAndValidity(options);
   }
 
   validateOn(observableValidation: Observable<null | object>) {

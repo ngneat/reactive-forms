@@ -31,7 +31,8 @@ import {
   ControlValue,
   AbstractControlOf,
   ValidatorFn,
-  DeepPartial
+  DeepPartial,
+  UpdateValueAndValidityOptions
 } from './types';
 import { coerceArray, mergeErrors, removeError } from './utils';
 
@@ -135,13 +136,13 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: Validator) {
-    mergeControlValidators(this, validators);
+  mergeValidators(validators: Validator, options?: UpdateValueAndValidityOptions) {
+    mergeControlValidators(this, validators, options);
   }
 
-  mergeAsyncValidators(validators: AsyncValidator) {
+  mergeAsyncValidators(validators: AsyncValidator, options?: UpdateValueAndValidityOptions) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
-    this.updateValueAndValidity();
+    this.updateValueAndValidity(options);
   }
 
   markAsTouched(opts?: OnlySelf): void {
@@ -172,14 +173,14 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     super.reset(value, options);
   }
 
-  setValidators(newValidator: Validator): void {
+  setValidators(newValidator: Validator, options?: UpdateValueAndValidityOptions): void {
     super.setValidators(newValidator);
-    super.updateValueAndValidity();
+    super.updateValueAndValidity(options);
   }
 
-  setAsyncValidators(newValidator: AsyncValidator): void {
+  setAsyncValidators(newValidator: AsyncValidator, options?: UpdateValueAndValidityOptions): void {
     super.setAsyncValidators(newValidator);
-    super.updateValueAndValidity();
+    super.updateValueAndValidity(options);
   }
 
   validateOn(observableValidation: Observable<null | object>) {
@@ -230,7 +231,6 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   }
 
   removeWhen(predicate: (element: AbstractControlOf<T>) => boolean): void {
-    const toRemove: number[] = [];
     for (let i = this.length - 1; i >= 0; --i) {
       if (predicate(this.at(i))) {
         this.removeAt(i);
