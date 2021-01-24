@@ -1,6 +1,6 @@
 import { ValidationErrors, FormArray as NgFormArray } from '@angular/forms';
 import { defer, merge, Observable, of, Subscription } from 'rxjs';
-import { distinctUntilChanged, map, tap, debounceTime, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, map, debounceTime, switchMap } from 'rxjs/operators';
 import { FormArray } from './formArray';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
@@ -147,7 +147,9 @@ export function selectControlValue$<T, R>(
 export function persistValue$<T>(control: FormGroup<T>, key: string, options: PersistOptions<T>): Observable<T> {
   return control.valueChanges.pipe(
     debounceTime(options.debounceTime),
-    switchMap(value => wrapIntoObservable(options.manager.setValue(key, value)))
+    switchMap(value =>
+      wrapIntoObservable(options.manager.setValue(key, options.persistDisabledControls ? control.getRawValue() : value))
+    )
   );
 }
 

@@ -158,4 +158,5 @@ export interface PersistOptions<T> {
   debounceTime?: number;
   manager?: PersistManager<T>;
   arrControlFactory?: ControlFactoryMap<T>;
+  persistDisabledControls?: boolean;
 }

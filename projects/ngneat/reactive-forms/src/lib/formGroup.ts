@@ -330,13 +330,17 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     disableControl(this, disable, opts);
   }
 
-  persist(key: string, { debounceTime, manager, arrControlFactory }: PersistOptions<T>): Observable<T> {
+  persist(
+    key: string,
+    { debounceTime, manager, arrControlFactory, persistDisabledControls }: PersistOptions<T>
+  ): Observable<T> {
     const persistManager = manager || new LocalStorageManager();
     return this.restore(key, persistManager, arrControlFactory).pipe(
       switchMap(() =>
         persistValue$(this, key, {
           debounceTime: debounceTime || 250,
-          manager: persistManager
+          manager: persistManager,
+          persistDisabledControls
         })
       )
     );

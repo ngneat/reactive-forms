@@ -1,5 +1,5 @@
-import { fakeAsync, tick, flush } from '@angular/core/testing';
-import { of, Subject, Observable, timer, from } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
+import { of, Subject, Observable, timer } from 'rxjs';
 import { FormControl } from './formControl';
 import { FormGroup } from './formGroup';
 import { FormArray } from './formArray';
@@ -325,9 +325,10 @@ describe('FormGroup', () => {
     const person: Person = { name: 'ewan', phone: { num: 5550153, prefix: 288 }, skills: ['acting', 'motorcycle'] };
 
     it.each([[0], [300], [500]])(
-      'should persist',
+      'should persist without disabled controls',
       fakeAsync((tickMs: number) => {
         const control = createGroup();
+        control.getControl('skills').disable();
         const debounceTime = 50;
         const persistManager = {
           getValue: jest.fn(),
@@ -343,10 +344,44 @@ describe('FormGroup', () => {
         tick(debounceTime);
         expect(persistManager.setValue).toHaveBeenCalledTimes(2);
         expect(persistManager.setValue).toHaveBeenLastCalledWith('key', control.value);
+        expect(persistManager.setValue).not.toHaveBeenLastCalledWith('key', control.getRawValue());
         if (tickMs) {
           expect(persistValue).toBeFalsy();
           tick(tickMs);
           expect(persistValue.name).toEqual('ewan mc');
+          expect(persistValue.skills).toEqual(undefined);
+        }
+      })
+    );
+
+    it.each([[0], [300], [500]])(
+      'should persist with disabled controls',
+      fakeAsync((tickMs: number) => {
+        const control = createGroup();
+        control.getControl('skills').disable();
+        const debounceTime = 50;
+        const persistManager = {
+          getValue: jest.fn(),
+          setValue: jest.fn((key, value) => {
+            return tickMs ? timer(tickMs).pipe(switchMap(() => of(value))) : value;
+          })
+        };
+        let persistValue: Person;
+        control
+          .persist('key', { debounceTime, manager: persistManager, persistDisabledControls: true })
+          .subscribe(value => (persistValue = value));
+        control.getControl('name').setValue('ewan');
+        tick(debounceTime);
+        control.getControl('name').setValue('ewan mc');
+        tick(debounceTime);
+        expect(persistManager.setValue).toHaveBeenCalledTimes(2);
+        expect(persistManager.setValue).not.toHaveBeenLastCalledWith('key', control.value);
+        expect(persistManager.setValue).toHaveBeenLastCalledWith('key', control.getRawValue());
+        if (tickMs) {
+          expect(persistValue).toBeFalsy();
+          tick(tickMs);
+          expect(persistValue.name).toEqual('ewan mc');
+          expect(persistValue.skills).toEqual([]);
         }
       })
     );
