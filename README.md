@@ -554,6 +554,7 @@ Change the target storage or `debounceTime` value by providing options as a seco
 | `debounceTime`      | Update delay in ms between value changes              | 250                   |
 | `manager`           | A manager implementing the `PersistManager` interface | `LocalStorageManager` |
 | `arrControlFactory` | Factory functions for `FormArray`                     |                       |
+| `persistDisabledControls` | Defines whether values of disabled controls should be persisted | false |
 
 
 By default the library provides `LocalStorageManager` and `SessionStorageManager`. It's possible to store the form value into a custom storage. Just implement the `PersistManager` interface, and use it when calling the `persist` function.
