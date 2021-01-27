@@ -100,11 +100,18 @@ describe('FormGroup valueChanges$ diff() operator', () => {
     expect(spy).toHaveBeenCalledTimes(8);
   });
 
-  it('should allow ush new value deep in to FormArray', () => {
+  it('should allow push new value deep in to FormArray', () => {
     const arrayControl = <FormArray>control.get('skills');
     arrayControl.push(new FormControl('3'));
     expect(spy).toHaveBeenCalledWith({ skills: [null, null, '3'] });
     expect(spy).toHaveBeenCalledTimes(9);
+  });
+
+  it('should allow removing value deep from FormArray', () => {
+    const arrayControl = <FormArray>control.get('skills');
+    arrayControl.removeAt(0);
+    expect(spy).toHaveBeenCalledWith({ skills: [null, '3'] });
+    expect(spy).toHaveBeenCalledTimes(10);
   });
 
   it('should perform advanced/deep form input', () => {
@@ -136,7 +143,7 @@ describe('FormGroup valueChanges$ diff() operator', () => {
         g: 'new'
       }
     });
-    expect(spy).toHaveBeenCalledTimes(11);
+    expect(spy).toHaveBeenCalledTimes(12);
   });
 
   it('should perform advanced/deep form input with special form type', () => {
@@ -162,7 +169,7 @@ describe('FormGroup valueChanges$ diff() operator', () => {
         }
       }
     });
-    expect(spy).toHaveBeenCalledTimes(13);
+    expect(spy).toHaveBeenCalledTimes(14);
   });
 });
 
