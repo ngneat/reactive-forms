@@ -26,6 +26,7 @@ import {
   ExtractStrings,
   OnlySelf,
   OrBoxedValue,
+  UpdateValueAndValidityOptions,
   Validator,
   ValidatorFn,
   ValidatorOrOpts
@@ -98,13 +99,13 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     return controlEnabledWhile(this, observable, options);
   }
 
-  mergeValidators(validators: Validator) {
-    mergeControlValidators(this, validators);
+  mergeValidators(validators: Validator, options?: UpdateValueAndValidityOptions) {
+    mergeControlValidators(this, validators, options);
   }
 
-  mergeAsyncValidators(validators: AsyncValidator) {
+  mergeAsyncValidators(validators: AsyncValidator, options?: UpdateValueAndValidityOptions) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
-    this.updateValueAndValidity();
+    this.updateValueAndValidity(options);
   }
 
   markAsTouched(opts?: OnlySelf): void {
@@ -135,14 +136,14 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     super.reset(formState, options);
   }
 
-  setValidators(newValidator: Validator): void {
+  setValidators(newValidator: Validator, options?: UpdateValueAndValidityOptions): void {
     super.setValidators(newValidator);
-    super.updateValueAndValidity();
+    super.updateValueAndValidity(options);
   }
 
-  setAsyncValidators(newValidator: AsyncValidator): void {
+  setAsyncValidators(newValidator: AsyncValidator, options?: UpdateValueAndValidityOptions): void {
     super.setAsyncValidators(newValidator);
-    super.updateValueAndValidity();
+    super.updateValueAndValidity(options);
   }
 
   validateOn(observableValidation: Observable<null | object>) {

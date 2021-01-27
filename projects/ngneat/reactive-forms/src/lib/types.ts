@@ -158,4 +158,7 @@ export interface PersistOptions<T> {
   debounceTime?: number;
   manager?: PersistManager<T>;
   arrControlFactory?: ControlFactoryMap<T>;
+  persistDisabledControls?: boolean;
 }
+
+export type UpdateValueAndValidityOptions = Pick<ControlOptions, 'onlySelf' | 'emitEvent'>;

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.2](https://github.com/ngneat/reactive-forms/compare/v1.5.1...v1.5.2) (2021-01-20)
+
+
+### Bug Fixes
+
+* allow to pass options to updateValueAndValidity method ([3edb8ae](https://github.com/ngneat/reactive-forms/commit/3edb8ae65fcff5d87d0d7237b73589fc962aa8ec))
+
 ### [1.5.1](https://github.com/ngneat/reactive-forms/compare/v1.5.0...v1.5.1) (2020-12-10)
 
 
