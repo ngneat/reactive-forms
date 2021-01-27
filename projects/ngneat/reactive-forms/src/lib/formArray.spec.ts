@@ -25,6 +25,7 @@ describe('FormArray valueChanges$ diff() operator', () => {
   it('should filter duplicated calls', () => {
     control.patchValue(['1', '2']);
     expect(spy).toHaveBeenCalledWith(['1', '2']);
+    expect(spy).toHaveBeenCalledTimes(2);
     control.patchValue(['1', '2']);
     expect(spy).toHaveBeenCalledTimes(2);
   });
@@ -32,6 +33,7 @@ describe('FormArray valueChanges$ diff() operator', () => {
   it('should push new value', () => {
     control.push(new FormControl('3'));
     expect(spy).toHaveBeenCalledWith(['1', '2', '3']);
+    expect(spy).toHaveBeenCalledTimes(3);
     control.patchValue(['1', '2', '3']);
     expect(spy).toHaveBeenCalledTimes(3);
   });

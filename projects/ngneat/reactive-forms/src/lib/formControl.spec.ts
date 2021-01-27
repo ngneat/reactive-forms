@@ -28,6 +28,7 @@ describe('FormControl valueChanges$ diff() operator', () => {
   it('should filter duplicated calls', () => {
     control.patchValue('patched');
     expect(spy).toHaveBeenCalledWith('patched');
+    expect(spy).toHaveBeenCalledTimes(2);
     control.patchValue('patched');
     expect(spy).toHaveBeenCalledTimes(2);
   });

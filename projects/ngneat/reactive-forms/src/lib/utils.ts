@@ -52,8 +52,8 @@ export function isObjectEmpty(obj) {
 /**
  * @return {boolean} True if arrays are identical.
  */
-export function compareArraysContent(left, right): boolean {
-  left = Array.isArray(left) ? left : [];
-  right = Array.isArray(right) ? right : [];
+export function compareArraysContent<T extends []>(left: T, right: T): boolean {
+  left = Array.isArray(left) ? left : ([] as T);
+  right = Array.isArray(right) ? right : ([] as T);
   return left.length === right.length && left.every(value => right.includes(value));
 }

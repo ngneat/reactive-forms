@@ -53,6 +53,7 @@ describe('FormGroup valueChanges$ diff() operator', () => {
   it('should filter duplicated calls', () => {
     control.patchValue({ name: 'changed' });
     expect(spy).toHaveBeenCalledWith({ name: 'changed' });
+    expect(spy).toHaveBeenCalledTimes(2);
     control.patchValue({ name: 'changed' });
     expect(spy).toHaveBeenCalledTimes(2);
   });
@@ -60,6 +61,7 @@ describe('FormGroup valueChanges$ diff() operator', () => {
   it('should allow deep FormGroup duplicated calls filtering', () => {
     control.patchValue({ phone: { num: 1, prefix: 1 } });
     expect(spy).toHaveBeenCalledWith({ phone: { num: 1, prefix: 1 } });
+    expect(spy).toHaveBeenCalledTimes(3);
     control.patchValue({ phone: { num: 1, prefix: 1 } });
     expect(spy).toHaveBeenCalledTimes(3);
   });
@@ -67,6 +69,7 @@ describe('FormGroup valueChanges$ diff() operator', () => {
   it('should allow deep FormArray duplicated calls filtering', () => {
     control.setControl('skills', createArray(['driving']));
     expect(spy).toHaveBeenCalledWith({ skills: ['driving'] });
+    expect(spy).toHaveBeenCalledTimes(4);
     control.setControl('skills', createArray(['driving']));
     expect(spy).toHaveBeenCalledTimes(4);
   });
@@ -74,6 +77,7 @@ describe('FormGroup valueChanges$ diff() operator', () => {
   it('should allow deep FormArray of numbers duplicated calls filtering', () => {
     control.setControl('skills', createArray([1, 2] as any));
     expect(spy).toHaveBeenCalledWith({ skills: [1, 2] });
+    expect(spy).toHaveBeenCalledTimes(5);
     control.setControl('skills', createArray([1, 2] as any));
     expect(spy).toHaveBeenCalledTimes(5);
   });
@@ -94,6 +98,71 @@ describe('FormGroup valueChanges$ diff() operator', () => {
     control.patchValue({ phone: { num: null } });
     expect(spy).toHaveBeenCalledWith({ phone: { num: null } });
     expect(spy).toHaveBeenCalledTimes(8);
+  });
+
+  it('should allow ush new value deep in to FormArray', () => {
+    const arrayControl = <FormArray>control.get('skills');
+    arrayControl.push(new FormControl('3'));
+    expect(spy).toHaveBeenCalledWith({ skills: [null, null, '3'] });
+    expect(spy).toHaveBeenCalledTimes(9);
+  });
+
+  it('should perform advanced/deep form input', () => {
+    const group = new FormGroup({
+      a: new FormControl(),
+      b: new FormGroup({
+        c: new FormControl(),
+        d: new FormControl()
+      }),
+      e: new FormGroup({
+        f: new FormControl(),
+        g: new FormControl()
+      })
+    });
+    group.value$.pipe(diff()).subscribe(spy);
+    group.patchValue({
+      b: {
+        c: 'new'
+      },
+      e: {
+        g: 'new'
+      }
+    });
+    expect(spy).toHaveBeenCalledWith({
+      b: {
+        c: 'new'
+      },
+      e: {
+        g: 'new'
+      }
+    });
+    expect(spy).toHaveBeenCalledTimes(11);
+  });
+
+  it('should perform advanced/deep form input with special form type', () => {
+    const deep = new FormGroup({
+      a: new FormControl(),
+      b: new FormGroup({
+        c: new FormGroup({
+          e: new FormArray([])
+        }),
+        d: new FormControl()
+      })
+    });
+    deep.value$.pipe(diff()).subscribe(spy);
+    const arrayControl = <FormArray>deep
+      .get('b')
+      .get('c')
+      .get('e');
+    arrayControl.push(new FormControl('3'));
+    expect(spy).toHaveBeenCalledWith({
+      b: {
+        c: {
+          e: ['3']
+        }
+      }
+    });
+    expect(spy).toHaveBeenCalledTimes(13);
   });
 });
 
