@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/ngneat/reactive-forms/compare/v1.5.2...v1.6.0) (2021-01-30)
+
+
+### Features
+
+* persist values of disabled controls ([9dae31f](https://github.com/ngneat/reactive-forms/commit/9dae31fdf107ac78c9ec48cd937f072a23be0101))
+
 ### [1.5.2](https://github.com/ngneat/reactive-forms/compare/v1.5.1...v1.5.2) (2021-01-20)
 
 
