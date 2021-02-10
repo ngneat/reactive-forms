@@ -506,7 +506,12 @@ Use it with a `FormGroup`:
 import { FormGroup, FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormGroup<string>({
-  name: new FormControl('')
+  name: new FormControl(''),
+  phone: new FormGroup({
+    num: new FormControl(),
+    prefix: new FormControl()
+  }),
+  skills: new FormArray([])
 });
 control.value$
   .pipe(diff())
