@@ -38,11 +38,20 @@ function reduceControlValue<T>(prev: T, curr: T): T {
     return compareArraysContent(left, right) ? undefined : curr;
   }
 
-  return reduceFormGroup(prev, curr);
+  return compareFormGroup(prev, curr);
+}
+
+function compareFormGroup<T>(prev: T, curr: T): T {
+  const reduced = reduceFormGroup(prev, curr);
+  return toArray(reduced).length === 0 ? undefined : reduced;
 }
 
 function reduceFormGroup<T>(prev: T, curr: T): T {
-  const reduced = toArray(curr).reduce((acc, key) => {
+  if (!prev) {
+    return curr;
+  }
+
+  return toArray(curr).reduce((acc, key) => {
     const control = reduceControlValue(prev[key], curr[key]);
     if (control !== undefined) {
       acc[key] = control;
@@ -50,6 +59,4 @@ function reduceFormGroup<T>(prev: T, curr: T): T {
 
     return acc;
   }, {} as T);
-
-  return toArray(reduced).length === 0 ? undefined : reduced;
 }
