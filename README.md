@@ -23,6 +23,8 @@ Let's take a look at all the neat things we provide:
 
 ## 🔮 Features
 
+
+
 ✅ Offers (almost) seamless `FormControl`, `FormGroup`, `FormArray` Replacement<br>
 ✅ Allows Typed Forms! <br>
 ✅ Provides Reactive Queries <br>
@@ -41,6 +43,7 @@ Let's take a look at all the neat things we provide:
 - [Control Queries](#control-queries)
 - [Control Methods](#control-methods)
 - [Control Errors](#control-errors)
+- [Control Operators](#control-operators)
 - [ControlValueAccessor](#controlvalueaccessor)
 - [Form Builder](#form-builder)
 - [Persist Form](#persist-form)
@@ -468,6 +471,27 @@ The library provides a type for the built-in Angular validators types:
 import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
 
 const control = new FormControl<string, NgValidatorsErrors>();
+```
+## Control Operators
+
+Each `valueChanges` or `values$` takes an operator `diff()`, which emits only changed parts of form:
+
+```ts
+import { FormGroup, FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormGroup<string>({
+  name: new FormControl(''),
+  phone: new FormGroup({
+    num: new FormControl(),
+    prefix: new FormControl()
+  }),
+  skills: new FormArray([])
+});
+control.value$
+  .pipe(diff())
+  .subscribe(value => {
+    // value is emitted only if it has been changed, and only the changed parts.
+  });
 ```
 
 ## ControlValueAccessor

@@ -44,3 +44,16 @@ export function removeError<E>(errors: E, key: keyof E) {
   delete updatedErrors[key];
   return Object.keys(updatedErrors).length > 0 ? updatedErrors : null;
 }
+
+export function isObjectEmpty(obj) {
+  return Object.keys(obj).length === 0 && obj.constructor === Object;
+}
+
+/**
+ * @return {boolean} True if arrays are identical.
+ */
+export function compareArraysContent<T extends []>(left: T, right: T): boolean {
+  left = Array.isArray(left) ? left : ([] as T);
+  right = Array.isArray(right) ? right : ([] as T);
+  return left.length === right.length && left.every(value => right.includes(value));
+}
