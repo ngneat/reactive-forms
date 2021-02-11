@@ -82,7 +82,7 @@ control.value$.subscribe(value => {
 Use it with a `FormGroup`:
 
 ```ts
-import { FormGroup } from '@ngneat/reactive-forms';
+import { FormGroup, FormControl } from '@ngneat/reactive-forms';
 
 interface Profile {
   firstName: string;
@@ -111,7 +111,7 @@ profileForm.patchValue({ firstName: 'Netanel' });
 Or alternatively, with the controls as the generic type:
 
 ```ts
-import { FormGroup } from '@ngneat/reactive-forms';
+import { FormGroup, FormControl } from '@ngneat/reactive-forms';
 
 interface ProfileControls {
   firstName: string; // Note that for primitive types the type "FormControl" is infered, so no need to write that.
