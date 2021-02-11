@@ -516,7 +516,7 @@ const control = new FormGroup<string>({
 control.value$
   .pipe(diff())
   .subscribe(value => {
-    // value is updated only if it has been changed
+    // value is emitted only if it has been changed, and only the changed parts.
   });
 ```
 
