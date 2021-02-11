@@ -477,32 +477,6 @@ const control = new FormControl<string, NgValidatorsErrors>();
 Each `valueChanges` or `values$` takes an operator `diff()`, which emits only changed parts of form:
 
 ```ts
-import { FormControl } from '@ngneat/reactive-forms';
-
-const control = new FormControl<string>('');
-control.valueChanges
-  .pipe(diff())
-  .subscribe(value => {
-    // value is emited only if it has been changed
-  });
-```
-
-Use it with a `FormArray`:
-
-```ts
-import { FormArray, FormControl } from '@ngneat/reactive-forms';
-
-const control = new FormArray<string>([new FormControl()]);
-control.value$
-  .pipe(diff())
-  .subscribe(value => {
-    // raw value is emited only if it has been changed
-  });
-```
-
-Use it with a `FormGroup`:
-
-```ts
 import { FormGroup, FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormGroup<string>({
