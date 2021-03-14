@@ -477,7 +477,7 @@ const control = new FormControl<string, NgValidatorsErrors>();
 Each `valueChanges` or `values$` takes an operator `diff()`, which emits only changed parts of form:
 
 ```ts
-import { FormGroup, FormControl } from '@ngneat/reactive-forms';
+import { FormGroup, FormControl, diff } from '@ngneat/reactive-forms';
 
 const control = new FormGroup<string>({
   name: new FormControl(''),
