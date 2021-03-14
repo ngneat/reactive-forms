@@ -17,3 +17,4 @@ export { ControlValueAccessor } from './lib/controlValueAccessor';
 export { PersistManager } from './lib/persistManager';
 export { LocalStorageManager } from './lib/localStorageManager';
 export { SessionStorageManager } from './lib/sessionStorageManager';
+export { diff } from './lib/operators/diff';
