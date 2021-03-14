@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.1](https://github.com/ngneat/reactive-forms/compare/v1.7.0...v1.6.1) (2021-03-14)
+
+
+### Bug Fixes
+
+* 🐛 expose diff operator ([3fc264e](https://github.com/ngneat/reactive-forms/commit/3fc264e117b311e4205d67a79c95dce9deb38a55)), closes [#83](https://github.com/ngneat/reactive-forms/issues/83)
+
 ## [1.6.0](https://github.com/ngneat/reactive-forms/compare/v1.5.2...v1.6.0) (2021-01-30)
 
 
