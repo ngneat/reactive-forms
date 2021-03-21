@@ -61,9 +61,9 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   readonly dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
   readonly value$ = controlValueChanges$<ControlsValue<T>>(this);
-  readonly disabled$ = controlDisabled$<ControlsValue<T>>(this);
-  readonly enabled$ = controlEnabled$<ControlsValue<T>>(this);
-  readonly status$ = controlStatusChanges$<ControlsValue<T>>(this);
+  readonly disabled$: Observable<boolean> = controlDisabled$<ControlsValue<T>>(this);
+  readonly enabled$: Observable<boolean> = controlEnabled$<ControlsValue<T>>(this);
+  readonly status$: Observable<ControlState> = controlStatusChanges$<ControlsValue<T>>(this);
   readonly errors$ = controlErrorChanges$<E>(this, this.errorsSubject.asObservable());
 
   get asyncValidator(): AsyncValidatorFn<T> | null {

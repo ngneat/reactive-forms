@@ -51,9 +51,9 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   readonly dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
   readonly value$ = controlValueChanges$<ControlValue<T>[]>(this);
-  readonly disabled$ = controlDisabled$(this);
-  readonly enabled$ = controlEnabled$(this);
-  readonly status$ = controlStatusChanges$(this);
+  readonly disabled$: Observable<boolean> = controlDisabled$(this);
+  readonly enabled$: Observable<boolean> = controlEnabled$(this);
+  readonly status$: Observable<ControlState> = controlStatusChanges$(this);
   readonly errors$ = controlErrorChanges$<E>(this, this.errorsSubject.asObservable());
 
   get asyncValidator(): AsyncValidatorFn<T[]> | null {

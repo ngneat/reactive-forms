@@ -48,9 +48,9 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   readonly dirty$ = this.dirtyChanges.asObservable().pipe(distinctUntilChanged());
 
   readonly value$ = controlValueChanges$<T>(this);
-  readonly disabled$ = controlDisabled$<T>(this);
-  readonly enabled$ = controlEnabled$<T>(this);
-  readonly status$ = controlStatusChanges$<T>(this);
+  readonly disabled$: Observable<boolean> = controlDisabled$<T>(this);
+  readonly enabled$: Observable<boolean> = controlEnabled$<T>(this);
+  readonly status$: Observable<ControlState> = controlStatusChanges$<T>(this);
   readonly errors$ = controlErrorChanges$<E>(this, this.errorsSubject.asObservable());
 
   get asyncValidator(): AsyncValidatorFn<T> | null {
