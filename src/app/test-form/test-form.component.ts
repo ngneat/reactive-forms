@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { FormControl, FormGroup, FormArray } from '@angular/forms';
+import { FormControl, FormGroup, FormArray } from '@ngneat/reactive-forms';
 
 @Component({
   selector: 'app-test-form',
@@ -11,11 +11,5 @@ import { FormControl, FormGroup, FormArray } from '@angular/forms';
   `
 })
 export class TestFormComponent {
-  control: FormControl = new FormControl();
-
-  constructor() {
-    const control = new FormArray([]);
-    control.setControl(0, new FormGroup({}));
-    control.at(0).setValue({ name: 'itay' });
-  }
+  group = new FormGroup<{ input: string }>({ input: new FormControl<string>('') });
 }
