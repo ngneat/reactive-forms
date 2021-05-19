@@ -187,3 +187,8 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
     disableControl(this, disable, opts);
   }
 }
+
+// Fix for typescript UMD bug where calls to a property on the superclass do not
+// get the correct 'this' reference
+Reflect.deleteProperty(FormControl.prototype, 'asyncValidator');
+Reflect.deleteProperty(FormControl.prototype, 'validator');
