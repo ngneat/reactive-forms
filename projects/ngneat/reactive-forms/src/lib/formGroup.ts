@@ -361,5 +361,5 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
 
 // Fix for typescript UMD bug where calls to a property on the superclass do not
 // get the correct 'this' reference
-Reflect.deleteProperty(FormGroup.prototype, 'asyncValidator');
-Reflect.deleteProperty(FormGroup.prototype, 'validator');
+delete FormGroup.prototype.asyncValidator;
+delete FormGroup.prototype.validator;

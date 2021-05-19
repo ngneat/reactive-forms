@@ -241,5 +241,5 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
 
 // Fix for typescript UMD bug where calls to a property on the superclass do not
 // get the correct 'this' reference
-Reflect.deleteProperty(FormArray.prototype, 'asyncValidator');
-Reflect.deleteProperty(FormArray.prototype, 'validator');
+delete FormArray.prototype.asyncValidator;
+delete FormArray.prototype.validator;
