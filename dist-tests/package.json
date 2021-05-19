@@ -1,0 +1,37 @@
+{
+  "name": "ngneat-reactive-forms-dist-test",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "test": "ng test --runInBand --silent",
+    "test:integration": "yarn install:ci && yarn test",
+    "postinstall": "cpx -v -C \"../dist/ngneat/reactive-forms/**/*\" \"./node_modules/@ngneat/reactive-forms\"",
+    "install:ci": "yarn --frozen-lockfile --non-interactive --no-progress"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~10.1.0",
+    "@angular/common": "~10.1.0",
+    "@angular/compiler": "~10.1.0",
+    "@angular/core": "~10.1.0",
+    "@angular/forms": "~10.1.0",
+    "@angular/platform-browser": "~10.1.0",
+    "@angular/platform-browser-dynamic": "~10.1.0",
+    "@angular/router": "~10.1.0",
+    "rxjs": "~6.5.5",
+    "tslib": "^2.0.0",
+    "zone.js": "~0.10.3"
+  },
+  "devDependencies": {
+    "@angular-builders/jest": "^10.0.1",
+    "@angular-devkit/build-angular": "~0.1000.1",
+    "@angular/cli": "~10.1.7",
+    "@angular/compiler-cli": "~10.1.0",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^12.6.2",
+    "cpx": "^1.5.0",
+    "typescript": "~3.9.5",
+    "jest": "^26.6.3",
+    "jest-preset-angular": "^8.3.2"
+  }
+}
