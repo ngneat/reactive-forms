@@ -34,7 +34,7 @@ import {
   DeepPartial,
   UpdateValueAndValidityOptions
 } from './types';
-import { coerceArray, mergeErrors, removeError } from './utils';
+import { coerceArray, mergeErrors, removeError, superAsyncValidator, superValidator } from './utils';
 
 export class FormArray<T = any, E extends object = any> extends NgFormArray {
   readonly value: ControlValue<T>[];
@@ -56,18 +56,18 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
   readonly status$: Observable<ControlState> = controlStatusChanges$(this);
   readonly errors$ = controlErrorChanges$<E>(this, this.errorsSubject.asObservable());
 
-  get asyncValidator(): AsyncValidatorFn<T[]> | null {
-    return super.asyncValidator;
+  get asyncValidator(): AsyncValidatorFn<T> | null {
+    return superAsyncValidator.get.call(this);
   }
-  set asyncValidator(asyncValidator: AsyncValidatorFn<T[]> | null) {
-    super.asyncValidator = asyncValidator;
+  set asyncValidator(asyncValidator: AsyncValidatorFn<T> | null) {
+    superAsyncValidator.set.call(this, asyncValidator);
   }
 
-  get validator(): ValidatorFn<T[]> | null {
-    return super.validator;
+  get validator(): ValidatorFn<T> | null {
+    return superValidator.get.call(this);
   }
-  set validator(validator: ValidatorFn<T[]> | null) {
-    super.validator = validator;
+  set validator(validator: ValidatorFn<T> | null) {
+    superValidator.set.call(this, validator);
   }
 
   constructor(

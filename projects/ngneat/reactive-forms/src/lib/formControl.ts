@@ -1,4 +1,4 @@
-import { FormControl as NgFormControl } from '@angular/forms';
+import { AbstractControl, FormControl as NgFormControl } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import {
@@ -31,7 +31,7 @@ import {
   ValidatorFn,
   ValidatorOrOpts
 } from './types';
-import { coerceArray, mergeErrors, removeError } from './utils';
+import { coerceArray, mergeErrors, removeError, superAsyncValidator, superValidator } from './utils';
 
 export class FormControl<T = any, E extends object = any> extends NgFormControl {
   readonly value: T;
@@ -54,17 +54,17 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   readonly errors$ = controlErrorChanges$<E>(this, this.errorsSubject.asObservable());
 
   get asyncValidator(): AsyncValidatorFn<T> | null {
-    return super.asyncValidator;
+    return superAsyncValidator.get.call(this);
   }
   set asyncValidator(asyncValidator: AsyncValidatorFn<T> | null) {
-    super.asyncValidator = asyncValidator;
+    superAsyncValidator.set.call(this, asyncValidator);
   }
 
   get validator(): ValidatorFn<T> | null {
-    return super.validator;
+    return superValidator.get.call(this);
   }
   set validator(validator: ValidatorFn<T> | null) {
-    super.validator = validator;
+    superValidator.set.call(this, validator);
   }
 
   constructor(formState?: OrBoxedValue<T>, validatorOrOpts?: ValidatorOrOpts, asyncValidator?: AsyncValidator) {

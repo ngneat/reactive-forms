@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { FormGroup, FormControl, FormArray } from '@ngneat/reactive-forms';
 
 interface Profile {
@@ -22,6 +23,8 @@ interface Profile {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  control = new FormControl('', Validators.required);
+
   profileForm = new FormGroup<Profile>({
     firstName: new FormControl(''),
     lastName: new FormControl(''),
