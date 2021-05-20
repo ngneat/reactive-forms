@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.3](https://github.com/ngneat/reactive-forms/compare/v1.7.2...v1.7.3) (2021-05-20)
+
+
+### Bug Fixes
+
+* 🐛 fix umd bad complier for getters and setters ([6bf84bf](https://github.com/ngneat/reactive-forms/commit/6bf84bf93543037ee61c6e231c2c9ca58b4e7e37)), closes [#88](https://github.com/ngneat/reactive-forms/issues/88)
+
 ### [1.7.2](https://github.com/ngneat/reactive-forms/compare/v1.7.1...v1.7.2) (2021-03-21)
 
 
