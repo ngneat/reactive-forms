@@ -43,7 +43,14 @@ import {
   DeepPartial,
   UpdateValueAndValidityOptions
 } from './types';
-import { coerceArray, mergeErrors, removeError, wrapIntoObservable } from './utils';
+import {
+  coerceArray,
+  mergeErrors,
+  removeError,
+  wrapIntoObservable,
+  superAsyncValidator,
+  superValidator
+} from './utils';
 import { FormArray } from './formArray';
 
 export class FormGroup<T extends Obj = any, E extends object = any> extends NgFormGroup {
@@ -67,17 +74,17 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
   readonly errors$ = controlErrorChanges$<E>(this, this.errorsSubject.asObservable());
 
   get asyncValidator(): AsyncValidatorFn<T> | null {
-    return super.asyncValidator;
+    return superAsyncValidator.get.call(this);
   }
   set asyncValidator(asyncValidator: AsyncValidatorFn<T> | null) {
-    super.asyncValidator = asyncValidator;
+    superAsyncValidator.set.call(this, asyncValidator);
   }
 
   get validator(): ValidatorFn<T> | null {
-    return super.validator;
+    return superValidator.get.call(this);
   }
   set validator(validator: ValidatorFn<T> | null) {
-    super.validator = validator;
+    superValidator.set.call(this, validator);
   }
 
   constructor(

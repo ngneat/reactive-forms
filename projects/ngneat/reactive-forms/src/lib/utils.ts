@@ -1,3 +1,4 @@
+import { AbstractControl } from '@angular/forms';
 import { from, isObservable, Observable, of } from 'rxjs';
 
 export function coerceArray<T>(value: T | T[]): T[] {
@@ -57,3 +58,6 @@ export function compareArraysContent<T extends []>(left: T, right: T): boolean {
   right = Array.isArray(right) ? right : ([] as T);
   return left.length === right.length && left.every(value => right.includes(value));
 }
+
+export const superValidator = Object.getOwnPropertyDescriptor(AbstractControl.prototype, 'validator');
+export const superAsyncValidator = Object.getOwnPropertyDescriptor(AbstractControl.prototype, 'asyncValidator');
