@@ -1,4 +1,4 @@
-import { AbstractControl, FormControl as NgFormControl } from '@angular/forms';
+import { FormControl as NgFormControl } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import {
@@ -159,7 +159,17 @@ export class FormControl<T = any, E extends object = any> extends NgFormControl 
   }
 
   setErrors(errors: Partial<E> | null, opts: EmitEvent = {}) {
-    this.errorsSubject.next(errors);
+    /**
+     * @description
+     * Use an elvis operator to avoid a throw when the control is used with an async validator
+     * Which will be instantly resolved (like with `of(null)`)
+     * In such case, Angular will call this method instantly before even instancing the properties causing the throw
+     * Can be easily reproduced with a step-by-step debug once compiled when checking the stack trace of the constructor
+     *
+     * Issue: https://github.com/ngneat/reactive-forms/issues/91
+     * Reproduction: https://codesandbox.io/embed/github/C0ZEN/ngneat-reactive-forms-error-issue-cs/tree/main/?autoresize=1&expanddevtools=1&fontsize=14&hidenavigation=1&theme=dark
+     */
+    this.errorsSubject?.next(errors);
     return super.setErrors(errors, opts);
   }
 
