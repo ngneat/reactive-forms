@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.4](https://github.com/ngneat/reactive-forms/compare/v1.7.3...v1.7.4) (2021-07-28)
+
+
+### Bug Fixes
+
+* **control:** avoid throw of error with async validator ([cf8f861](https://github.com/ngneat/reactive-forms/commit/cf8f861cfcbdb2a4284287892c18737c6d3f9e81)), closes [#91](https://github.com/ngneat/reactive-forms/issues/91)
+
 ### [1.7.3](https://github.com/ngneat/reactive-forms/compare/v1.7.2...v1.7.3) (2021-05-20)
 
 
