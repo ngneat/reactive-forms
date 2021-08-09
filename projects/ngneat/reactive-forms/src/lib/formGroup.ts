@@ -193,10 +193,20 @@ export class FormGroup<T extends Obj = any, E extends object = any> extends NgFo
     return controlEnabledWhile(this, observable, options);
   }
 
+  /**
+   *
+   * @deprecated use addValidators in v12
+   *
+   */
   mergeValidators(validators: Validator, options?: UpdateValueAndValidityOptions) {
     mergeControlValidators(this, validators, options);
   }
 
+  /**
+   *
+   * @deprecated use addValidators in v12
+   *
+   */
   mergeAsyncValidators(validators: AsyncValidator, options?: UpdateValueAndValidityOptions) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity(options);

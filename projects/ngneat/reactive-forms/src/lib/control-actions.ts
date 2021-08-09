@@ -114,7 +114,7 @@ export function mergeControlValidators<T, Control extends AbstractControl<T>>(
   validators: ValidatorFn<T> | ValidatorFn<T>[],
   options?: UpdateValueAndValidityOptions
 ): void {
-  control.setValidators([control.validator, ...coerceArray(validators)]);
+  control.setValidators([control.validator, ...coerceArray(validators)].filter(Boolean));
   control.updateValueAndValidity(options);
 }
 

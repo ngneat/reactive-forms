@@ -136,10 +136,20 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     return controlEnabledWhile(this, observable, options);
   }
 
+  /**
+   *
+   * @deprecated use addValidators in v12
+   *
+   */
   mergeValidators(validators: Validator, options?: UpdateValueAndValidityOptions) {
     mergeControlValidators(this, validators, options);
   }
 
+  /**
+   *
+   * @deprecated use addValidators in v12
+   *
+   */
   mergeAsyncValidators(validators: AsyncValidator, options?: UpdateValueAndValidityOptions) {
     this.setAsyncValidators([this.asyncValidator, ...coerceArray(validators)]);
     this.updateValueAndValidity(options);
