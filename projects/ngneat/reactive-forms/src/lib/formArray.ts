@@ -116,16 +116,33 @@ export class FormArray<T = any, E extends object = any> extends NgFormArray {
     super.patchValue(valueOrObservable as T[], options);
   }
 
-  push(control: AbstractControlOf<T>): void {
-    return super.push(control);
+  push(
+    control: AbstractControlOf<T>,
+    options?: {
+      emitEvent?: boolean;
+    }
+  ): void {
+    return super.push(control, options);
   }
 
-  insert(index: number, control: AbstractControlOf<T>): void {
-    return super.insert(index, control);
+  insert(
+    index: number,
+    control: AbstractControlOf<T>,
+    options?: {
+      emitEvent?: boolean;
+    }
+  ): void {
+    return super.insert(index, control, options);
   }
 
-  setControl(index: number, control: AbstractControlOf<T>): void {
-    return super.setControl(index, control);
+  setControl(
+    index: number,
+    control: AbstractControlOf<T>,
+    options?: {
+      emitEvent?: boolean;
+    }
+  ): void {
+    return super.setControl(index, control, options);
   }
 
   disabledWhile(observable: Observable<boolean>, options?: ControlOptions) {
