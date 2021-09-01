@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/ngneat/reactive-forms/compare/v1.7.5...v2.0.0) (2021-09-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* peer dep is now v12.2.3
+
+### Features
+
+* 🎸 update to v12 ([c4cfc22](https://github.com/ngneat/reactive-forms/commit/c4cfc22003572d57ca06e39c0c857399caae7fb3))
+* 🎸 upgrade to v12 ([830b11d](https://github.com/ngneat/reactive-forms/commit/830b11d7945467de0851c4eb906b3a177546c8b2)), closes [#104](https://github.com/ngneat/reactive-forms/issues/104)
+
 ### [1.7.5](https://github.com/ngneat/reactive-forms/compare/v1.7.4...v1.7.5) (2021-08-09)
 
 
