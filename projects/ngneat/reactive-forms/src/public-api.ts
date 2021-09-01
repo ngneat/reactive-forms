@@ -11,7 +11,9 @@ export {
   ControlFactoryMap,
   PersistOptions,
   ControlOf,
-  ControlsOf
+  ControlsOf,
+  ControlValue,
+  ControlsValue
 } from './lib/types';
 export { ControlValueAccessor } from './lib/controlValueAccessor';
 export { PersistManager } from './lib/persistManager';

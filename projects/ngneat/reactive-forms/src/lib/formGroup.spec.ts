@@ -352,14 +352,14 @@ describe('FormGroup', () => {
 
   it('should markAllAsDirty', () => {
     const control = createGroup();
-    spyOn(control, 'markAsDirty');
+    jest.spyOn(control, 'markAsDirty');
     control.markAllAsDirty();
     expect(control.markAsDirty).toHaveBeenCalled();
   });
 
   it('should reset', () => {
     const control = createGroup();
-    spyOn(control, 'reset');
+    jest.spyOn(control, 'reset');
     control.reset();
     expect(control.reset).toHaveBeenCalled();
   });
@@ -385,14 +385,14 @@ describe('FormGroup', () => {
 
   it('should setValidators', () => {
     const control = createGroup();
-    spyOn(control, 'setValidators');
+    jest.spyOn(control, 'setValidators');
     control.setValidators([]);
     expect(control.setValidators).toHaveBeenCalled();
   });
 
   it('should setAsyncValidators', () => {
     const control = createGroup();
-    spyOn(control, 'setAsyncValidators');
+    jest.spyOn(control, 'setAsyncValidators');
     control.setAsyncValidators([]);
     expect(control.setAsyncValidators).toHaveBeenCalled();
   });

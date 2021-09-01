@@ -12,7 +12,8 @@ import {
   ControlPath,
   PersistOptions,
   ControlFactoryMap,
-  UpdateValueAndValidityOptions
+  UpdateValueAndValidityOptions,
+  ControlsValue
 } from './types';
 import { coerceArray, isNil, wrapIntoObservable } from './utils';
 
@@ -146,7 +147,11 @@ export function selectControlValue$<T, R>(
   return (control.value$ as Observable<any>).pipe(map(mapFn), distinctUntilChanged());
 }
 
-export function persistValue$<T>(control: FormGroup<T>, key: string, options: PersistOptions<T>): Observable<T> {
+export function persistValue$<T extends ControlsValue<any>>(
+  control: FormGroup<T>,
+  key: string,
+  options: PersistOptions<T>
+): Observable<T> {
   return control.valueChanges.pipe(
     debounceTime(options.debounceTime),
     switchMap(value =>

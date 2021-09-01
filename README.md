@@ -23,8 +23,6 @@ Let's take a look at all the neat things we provide:
 
 ## 🔮 Features
 
-
-
 ✅ Offers (almost) seamless `FormControl`, `FormGroup`, `FormArray` Replacement<br>
 ✅ Allows Typed Forms! <br>
 ✅ Provides Reactive Queries <br>
@@ -53,8 +51,7 @@ Let's take a look at all the neat things we provide:
 
 ## Control Type
 
-
-Each `AbstractControl` takes a generic, which can be neither the value `type` (all `AbstractControl`s) or the type of the controls (`FormGroup`/`FormArray`). This type is than used to enhance every method exposed by Angular or this library. 
+Each `AbstractControl` takes a generic, which can be neither the value `type` (all `AbstractControl`s) or the type of the controls (`FormGroup`/`FormArray`). This type is than used to enhance every method exposed by Angular or this library.
 Use it with a `FormControl`:
 
 ```ts
@@ -77,7 +74,6 @@ control.value$.subscribe(value => {
   // value is typed as string[]
 });
 ```
-
 
 Use it with a `FormGroup`:
 
@@ -380,7 +376,7 @@ control.setDisable(false);
 ### `getControl()`
 
 A method with `typed` parameters which obtains a reference to a specific control.
-When supplying the controls type, type inference for the returned control will be available for up to 2 keys in path. (Thus, for example `getControl('a', 'b', 'c')` will always return `AbstractControl` )  
+When supplying the controls type, type inference for the returned control will be available for up to 2 keys in path. (Thus, for example `getControl('a', 'b', 'c')` will always return `AbstractControl` )
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
@@ -472,6 +468,7 @@ import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
 
 const control = new FormControl<string, NgValidatorsErrors>();
 ```
+
 ## Control Operators
 
 Each `valueChanges` or `values$` takes an operator `diff()`, which emits only changed parts of form:
@@ -487,11 +484,9 @@ const control = new FormGroup<string>({
   }),
   skills: new FormArray([])
 });
-control.value$
-  .pipe(diff())
-  .subscribe(value => {
-    // value is emitted only if it has been changed, and only the changed parts.
-  });
+control.value$.pipe(diff()).subscribe(value => {
+  // value is emitted only if it has been changed, and only the changed parts.
+});
 ```
 
 ## ControlValueAccessor
@@ -513,9 +508,7 @@ import { ControlValueAccessor } from '@ngneat/reactive-forms';
   ]
 })
 export class MyCheckboxComponent extends ControlValueAccessor<boolean> {
-  writeValue(value: boolean) {
-
-  }
+  writeValue(value: boolean) {}
 
   // `this.onChange`, and `this.onTouched` are already here!
 }
@@ -573,13 +566,12 @@ The `persist` function will also set the `FromGroup` value to the latest state a
 
 Change the target storage or `debounceTime` value by providing options as a second argument in the `persist` function call.
 
-| Option              | Description                                           | Default               |
-|---------------------|-------------------------------------------------------|-----------------------|
-| `debounceTime`      | Update delay in ms between value changes              | 250                   |
-| `manager`           | A manager implementing the `PersistManager` interface | `LocalStorageManager` |
-| `arrControlFactory` | Factory functions for `FormArray`                     |                       |
-| `persistDisabledControls` | Defines whether values of disabled controls should be persisted | false |
-
+| Option                    | Description                                                     | Default               |
+| ------------------------- | --------------------------------------------------------------- | --------------------- |
+| `debounceTime`            | Update delay in ms between value changes                        | 250                   |
+| `manager`                 | A manager implementing the `PersistManager` interface           | `LocalStorageManager` |
+| `arrControlFactory`       | Factory functions for `FormArray`                               |                       |
+| `persistDisabledControls` | Defines whether values of disabled controls should be persisted | false                 |
 
 By default the library provides `LocalStorageManager` and `SessionStorageManager`. It's possible to store the form value into a custom storage. Just implement the `PersistManager` interface, and use it when calling the `persist` function.
 
@@ -618,7 +610,7 @@ const group = new FormGroup<Profile>({
 
 group.persist('profile', {
   arrControlFactory: {
-     skills: value => new FormControl(value)
+    skills: value => new FormControl(value)
   }
 });
 ```
@@ -645,6 +637,7 @@ Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/mast
 The command will replace entities coming from `@angular/reactive-forms` with `@ngneat/reactive-forms`.
 
 ```bash
+npm i --save-dev @phenomnomnominal/tsquery
 ng g @ngneat/reactive-forms:migrate
 ```
 
@@ -678,6 +671,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

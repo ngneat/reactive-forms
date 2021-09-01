@@ -15,6 +15,9 @@
   "dependencies": {
     "tslib": "^2.0.0"
   },
+  "peerDependencies": {
+    "@angular/core": ">= 12.2.3"
+  },
   "devDependencies": {
     "@phenomnomnominal/tsquery": "4.1.0"
   },

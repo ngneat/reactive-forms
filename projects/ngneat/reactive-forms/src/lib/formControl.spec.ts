@@ -217,28 +217,28 @@ describe('FormControl', () => {
 
   it('should markAllAsDirty', () => {
     const control = new FormControl<string>();
-    spyOn(control, 'markAsDirty');
+    jest.spyOn(control, 'markAsDirty');
     control.markAllAsDirty();
     expect(control.markAsDirty).toHaveBeenCalled();
   });
 
   it('should reset', () => {
     const control = new FormControl<string>();
-    spyOn(control, 'reset');
+    jest.spyOn(control, 'reset');
     control.reset();
     expect(control.reset).toHaveBeenCalled();
   });
 
   it('should setValidators', () => {
     const control = new FormControl<string>();
-    spyOn(control, 'setValidators');
+    jest.spyOn(control, 'setValidators');
     control.setValidators([]);
     expect(control.setValidators).toHaveBeenCalled();
   });
 
   it('should setAsyncValidators', () => {
     const control = new FormControl<string>();
-    spyOn(control, 'setAsyncValidators');
+    jest.spyOn(control, 'setAsyncValidators');
     control.setAsyncValidators([]);
     expect(control.setAsyncValidators).toHaveBeenCalled();
   });

@@ -187,7 +187,7 @@ describe('FormArray', () => {
   it('should markAllAsDirty', () => {
     const control = createArray();
 
-    spyOn(control, 'markAsDirty');
+    jest.spyOn(control, 'markAsDirty');
     control.markAllAsDirty();
     expect(control.markAsDirty).toHaveBeenCalled();
   });
@@ -195,7 +195,7 @@ describe('FormArray', () => {
   it('should reset', () => {
     const control = createArray();
 
-    spyOn(control, 'reset');
+    jest.spyOn(control, 'reset');
     control.reset();
     expect(control.reset).toHaveBeenCalled();
   });
@@ -203,7 +203,7 @@ describe('FormArray', () => {
   it('should setValidators', () => {
     const control = createArray();
 
-    spyOn(control, 'setValidators');
+    jest.spyOn(control, 'setValidators');
     control.setValidators([]);
     expect(control.setValidators).toHaveBeenCalled();
   });
@@ -211,7 +211,7 @@ describe('FormArray', () => {
   it('should setAsyncValidators', () => {
     const control = createArray();
 
-    spyOn(control, 'setAsyncValidators');
+    jest.spyOn(control, 'setAsyncValidators');
     control.setAsyncValidators([]);
     expect(control.setAsyncValidators).toHaveBeenCalled();
   });

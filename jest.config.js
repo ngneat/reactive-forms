@@ -7,6 +7,6 @@ module.exports = {
   transform: {
     '^.+\\.ts?$': 'ts-jest'
   },
-  collectCoverage: true,
+  collectCoverage: false,
   modulePathIgnorePatterns: ['mocks.spec.ts', 'type-tests']
 };
