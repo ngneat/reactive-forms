@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/eslint-plugin-reactive-forms",
-  "version": "1.0.2",
+  "version": "3.0.0",
   "description": "ESLint rules for use with @ngneat/reactive-forms",
   "keywords": [
     "eslint",
