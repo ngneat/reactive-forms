@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/ngneat/reactive-forms/compare/v1.7.5...v3.0.0) (2021-10-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* **library:** refactor the entire code
+
+I completely rewrote the library from scratch for two reasons:
+1. Provide as much support as possible without introducing bugs, breaking strict mode, or creating an inconvenient API.
+2. Reduce the library size.
+
+Here are the changes:
+- Angular's peer dependency is now `>= 12`.
+- FormGroup's generic was removed in favor of the **experimental** `ControlsOf` interface.
+- Remove `mergeValidators`.  Use addValidators in v12.
+- Remove `validateOn`.
+- Remove `getControl` in favor of `get(key)` or `get(['nested', 'key'])`.
+- Remove errors typing.
+- Validators should now be imported from Angular.
+- `FormBuilder` doesn't support generic anymore. Due to the complexity of the builder API, we're currently couldn't create a "good" implementation of `ControlsOf` for the builder.
+- Remove the `group.persist()` from the instance to an exported function to make it tree-shakeable.
+
+### Features
+
+* **library:** refactor the entire code base ([5cee6fe](https://github.com/ngneat/reactive-forms/commit/5cee6fef2b59499df86cbfcdf17dd468b41ac884)), closes [#197](https://github.com/ngneat/reactive-forms/issues/197) [#103](https://github.com/ngneat/reactive-forms/issues/103) [#102](https://github.com/ngneat/reactive-forms/issues/102) [#97](https://github.com/ngneat/reactive-forms/issues/97) [#100](https://github.com/ngneat/reactive-forms/issues/100)
+
 ### [1.7.5](https://github.com/ngneat/reactive-forms/compare/v1.7.4...v1.7.5) (2021-08-09)
 
 
