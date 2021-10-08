@@ -1,151 +1,211 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
   "projects": {
-    "reactive-forms-playground": {
+    "playground": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
-      "root": "",
-      "sourceRoot": "src",
-      "prefix": "app",
+      "root": "apps/playground",
+      "sourceRoot": "apps/playground/src",
+      "prefix": "ngneat",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
+          "outputs": [
+            "{options.outputPath}"
+          ],
           "options": {
-            "outputPath": "dist/reactive-forms-playground",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.app.json",
-            "aot": true,
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "outputPath": "dist/apps/playground",
+            "index": "apps/playground/src/index.html",
+            "main": "apps/playground/src/main.ts",
+            "polyfills": "apps/playground/src/polyfills.ts",
+            "tsConfig": "apps/playground/tsconfig.app.json",
+            "assets": [
+              "apps/playground/src/favicon.ico",
+              "apps/playground/src/assets"
+            ],
+            "styles": [
+              "apps/playground/src/styles.css"
+            ],
             "scripts": []
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
-              ]
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/playground/src/environments/environment.ts",
+                  "with": "apps/playground/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "reactive-forms-playground:build"
-          },
           "configurations": {
             "production": {
-              "browserTarget": "reactive-forms-playground:build:production"
+              "browserTarget": "playground:build:production"
+            },
+            "development": {
+              "browserTarget": "playground:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "reactive-forms-playground:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
-            "scripts": []
+            "browserTarget": "playground:build"
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["tsconfig.app.json", "tsconfig.spec.json", "e2e/tsconfig.json"],
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": [
+              "apps/playground/src/**/*.ts",
+              "apps/playground/src/**/*.html"
+            ]
           }
         },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/playground"
+          ],
           "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "reactive-forms-playground:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "reactive-forms-playground:serve:production"
-            }
+            "jestConfig": "apps/playground/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }
     },
-    "@ngneat/reactive-forms": {
-      "projectType": "library",
-      "root": "projects/ngneat/reactive-forms",
-      "sourceRoot": "projects/ngneat/reactive-forms/src",
-      "prefix": "lib",
+    "playground-e2e": {
+      "root": "apps/playground-e2e",
+      "sourceRoot": "apps/playground-e2e/src",
+      "projectType": "application",
       "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
           "options": {
-            "tsConfig": "projects/ngneat/reactive-forms/tsconfig.lib.json",
-            "project": "projects/ngneat/reactive-forms/ng-package.json"
+            "cypressConfig": "apps/playground-e2e/cypress.json",
+            "devServerTarget": "playground:serve:development",
+            "tsConfig": "apps/playground-e2e/tsconfig.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ngneat/reactive-forms/tsconfig.lib.prod.json"
+              "devServerTarget": "playground:serve:production"
             }
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
           "options": {
-            "main": "projects/ngneat/reactive-forms/src/test.ts",
-            "tsConfig": "projects/ngneat/reactive-forms/tsconfig.spec.json",
-            "karmaConfig": "projects/ngneat/reactive-forms/karma.conf.js"
+            "lintFilePatterns": [
+              "apps/playground-e2e/**/*.{js,ts}"
+            ]
+          }
+        }
+      }
+    },
+    "reactive-forms": {
+      "projectType": "library",
+      "root": "libs/reactive-forms",
+      "sourceRoot": "libs/reactive-forms/src",
+      "prefix": "ngneat",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/angular:package",
+          "outputs": [
+            "dist/libs/reactive-forms"
+          ],
+          "options": {
+            "project": "libs/reactive-forms/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/reactive-forms/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/reactive-forms/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/reactive-forms"
+          ],
+          "options": {
+            "jestConfig": "libs/reactive-forms/jest.config.js",
+            "passWithNoTests": true
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "projects/ngneat/reactive-forms/tsconfig.lib.json",
-              "projects/ngneat/reactive-forms/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": [
+              "libs/reactive-forms/src/**/*.ts",
+              "libs/reactive-forms/src/**/*.html"
+            ]
           }
         }
       }
     }
   },
-  "defaultProject": "reactive-forms-playground"
+  "cli": {
+    "defaultCollection": "@nrwl/angular",
+    "packageManager": "npm"
+  },
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "css",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "css",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "css"
+    }
+  },
+  "defaultProject": "playground"
 }

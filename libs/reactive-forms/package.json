@@ -1,0 +1,35 @@
+{
+  "name": "@ngneat/reactive-forms",
+  "description": "(Angular Reactive) Forms with Benefits",
+  "version": "2.0.0",
+  "keywords": [
+    "angular",
+    "angular 2",
+    "typed reactive forms",
+    "reactive-forms",
+    "typed forms",
+    "reactive forms",
+    "angular reactive forms"
+  ],
+  "author": {
+    "name": "Netanel Basal"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/ngneat/reactive-forms/issues"
+  },
+  "homepage": "https://github.com/ngneat/reactive-forms#readme",
+  "peerDependencies": {
+    "@angular/forms": ">= 12.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/reactive-forms"
+  }
+}

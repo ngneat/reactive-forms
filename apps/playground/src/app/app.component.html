@@ -1,0 +1,16 @@
+<form [formGroup]="group">
+  {{ group.value | json }}
+
+  <input type="text" [formControl]="group.controls.foo" />
+</form>
+
+
+<form [formGroup]="build">
+  {{ build.value | json }}
+
+  <input type="text" [formControl]="build.controls.name" />
+
+  <div formGroupName="address">
+    <input type="text" formControlName="street">
+  </div>
+</form>

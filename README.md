@@ -9,9 +9,7 @@
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 [![ngneat](https://img.shields.io/badge/@-ngneat-383636?style=flat-square&labelColor=8f68d4)](https://github.com/ngneat/)
-[![spectator](https://img.shields.io/badge/tested%20with-spectator-2196F3.svg?style=flat-square)]()
 
 > (Angular Reactive) Forms with Benefits 😉
 
@@ -22,8 +20,6 @@ Your wish is my command! This library extends every Angular `AbstractControl`, a
 Let's take a look at all the neat things we provide:
 
 ## 🔮 Features
-
-
 
 ✅ Offers (almost) seamless `FormControl`, `FormGroup`, `FormArray` Replacement<br>
 ✅ Allows Typed Forms! <br>
@@ -42,25 +38,26 @@ Let's take a look at all the neat things we provide:
 - [Control Type](#control-type)
 - [Control Queries](#control-queries)
 - [Control Methods](#control-methods)
-- [Control Errors](#control-errors)
 - [Control Operators](#control-operators)
 - [ControlValueAccessor](#controlvalueaccessor)
 - [Form Builder](#form-builder)
 - [Persist Form](#persist-form)
 - [ESLint Rule](#eslint-rule)
-- [Migration](#migration)
-- [Compatibility](#compatibility)
 
 ## Control Type
 
+`FormControl/FormArray` takes a generic that defines the `type` of the control. This `type` is than used to enhance every method exposed by Angular or this library. 
 
-Each `AbstractControl` takes a generic, which can be neither the value `type` (all `AbstractControl`s) or the type of the controls (`FormGroup`/`FormArray`). This type is than used to enhance every method exposed by Angular or this library. 
 Use it with a `FormControl`:
 
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormControl<string>('');
+const control = new FormControl<string>();
+
+// Or auto infer it based on the initial value
+const control = new FormControl('');
+
 control.valueChanges.subscribe(value => {
   // value is typed as string
 });
@@ -71,18 +68,37 @@ Use it with a `FormArray`:
 ```ts
 import { FormArray, FormControl } from '@ngneat/reactive-forms';
 
-const control = new FormArray<string>([new FormControl()]);
+const control = new FormArray<string>([new FormControl('')]);
 
 control.value$.subscribe(value => {
   // value is typed as string[]
 });
 ```
 
-
-Use it with a `FormGroup`:
+If you use a `FormGroup`, it'll automatically infer the `type` based on the `controls` you supply:
 
 ```ts
 import { FormGroup, FormControl } from '@ngneat/reactive-forms';
+
+const profileForm = new FormGroup({
+  firstName: new FormControl(''),
+  lastName: new FormControl(''),
+  address: new FormGroup({
+    street: new FormControl(''),
+    city: new FormControl('')
+  })
+});
+
+
+profileForm.setValue(new Profile());
+
+profileForm.patchValue({ firstName: 'Netanel' });
+```
+
+You can use the **experimental** `ControlsOf` feature if you want to force a `FormGroup` to implement an external `type`:
+
+```ts
+import { FormGroup, FormControl, ControlsOf } from '@ngneat/reactive-forms';
 
 interface Profile {
   firstName: string;
@@ -93,7 +109,7 @@ interface Profile {
   };
 }
 
-const profileForm = new FormGroup<Profile>({
+const profileForm = new FormGroup<ControlsOf<Profile>>({
   firstName: new FormControl(''),
   lastName: new FormControl(''),
   address: new FormGroup({
@@ -101,43 +117,17 @@ const profileForm = new FormGroup<Profile>({
     city: new FormControl('')
   })
 });
-
-// typed as Profile
-profileForm.setValue(new Profile());
-// typed as Partial<Profile>
-profileForm.patchValue({ firstName: 'Netanel' });
 ```
 
-Or alternatively, with the controls as the generic type:
+Note that when using `array` types, it'll automatically infer it as `FormArray`. If you need a `FormControl`, you must set it within your interface explicitly:
 
 ```ts
-import { FormGroup, FormControl } from '@ngneat/reactive-forms';
-
-interface ProfileControls {
-  firstName: string; // Note that for primitive types the type "FormControl" is infered, so no need to write that.
-  lastName: string;
-  address: FormGroup<
-    street: string,
-    city: string,
-  >;
+interface User {
+  name: string;
+  // 👇🏻
+  skills: FormControl<string[]>;
 }
-
-const profileForm = new FormGroup<ProfileControls>({
-  firstName: new FormControl(''),
-  lastName: new FormControl(''),
-  address: new FormGroup({
-    street: new FormControl(''),
-    city: new FormControl('')
-  })
-});
-
-// typed as Profile
-profileForm.setValue(new Profile());
-// typed as Partial<Profile>
-profileForm.patchValue({ firstName: 'Netanel' });
 ```
-
-(Note supplying the controls type will enable you to access individual controls later with type inference, and avoid unneeded casting.)
 
 ## Control Queries
 
@@ -231,8 +221,11 @@ Selects a `slice` of the form's state based on the given predicate.
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
 
-const control = new FormGroup<Person>(...);
-control.select(state => state.name).subscribe(name => ...)
+const group = new FormGroup({
+  name: new FormControl('')
+});
+
+group.select(state => state.name).subscribe(name => ...)
 ```
 
 ## Control Methods
@@ -244,8 +237,11 @@ In addition to the built-in method functionality, it can also take an `observabl
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
 
-const control = new FormGroup<Person>();
-control.setValue(query.select('formValue'));
+const group = new FormGroup({
+  name: new FormControl('')
+});
+
+group.setValue(store.select('formValue'));
 ```
 
 ### `patchValue()`
@@ -255,8 +251,11 @@ In addition to the built-in method functionality, it can also take an `observabl
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
 
-const control = new FormGroup<Person>();
-control.patchValue(query.select('formValue'));
+const group = new FormGroup({
+  name: new FormControl('')
+});
+
+group.patchValue(store.select('formValue'));
 ```
 
 ### `disabledWhile()`
@@ -267,7 +266,7 @@ Takes an observable that emits a boolean indicating whether to `disable` the con
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.disabledWhile(query.select('isDisabled'));
+control.disabledWhile(store.select('isDisabled'));
 ```
 
 ### `enabledWhile()`
@@ -278,19 +277,7 @@ Takes an observable that emits a `boolean` indicating whether to `enable` the co
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.enabledWhile(query.select('isEnabled'));
-```
-
-### `mergeValidators()`
-
-Unlike the built-in `setValidator()` method, it persists any existing validators.
-
-```ts
-import { FormControl } from '@ngneat/reactive-forms';
-
-const control = new FormControl('', Validators.required);
-control.mergeValidators(Validators.minLength(2));
-control.mergeAsyncValidators(...);
+control.enabledWhile(store.select('isEnabled'));
 ```
 
 ### `markAllAsDirty()`
@@ -300,29 +287,8 @@ Marks all the group's controls as `dirty`.
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
 
-const control = new FormGroup<Person>();
+const control = new FormGroup();
 control.markAllAsDirty();
-```
-
-### `validateOn()`
-
-Takes an observable that emits a response, which is either `null` or an error object ([`ValidationErrors`](https://angular.io/api/forms/ValidationErrors)). The control's `setErrors()` method is called whenever the source emits.
-
-```ts
-const passwordValidator = combineLatest([
-  this.signup.select(state => state.password),
-  this.signup.select(state => state.repeatPassword)
-]).pipe(
-  map(([password, repeat]) => {
-    return password === repeat
-      ? null
-      : {
-          isEqual: false
-        };
-  })
-);
-
-this.signup.validateOn(passwordValidator);
 ```
 
 ### `hasErrorAndTouched()`
@@ -332,7 +298,7 @@ A syntactic sugar method to be used in the template:
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-this.control = new FormControl('', Validators.required);
+const control = new FormControl('', Validators.required);
 ```
 
 ```html
@@ -346,7 +312,7 @@ A syntactic sugar method to be used in the template:
 ```ts
 import { FormControl } from '@ngneat/reactive-forms';
 
-this.control = new FormControl('', Validators.required);
+const control = new FormControl('', Validators.required);
 ```
 
 ```html
@@ -377,20 +343,27 @@ control.setDisable();
 control.setDisable(false);
 ```
 
-### `getControl()`
+### `get()`
 
 A method with `typed` parameters which obtains a reference to a specific control.
-When supplying the controls type, type inference for the returned control will be available for up to 2 keys in path. (Thus, for example `getControl('a', 'b', 'c')` will always return `AbstractControl` )  
 
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
 
-const group = new FormGroup<ProfileControls>(...);
-const address: FormControl<string> = group.getControl('name');
-const city: FormControl<string> = group.getControl('address', 'city');
-```
+const group = new FormGroup({
+  name: new FormControl(''),
+  address: new FormGroup({
+    street: new FormControl(''),
+    city: new FormControl('')
+  })
+});
 
-Note that if you're only passing the "value" type (e.g. `FormGroup<Profile>`), this method will always return AbstractControl. In that case the return type might need to be inferred.
+const name = group.get('name'); // FormControl<string>
+const city = group.get(['address', 'city']); // FormControl<string>
+
+// Don't use it like this
+group.get('address.city') // AbstractControl
+```
 
 ### `mergeErrors()`
 
@@ -399,7 +372,7 @@ Merge validation errors. Unlike `setErrors()`, this will not overwrite errors al
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
 
-const group = new FormGroup<Profile>(...);
+const group = new FormGroup(...);
 group.mergeErrors({ customError: true });
 ```
 
@@ -410,7 +383,7 @@ Remove an error by key from the control.
 ```ts
 import { FormGroup } from '@ngneat/reactive-forms';
 
-const group = new FormGroup<Profile>(...);
+const group = new FormGroup(...);
 group.removeError('customError');
 ```
 
@@ -435,43 +408,11 @@ Remove a control from an array based on a predicate
 ```ts
 import { FormArray } from '@ngneat/reactive-forms';
 
-const array = new FormArray<Profile>(...);
+const array = new FormArray(...);
 // Only keep addresses in NYC
 array.removeIf((control) => control.get('address').get('city').value !== 'New York')
 ```
 
-### Control Path
-
-The **array** path variation of `hasError()`, `getError()`, and `get()` is now `typed`:
-
-```ts
-const num = group.get(['phone', 'num']);
-const hasError = group.hasError('required', ['phone', 'num']);
-const getError = group.getError('required', ['phone', 'num']);
-```
-
-## Control Errors
-
-Each `AbstractControl` takes a second generic, which serves as the type of the errors:
-
-```ts
-type MyErrors = { isEqual: false };
-
-const control = new FormControl<string, MyErrors>();
-control.getError('isEqual'); // keyof MyErrors
-control.hasError('isEqual'); // keyof MyErrors
-
-// error type is MyErrors['isEqual']
-const error = control.getError('isEqual'); // keyof MyErrors
-```
-
-The library provides a type for the built-in Angular validators types:
-
-```ts
-import { FormControl, NgValidatorsErrors } from '@ngneat/reactive-forms';
-
-const control = new FormControl<string, NgValidatorsErrors>();
-```
 ## Control Operators
 
 Each `valueChanges` or `values$` takes an operator `diff()`, which emits only changed parts of form:
@@ -479,14 +420,15 @@ Each `valueChanges` or `values$` takes an operator `diff()`, which emits only ch
 ```ts
 import { FormGroup, FormControl, diff } from '@ngneat/reactive-forms';
 
-const control = new FormGroup<string>({
+const control = new FormGroup({
   name: new FormControl(''),
   phone: new FormGroup({
-    num: new FormControl(),
-    prefix: new FormControl()
+    num: new FormControl(''),
+    prefix: new FormControl('')
   }),
-  skills: new FormArray([])
+  skills: new FormArray<string>([])
 });
+
 control.value$
   .pipe(diff())
   .subscribe(value => {
@@ -531,43 +473,26 @@ We also introduce a `typed` version of `FormBuilder` which returns a `typed` `Fo
 import { FormBuilder } from '@ngneat/reactive-forms';
 
 const fb = new FormBuilder();
-// Returns a FormGroup<{name: string, id: number}>
+
 const group = fb.group({ name: 'ngneat', id: 1 });
 
-interface User {
-  userName: string;
-  email: string;
-}
-
-// We'll get an error because "id" does not exist in type `User`
-const userGroup: FormGroup<User> = fb.group({ id: 1, userName: 'User', email: 'Email' });
+group.get('name') // FormControl<string>
 ```
 
-_note:_ While the FormGroups/FormControls/etc created with our FormBuilder will have all additions, currently TS will not infer this, so one should still 'cast' them again on use:
-
-```ts
-const group = fb.group({
-  userName: null,
-  email: null
-});
-
-// will get TS error
-group.controls.email.errors$.subscribe();
-
-// will not get TS error
-(group.controls.email as FormControl<string>).errors$.subscribe();
-```
+Due to the complexity of the builder API, we are currently couldn't create a "good" implementation of `ControlsOf` for the builder.
 
 ## Persist Form
 
-Automatically persist the `FormGroup`'s value to the given storage:
+Automatically persist the `AbstractControl`'s value to the given storage:
 
 ```ts
-const group = new FormGroup<Profile>();
-const unsubscribe = group.persist('profile').subscribe();
+import { persistControl } from '@ngneat/reactive-forms';
+
+const group = new FormGroup(...);
+const unsubscribe = persistControl(group, 'profile').subscribe();
 ```
 
-The `persist` function will also set the `FromGroup` value to the latest state available in the storage before subscribing to value changes.
+The `persistControl` function will also set the `FromGroup` value to the latest state available in the storage before subscribing to value changes.
 
 ##### `PersistOptions`
 
@@ -581,9 +506,10 @@ Change the target storage or `debounceTime` value by providing options as a seco
 | `persistDisabledControls` | Defines whether values of disabled controls should be persisted | false |
 
 
-By default the library provides `LocalStorageManager` and `SessionStorageManager`. It's possible to store the form value into a custom storage. Just implement the `PersistManager` interface, and use it when calling the `persist` function.
+By default the library provides `LocalStorageManager` and `SessionStorageManager`. It's possible to store the form value into a custom storage. Just implement the `PersistManager` interface, and use it when calling the `persistControl` function.
 
 ```ts
+
 export class StateStoreManager<T> implements PersistManager<T> {
   setValue(key: string, data: T) {
      ...
@@ -595,10 +521,10 @@ export class StateStoreManager<T> implements PersistManager<T> {
 }
 
 export class FormComponent implements OnInit {
-  group = new FormGroup<Profile>();
+  group = new FormGroup();
 
   ngOnInit() {
-    this.group.persist('profile', { manager: new StateStoreManager() }).subscribe();
+    persist(this.group, 'profile', { manager: new StateStoreManager() }).subscribe();
   }
 }
 ```
@@ -608,15 +534,11 @@ export class FormComponent implements OnInit {
 When working with a `FormArray`, it's required to pass a `factory` function that defines how to create the `controls` inside the `FormArray`.
 
 ```ts
-interface Profile {
-  skills: string[];
-}
-
-const group = new FormGroup<Profile>({
-  skills: new FormArray([])
+const group = new FormGroup({
+  skills: new FormArray<string>([])
 });
 
-group.persist('profile', {
+persist(group, 'profile', {
   arrControlFactory: {
      skills: value => new FormControl(value)
   }
@@ -639,45 +561,3 @@ We provide a special lint rule that forbids the imports of any token we expose, 
 from `@angular/forms`.
 
 Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/master/projects/ngneat/eslint-plugin-reactive-forms).
-
-## Migration
-
-The command will replace entities coming from `@angular/reactive-forms` with `@ngneat/reactive-forms`.
-
-```bash
-ng g @ngneat/reactive-forms:migrate
-```
-
-Further information about the script can be found [here](https://github.com/ngneat/reactive-forms/tree/master/schematics/src/migrate/migration.md).
-
-## Compatibility
-
-Reactive-forms is compatible with Angular versions 8 and later.
-
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a href="https://www.netbasal.com"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Netanel Basal</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=NetanelBasal" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=NetanelBasal" title="Documentation">📖</a> <a href="#ideas-NetanelBasal" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-NetanelBasal" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
-    <td align="center"><a href="https://github.com/Coly010"><img src="https://avatars2.githubusercontent.com/u/12140467?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Colum Ferry</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=Coly010" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=Coly010" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/danzrou"><img src="https://avatars3.githubusercontent.com/u/6433766?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dan Roujinsky</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=danzrou" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=danzrou" title="Documentation">📖</a> <a href="#ideas-danzrou" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=theblushingcrow" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Code">💻</a> <a href="#ideas-itayod" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Documentation">📖</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=itayod" title="Tests">⚠️</a> <a href="#tool-itayod" title="Tools">🔧</a></td>
-    <td align="center"><a href="https://github.com/tehshin"><img src="https://avatars1.githubusercontent.com/u/876923?v=4?s=100" width="100px;" alt=""/><br /><sub><b>tehshin</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=tehshin" title="Code">💻</a> <a href="https://github.com/@ngneat/reactive-forms/commits?author=tehshin" title="Documentation">📖</a></td>
-    <td align="center"><a href="http://mario.arnautou.fr/"><img src="https://avatars2.githubusercontent.com/u/10983824?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mario Arnautou</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=MarioArnt" title="Code">💻</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/sharshuv-quotient"><img src="https://avatars0.githubusercontent.com/u/64772503?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Har-Shuv</b></sub></a><br /><a href="https://github.com/@ngneat/reactive-forms/commits?author=sharshuv-quotient" title="Code">💻</a></td>
-  </tr>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
