@@ -472,9 +472,11 @@ We also introduce a `typed` version of `FormBuilder` which returns a `typed` `Fo
 ```ts
 import { FormBuilder } from '@ngneat/reactive-forms';
 
-const fb = new FormBuilder();
+constructor(
+  private fb: FormBuilder
+) {}
 
-const group = fb.group({ name: 'ngneat', id: 1 });
+const group = this.fb.group({ name: 'ngneat', id: 1 });
 
 group.get('name') // FormControl<string>
 ```
@@ -560,4 +562,4 @@ We provide a special lint rule that forbids the imports of any token we expose, 
 `ValidatorFn`,
 from `@angular/forms`.
 
-Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/master/projects/ngneat/eslint-plugin-reactive-forms).
+Check out the [documentation](https://github.com/ngneat/reactive-forms/tree/master/libs/eslint-plugin-reactive-forms).
