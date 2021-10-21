@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/ngneat/reactive-forms/compare/v3.0.0...v3.1.0) (2021-10-21)
+
+
+### Features
+
+* bump rule ([8f9fa05](https://github.com/ngneat/reactive-forms/commit/8f9fa0570ac11cd73f4af0c310d308712bab20b6))
+
+
+### Bug Fixes
+
+* **controlsOf:** allow using optional fields ([513beee](https://github.com/ngneat/reactive-forms/commit/513beee460643b8bd0265cb7ef72399bc6d4542b)), closes [#111](https://github.com/ngneat/reactive-forms/issues/111)
+
 ## [3.0.0](https://github.com/ngneat/reactive-forms/compare/v1.7.5...v3.0.0) (2021-10-08)
 
 
