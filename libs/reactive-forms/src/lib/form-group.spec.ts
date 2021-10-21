@@ -560,4 +560,37 @@ describe('ControlsOf', () => {
 
   })
 
+
+  it('should work with optional fields', () => {
+    type Foo = {
+      name?: string;
+      foo: string;
+      baz: null | string;
+      arr?: string[];
+      nested: {
+        id: string
+      }
+    }
+
+    const group = new FormGroup<ControlsOf<Foo>>({
+      foo: new FormControl(''),
+      name: new FormControl(''),
+      baz: new FormControl(null),
+      arr: new FormArray([]),
+      nested: new FormGroup({
+        id: new FormControl('')
+      })
+    })
+
+    // @ts-expect-error - should be a string
+    group.get('name')?.patchValue(1);
+
+    expectTypeOf(group.get('name')).toEqualTypeOf<FormControl<string | undefined> | undefined>();
+
+    expectTypeOf(group.value.name).toEqualTypeOf<string | undefined>();
+    expectTypeOf(group.value.arr).toEqualTypeOf<string[] | undefined>();
+    expectTypeOf(group.value.baz).toEqualTypeOf<string | null>();
+    expectTypeOf(group.value.nested).toEqualTypeOf<{ id: string }>();
+  })
+
 });

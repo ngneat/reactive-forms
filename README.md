@@ -118,14 +118,28 @@ const profileForm = new FormGroup<ControlsOf<Profile>>({
   })
 });
 ```
+#### Gotchas
 
-Note that when using `array` types, it'll automatically infer it as `FormArray`. If you need a `FormControl`, you must set it within your interface explicitly:
+- When using `array` types, it'll automatically infer it as `FormArray`. If you need a `FormControl`, you must set it within your interface explicitly:
 
 ```ts
 interface User {
   name: string;
   // 👇🏻
   skills: FormControl<string[]>;
+}
+```
+
+- Optional fields will only work with top-level values, and will not work with `FormGroup`:
+
+```ts
+interface User {
+  name?: string;
+  foo?: string[]; 
+  // 👇🏻 will not work 
+  nested?: {
+    id: string;
+  };
 }
 ```
 
