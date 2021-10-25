@@ -36,8 +36,8 @@ export class FormGroup<T extends Record<string, any>> extends NgFormGroup {
     .asObservable()
     .pipe(distinctUntilChanged());
   readonly value$ = controlValueChanges$<ValuesOf<T>>(this);
-  readonly disabled$: Observable<boolean> = controlStatus$(this, 'disabled');
-  readonly enabled$: Observable<boolean> = controlStatus$(this, 'enabled');
+  readonly disabled$ = controlStatus$(this, 'disabled');
+  readonly enabled$ = controlStatus$(this, 'enabled');
   readonly status$ = controlStatus$(this, 'status');
   readonly errors$ = controlErrorChanges$(
     this,

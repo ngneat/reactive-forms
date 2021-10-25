@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subject, Subscription } from 'rxjs';
+import { ControlState } from './core';
 import { FormControl } from './form-control';
 
 describe('FormControl Functionality', () => {
@@ -201,7 +202,7 @@ describe('FormControl Types', () => {
 
     expectTypeOf(control.disabled$).toEqualTypeOf<Observable<boolean>>();
     expectTypeOf(control.enabled$).toEqualTypeOf<Observable<boolean>>();
-    expectTypeOf(control.status$).toEqualTypeOf<Observable<boolean>>();
+    expectTypeOf(control.status$).toEqualTypeOf<Observable<ControlState>>();
 
     // @ts-expect-error - should be typed
     control.reset(1);

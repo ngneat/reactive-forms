@@ -6,6 +6,7 @@ import { AbstractControl } from '@angular/forms';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 import { ControlsOf } from '..';
 import { ValuesOf } from './types';
+import { ControlState } from './core';
 
 const createGroup = () => {
   return new FormGroup(
@@ -316,7 +317,7 @@ describe('FormGroup Types', () => {
 
     expectTypeOf(group.disabled$).toEqualTypeOf<Observable<boolean>>();
     expectTypeOf(group.enabled$).toEqualTypeOf<Observable<boolean>>();
-    expectTypeOf(group.status$).toEqualTypeOf<Observable<boolean>>();
+    expectTypeOf(group.status$).toEqualTypeOf<Observable<ControlState>>();
 
     const name$ = group.select((state) => {
       expectTypeOf(state).toEqualTypeOf<Base>();

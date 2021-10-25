@@ -21,17 +21,19 @@ export function controlValueChanges$<T>(
   ) as Observable<T>;
 }
 
-export function controlStatus$(
+export type ControlState = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED';
+
+export function controlStatus$<K extends 'disabled' | 'enabled' | 'status'>(
   control: AbstractControl,
-  type: 'disabled' | 'enabled' | 'status'
-): Observable<boolean> {
+  type: K
+): Observable<K extends 'status' ? ControlState : boolean> {
   return merge(
     defer(() => of(control[type])),
     control.statusChanges.pipe(
       map(() => control[type]),
       distinctUntilChanged()
     )
-  ) as Observable<boolean>;
+  ) as Observable<any>;
 }
 
 export function enableControl(

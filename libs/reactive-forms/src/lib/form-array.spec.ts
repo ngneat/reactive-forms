@@ -1,6 +1,7 @@
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 import { FormControl, FormGroup } from '..';
+import { ControlState } from './core';
 import { FormArray } from './form-array';
 
 type Base = {
@@ -32,7 +33,7 @@ describe('FormArray Types', () => {
 
     expectTypeOf(arr.disabled$).toEqualTypeOf<Observable<boolean>>();
     expectTypeOf(arr.enabled$).toEqualTypeOf<Observable<boolean>>();
-    expectTypeOf(arr.status$).toEqualTypeOf<Observable<boolean>>();
+    expectTypeOf(arr.status$).toEqualTypeOf<Observable<ControlState>>();
 
     const first$ = arr.select((state) => {
       expectTypeOf(state).toEqualTypeOf<string[]>();
