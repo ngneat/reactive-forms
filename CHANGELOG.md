@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.2](https://github.com/ngneat/reactive-forms/compare/v3.1.1...v3.1.2) (2021-10-25)
+
+
+### Bug Fixes
+
+* 🐛 fix type of status$ property ([a106a3e](https://github.com/ngneat/reactive-forms/commit/a106a3e79569b085c101155ec3c946b8c2276fdf)), closes [#113](https://github.com/ngneat/reactive-forms/issues/113)
+
 ## [3.1.0](https://github.com/ngneat/reactive-forms/compare/v3.0.0...v3.1.0) (2021-10-21)
 
 

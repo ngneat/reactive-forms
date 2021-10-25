@@ -7,6 +7,7 @@
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
     "start": "nx serve",
+    "build:lib": "nx build reactive-forms",
     "build:all": "nx run-many --target=build --all",
     "test:all": "nx run-many --target=test --exclude=playground --all",
     "lint:all": "nx run-many --target=lint --all --exclude=playground",
