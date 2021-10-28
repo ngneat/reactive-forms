@@ -164,24 +164,24 @@ export class FormArray<
     markAllDirty(this);
   }
 
-  setEnable(enable = true, opts?: Parameters<AbstractControl['enable']>) {
+  setEnable(enable = true, opts?: Parameters<AbstractControl['enable']>[0]) {
     enableControl(this, enable, opts);
   }
 
-  setDisable(disable = true, opts?: Parameters<AbstractControl['disable']>) {
+  setDisable(disable = true, opts?: Parameters<AbstractControl['disable']>[0]) {
     disableControl(this, disable, opts);
   }
 
   disabledWhile(
     observable: Observable<boolean>,
-    options?: Parameters<AbstractControl['disable']>
+    options?: Parameters<AbstractControl['disable']>[0]
   ) {
     return controlDisabledWhile(this, observable, options);
   }
 
   enabledWhile(
     observable: Observable<boolean>,
-    options?: Parameters<AbstractControl['enable']>
+    options?: Parameters<AbstractControl['enable']>[0]
   ) {
     return controlEnabledWhile(this, observable, options);
   }
