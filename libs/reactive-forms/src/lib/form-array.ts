@@ -101,7 +101,7 @@ export class FormArray<
   }
 
   getRawValue(): T[] {
-    return this.value;
+    return super.getRawValue();
   }
 
   push(control: Control) {
