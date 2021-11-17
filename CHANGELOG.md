@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.4](https://github.com/ngneat/reactive-forms/compare/v3.1.3...v3.1.4) (2021-11-17)
+
+
+### Bug Fixes
+
+* 🐛 form array get raw value should work ([565c885](https://github.com/ngneat/reactive-forms/commit/565c885ca5f0887429bee8cf50f2eab9e2485299)), closes [#116](https://github.com/ngneat/reactive-forms/issues/116)
+
 ### [3.1.3](https://github.com/ngneat/reactive-forms/compare/v3.1.1...v3.1.3) (2021-10-28)
 
 
