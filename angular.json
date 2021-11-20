@@ -9,9 +9,7 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/playground",
             "index": "apps/playground/src/index.html",
@@ -22,9 +20,7 @@
               "apps/playground/src/favicon.ico",
               "apps/playground/src/assets"
             ],
-            "styles": [
-              "apps/playground/src/styles.css"
-            ],
+            "styles": ["apps/playground/src/styles.css"],
             "scripts": []
           },
           "configurations": {
@@ -89,15 +85,14 @@
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/playground"
-          ],
+          "outputs": ["coverage/apps/playground"],
           "options": {
             "jestConfig": "apps/playground/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "playground-e2e": {
       "root": "apps/playground-e2e",
@@ -119,16 +114,14 @@
         },
         "lint": {
           "builder": "@nrwl/linter:eslint",
-          "outputs": [
-            "{options.outputFile}"
-          ],
+          "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": [
-              "apps/playground-e2e/**/*.{js,ts}"
-            ]
+            "lintFilePatterns": ["apps/playground-e2e/**/*.{js,ts}"]
           }
         }
-      }
+      },
+      "tags": [],
+      "implicitDependencies": ["playground"]
     },
     "reactive-forms": {
       "projectType": "library",
@@ -138,9 +131,7 @@
       "architect": {
         "build": {
           "builder": "@nrwl/angular:package",
-          "outputs": [
-            "dist/libs/reactive-forms"
-          ],
+          "outputs": ["dist/libs/reactive-forms"],
           "options": {
             "project": "libs/reactive-forms/ng-package.json"
           },
@@ -156,9 +147,7 @@
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/reactive-forms"
-          ],
+          "outputs": ["coverage/libs/reactive-forms"],
           "options": {
             "jestConfig": "libs/reactive-forms/jest.config.js",
             "passWithNoTests": true
@@ -173,39 +162,8 @@
             ]
           }
         }
-      }
-    }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/angular",
-    "packageManager": "npm"
-  },
-  "schematics": {
-    "@nrwl/angular": {
-      "application": {
-        "linter": "eslint"
       },
-      "library": {
-        "linter": "eslint"
-      },
-      "storybook-configuration": {
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/angular:application": {
-      "style": "css",
-      "linter": "eslint",
-      "unitTestRunner": "jest",
-      "e2eTestRunner": "cypress"
-    },
-    "@nrwl/angular:library": {
-      "style": "css",
-      "linter": "eslint",
-      "unitTestRunner": "jest"
-    },
-    "@nrwl/angular:component": {
-      "style": "css"
+      "tags": []
     }
-  },
-  "defaultProject": "playground"
+  }
 }

@@ -11,21 +11,13 @@
     "target": "es2015",
     "strict": true,
     "module": "esnext",
-    "lib": [
-      "es2017",
-      "dom"
-    ],
+    "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@ngenat/reactive-forms": [
-        "libs/reactive-forms/src/index.ts"
-      ]
+      "@ngenat/reactive-forms": ["libs/reactive-forms/src/index.ts"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }
