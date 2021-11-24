@@ -10,6 +10,7 @@
 module.exports = {
   meta: {
     type: 'problem',
+    hasSuggestions: true,
     docs: {
       description: 'Forbid imports from @angular/forms',
       category: 'Possible Errors',
