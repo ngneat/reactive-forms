@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.1](https://github.com/ngneat/reactive-forms/compare/v4.0.0...v4.0.1) (2021-11-27)
+
+
+### Bug Fixes
+
+* 🐛 fix peer dep of rxjs ([1f4cd3a](https://github.com/ngneat/reactive-forms/commit/1f4cd3a9fea9bc157d635439fe897b7696f84386)), closes [#126](https://github.com/ngneat/reactive-forms/issues/126)
+
 ## [4.0.0](https://github.com/ngneat/reactive-forms/compare/v3.1.4...v4.0.0) (2021-11-20)
 
 
