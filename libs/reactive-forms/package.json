@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/ngneat/reactive-forms#readme",
   "peerDependencies": {
-    "@angular/forms": ">= 13.0.0"
+    "@angular/forms": ">= 13.0.0",
+    "rxjs": "*"
   },
   "repository": {
     "type": "git",
