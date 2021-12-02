@@ -1,0 +1,47 @@
+{
+  "projectType": "library",
+  "root": "libs/reactive-forms",
+  "sourceRoot": "libs/reactive-forms/src",
+  "prefix": "ngneat",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": [
+        "dist/libs/reactive-forms"
+      ],
+      "options": {
+        "project": "libs/reactive-forms/ng-package.json",
+        "updateBuildableProjectDepsInPackageJson": false
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/reactive-forms/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/reactive-forms/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/reactive-forms"
+      ],
+      "options": {
+        "jestConfig": "libs/reactive-forms/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/reactive-forms/src/**/*.ts",
+          "libs/reactive-forms/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,14 +1,14 @@
 {
-  "version": 1,
+  "version": 2,
   "projects": {
     "playground": {
       "projectType": "application",
       "root": "apps/playground",
       "sourceRoot": "apps/playground/src",
       "prefix": "ngneat",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/playground",
@@ -57,7 +57,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
               "browserTarget": "playground:build:production"
@@ -69,13 +69,13 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "playground:build"
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": [
               "apps/playground/src/**/*.ts",
@@ -84,7 +84,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/playground"],
           "options": {
             "jestConfig": "apps/playground/jest.config.js",
@@ -98,9 +98,9 @@
       "root": "apps/playground-e2e",
       "sourceRoot": "apps/playground-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/playground-e2e/cypress.json",
             "devServerTarget": "playground:serve:development",
@@ -113,7 +113,7 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "outputs": ["{options.outputFile}"],
           "options": {
             "lintFilePatterns": ["apps/playground-e2e/**/*.{js,ts}"]
@@ -123,47 +123,6 @@
       "tags": [],
       "implicitDependencies": ["playground"]
     },
-    "reactive-forms": {
-      "projectType": "library",
-      "root": "libs/reactive-forms",
-      "sourceRoot": "libs/reactive-forms/src",
-      "prefix": "ngneat",
-      "architect": {
-        "build": {
-          "builder": "@nrwl/angular:package",
-          "outputs": ["dist/libs/reactive-forms"],
-          "options": {
-            "project": "libs/reactive-forms/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "libs/reactive-forms/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "libs/reactive-forms/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/reactive-forms"],
-          "options": {
-            "jestConfig": "libs/reactive-forms/jest.config.js",
-            "passWithNoTests": true
-          }
-        },
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "libs/reactive-forms/src/**/*.ts",
-              "libs/reactive-forms/src/**/*.html"
-            ]
-          }
-        }
-      },
-      "tags": []
-    }
+    "reactive-forms": "libs/reactive-forms"
   }
 }
