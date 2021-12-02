@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.2](https://github.com/ngneat/reactive-forms/compare/v4.0.1...v4.0.2) (2021-12-02)
+
+
+### Bug Fixes
+
+* 🐛 remove redundant peer deps ([e795e69](https://github.com/ngneat/reactive-forms/commit/e795e69bc1a3d0a139a693cccc519883e3029f4d)), closes [#130](https://github.com/ngneat/reactive-forms/issues/130)
+
 ### [4.0.1](https://github.com/ngneat/reactive-forms/compare/v4.0.0...v4.0.1) (2021-11-27)
 
 
