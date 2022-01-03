@@ -196,6 +196,20 @@ describe('FormGroup Functionality', () => {
     expect(spy).toHaveBeenCalledWith(false);
   });
 
+  function areAllAllChildrenDirty(control: AbstractControl) {
+    expect(control.dirty).toBe(true);
+    (control as any)._forEachChild((control: AbstractControl) => areAllAllChildrenDirty(control));
+  }
+
+  it('should markAllAsDirty', () => {
+    const control = createGroup();
+
+    jest.spyOn(control, 'markAsDirty');
+    control.markAllAsDirty();
+    expect(control.markAsDirty).toHaveBeenCalled();
+    areAllAllChildrenDirty(control);
+  });
+
   it('should reset', () => {
     const control = createGroup();
     jest.spyOn(control, 'reset');
