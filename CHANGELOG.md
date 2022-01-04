@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.3](https://github.com/ngneat/reactive-forms/compare/v4.0.2...v4.0.3) (2022-01-04)
+
+
+### Bug Fixes
+
+* markAllDirty(FormGroup) not marking children ([5dcab34](https://github.com/ngneat/reactive-forms/commit/5dcab341b8d232e2b837125f435f2f9c48f17682)), closes [#135](https://github.com/ngneat/reactive-forms/issues/135)
+
 ### [4.0.2](https://github.com/ngneat/reactive-forms/compare/v4.0.1...v4.0.2) (2021-12-02)
 
 
