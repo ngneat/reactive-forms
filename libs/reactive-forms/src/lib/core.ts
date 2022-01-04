@@ -134,5 +134,5 @@ export function controlErrorChanges$(
 export function markAllDirty(control: AbstractControl): void {
   control.markAsDirty({ onlySelf: true });
 
-  (control as any)._forEachChild((control: any) => control.markAllAsDirty?.());
+  (control as any)._forEachChild((control: any) => control.markAllAsDirty?.() || control.markAsDirty({ onlySelf: true }));
 }
