@@ -1,16 +1,23 @@
 <form [formGroup]="group">
-  {{ group.value | json }}
+  <pre>{{ group.value | json }}</pre>
 
   <input type="text" [formControl]="group.controls.foo" />
 </form>
 
 
 <form [formGroup]="build">
-  {{ build.value | json }}
+  <pre>{{ build.value | json }}</pre>
 
+  <label>name:</label>
   <input type="text" [formControl]="build.controls.name" />
 
   <div formGroupName="address">
-    <input type="text" formControlName="street">
+    <label>Street:</label>
+    <input type="text" formControlName="street" />
   </div>
+
+  <ng-container *ngFor="let _ of build.controls.profiles.controls; index as i">
+    <label>Profile name:</label>
+    <pre>{{ build.controls.profiles.controls[i].value | json }}</pre>
+  </ng-container>
 </form>

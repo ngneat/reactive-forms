@@ -21,7 +21,7 @@ export class FormBuilder extends NgFormBuilder {
     asyncValidator?: ConstructorParameters<typeof FormArray>[2]) {
     const controls = controlsConfig.map(c => (this as any)._createControl(c));
 
-    return new FormArray<T>(controls, validatorOrOpts, asyncValidator);
+    return new FormArray<T,Control>(controls, validatorOrOpts, asyncValidator);
   }
 
 

@@ -16,7 +16,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@ngenat/reactive-forms": ["libs/reactive-forms/src/index.ts"]
+      "@ngneat/reactive-forms": ["libs/reactive-forms/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
