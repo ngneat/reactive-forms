@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@ngenat/reactive-forms';
+import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 
 @Component({
   selector: 'ngneat-demo',

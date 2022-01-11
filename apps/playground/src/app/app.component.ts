@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { FormGroup, FormControl, ControlsOf, FormArray, FormBuilder } from '@ngenat/reactive-forms';
+import {
+  FormGroup,
+  FormControl,
+  ControlsOf,
+  FormArray,
+  FormBuilder,
+  ValuesOf,
+} from '@ngneat/reactive-forms';
+import { User, UserForm } from './user.interfaces';
 
 interface Props {
   foo: string;
@@ -36,16 +44,36 @@ export class AppComponent implements OnInit {
     arr: new FormArray([]),
   });
 
-  build = this.builder.group({
+  build = this.builder.group<UserForm>({
     name: '',
     address: this.builder.group({
-      street: ['', Validators.required]
-    })
-  })
+      street: ['', Validators.required],
+    }),
+    profiles: this.builder.array([]),
+  });
 
-  constructor(private builder: FormBuilder) { }
+  constructor(private builder: FormBuilder) {}
 
   ngOnInit() {
+    const user: User = {
+      name: 'My User',
+      address: {
+        street: 'street one',
+      },
+      profiles: [
+        { name: 'Profile One', permissions: ['Can', 'View'] },
+        { name: 'Profile Two', permissions: ['Cannot', 'Edit'] },
+      ],
+    };
+
+    // This is to check that ValuesOf takes in account the Control type of a FormArray
+    const valueOfUser: ValuesOf<UserForm> = user;
+
+    valueOfUser.profiles.forEach((profile) =>
+      this.build.controls.profiles.push(new FormControl(profile))
+    );
+    this.build.setValue(valueOfUser);
+
     console.log(1);
   }
 }

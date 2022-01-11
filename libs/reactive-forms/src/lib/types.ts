@@ -5,7 +5,7 @@ import { AbstractControl } from '@angular/forms';
 
 type NonUndefined<T> = T extends undefined ? never : T;
 
-// This type is **Experimental** 
+// This type is **Experimental**
 export type ControlsOf<T extends Record<string, any>> = {
   [K in keyof T]: NonUndefined<T[K]> extends AbstractControl ? T[K] : NonUndefined<T[K]> extends (infer R)[]
   ? FormArray<R>
@@ -19,7 +19,7 @@ export type ValuesOf<T extends ControlsOf<any>> = {
   ? R
   : NonUndefined<T[K]> extends FormGroup<infer R>
   ? ValuesOf<R>
-  : NonUndefined<T[K]> extends FormArray<infer R> ? R[] : NonUndefined<T[K]>;
+  : NonUndefined<T[K]> extends FormArray<infer R, infer C> ? R[] : NonUndefined<T[K]>;
 };
 
 export type DeepPartial<T> = {
