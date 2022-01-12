@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.4](https://github.com/ngneat/reactive-forms/compare/v4.0.3...v4.0.4) (2022-01-12)
+
+
+### Bug Fixes
+
+* wrong usage of Control generic type in FormArray for FormBuilder and for ValuesOf ([849500f](https://github.com/ngneat/reactive-forms/commit/849500f263f7dbb630d29f54cca1c751ecbf4369))
+
 ### [4.0.3](https://github.com/ngneat/reactive-forms/compare/v4.0.2...v4.0.3) (2022-01-04)
 
 
