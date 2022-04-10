@@ -198,7 +198,7 @@ Observes the control's `valid` status.
 import { FormControl } from '@ngneat/reactive-forms';
 
 const control = new FormControl('');
-control.valid$.subscribe(isInvalid => ...);
+control.valid$.subscribe(isValid => ...);
 ```
 
 ### `status$`
