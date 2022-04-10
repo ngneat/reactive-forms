@@ -1,3 +1,4 @@
+import { Validators } from '@angular/forms';
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 import { FormControl, FormGroup } from '..';
@@ -33,6 +34,8 @@ describe('FormArray Types', () => {
 
     expectTypeOf(arr.disabled$).toEqualTypeOf<Observable<boolean>>();
     expectTypeOf(arr.enabled$).toEqualTypeOf<Observable<boolean>>();
+    expectTypeOf(arr.invalid$).toEqualTypeOf<Observable<boolean>>();
+    expectTypeOf(arr.valid$).toEqualTypeOf<Observable<boolean>>();
     expectTypeOf(arr.status$).toEqualTypeOf<Observable<ControlState>>();
 
     const first$ = arr.select((state) => {
@@ -205,6 +208,28 @@ describe('FormArray Functionality', () => {
     expect(spy).toHaveBeenCalledWith(false);
     control.disable();
     expect(spy).toHaveBeenCalledTimes(2);
+  });
+
+  it('should invalidChanges$', () => {
+    const control = new FormArray([new FormControl(null, Validators.required)]);
+    const spy = jest.fn();
+    control.invalid$.subscribe(spy);
+    expect(spy).toHaveBeenCalledWith(true);
+    control.setValue(['abc']);
+    expect(spy).toHaveBeenCalledWith(false);
+    control.setValue([null]);
+    expect(spy).toHaveBeenCalledTimes(3);
+  });
+
+  it('should validChanges$', () => {
+    const control = new FormArray([new FormControl(null, Validators.required)]);
+    const spy = jest.fn();
+    control.valid$.subscribe(spy);
+    expect(spy).toHaveBeenCalledWith(false);
+    control.setValue(['abc']);
+    expect(spy).toHaveBeenCalledWith(true);
+    control.setValue([null]);
+    expect(spy).toHaveBeenCalledTimes(3);
   });
 
   it('should statusChanges$', () => {

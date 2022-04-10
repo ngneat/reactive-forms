@@ -23,7 +23,9 @@ export function controlValueChanges$<T>(
 
 export type ControlState = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED';
 
-export function controlStatus$<K extends 'disabled' | 'enabled' | 'status'>(
+export function controlStatus$<
+  K extends 'disabled' | 'enabled' | 'invalid' | 'valid' | 'status'
+>(
   control: AbstractControl,
   type: K
 ): Observable<K extends 'status' ? ControlState : boolean> {

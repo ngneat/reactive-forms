@@ -19,7 +19,6 @@ import {
 } from './core';
 import { BoxedValue } from './types';
 
-
 export class FormControl<T> extends NgFormControl {
   readonly value!: T;
   readonly valueChanges!: Observable<T>;
@@ -37,6 +36,8 @@ export class FormControl<T> extends NgFormControl {
   readonly value$ = controlValueChanges$<T>(this);
   readonly disabled$ = controlStatus$(this, 'disabled');
   readonly enabled$ = controlStatus$(this, 'enabled');
+  readonly invalid$ = controlStatus$(this, 'invalid');
+  readonly valid$ = controlStatus$(this, 'valid');
   readonly status$ = controlStatus$(this, 'status');
   readonly errors$ = controlErrorChanges$(
     this,
