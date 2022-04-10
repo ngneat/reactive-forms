@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/ngneat/reactive-forms/compare/v4.0.4...v4.1.0) (2022-04-10)
+
+
+### Features
+
+* **reactive-forms:** add invalid$ and valid$ ([f232fa1](https://github.com/ngneat/reactive-forms/commit/f232fa139eca7851d2643adc55e3fe7bf24de367))
+
+
+### Bug Fixes
+
+* readme typo ([2a0358f](https://github.com/ngneat/reactive-forms/commit/2a0358fbbcf02e245808d41200ccecdfb9544269))
+
 ### [4.0.4](https://github.com/ngneat/reactive-forms/compare/v4.0.3...v4.0.4) (2022-01-12)
 
 
