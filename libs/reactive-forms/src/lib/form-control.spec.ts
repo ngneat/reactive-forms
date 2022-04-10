@@ -36,6 +36,28 @@ describe('FormControl Functionality', () => {
     expect(spy).toHaveBeenCalledTimes(2);
   });
 
+  it('should invalidChanges$', () => {
+    const control = new FormControl<string | null>(null, Validators.required);
+    const spy = jest.fn();
+    control.invalid$.subscribe(spy);
+    expect(spy).toHaveBeenCalledWith(true);
+    control.setValue('abc');
+    expect(spy).toHaveBeenCalledWith(false);
+    control.setValue(null);
+    expect(spy).toHaveBeenCalledTimes(3);
+  });
+
+  it('should validChanges$', () => {
+    const control = new FormControl<string | null>(null, Validators.required);
+    const spy = jest.fn();
+    control.valid$.subscribe(spy);
+    expect(spy).toHaveBeenCalledWith(false);
+    control.setValue('abc');
+    expect(spy).toHaveBeenCalledWith(true);
+    control.setValue(null);
+    expect(spy).toHaveBeenCalledTimes(3);
+  });
+
   it('should statusChanges$', () => {
     const control = new FormControl<string>();
     const spy = jest.fn();

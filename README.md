@@ -179,6 +179,28 @@ const control = new FormControl('');
 control.enabled$.subscribe(isEnabled => ...);
 ```
 
+### `invalid$`
+
+Observes the control's `invalid` status.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl('');
+control.invalid$.subscribe(isInvalid => ...);
+```
+
+### `valid$`
+
+Observes the control's `valid` status.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl('');
+control.valid$.subscribe(isInvalid => ...);
+```
+
 ### `status$`
 
 Observes the control's `status`.

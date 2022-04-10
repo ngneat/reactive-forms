@@ -24,9 +24,9 @@ import { DeepPartial } from './types';
 export class FormArray<
   T,
   Control extends AbstractControl = T extends Record<any, any>
-  ? FormGroup<ControlsOf<T>>
-  : FormControl<T>
-  > extends NgFormArray {
+    ? FormGroup<ControlsOf<T>>
+    : FormControl<T>
+> extends NgFormArray {
   readonly value!: T[];
   readonly valueChanges!: Observable<T[]>;
 
@@ -43,6 +43,8 @@ export class FormArray<
   readonly value$ = controlValueChanges$<T[]>(this);
   readonly disabled$ = controlStatus$(this, 'disabled');
   readonly enabled$ = controlStatus$(this, 'enabled');
+  readonly invalid$ = controlStatus$(this, 'invalid');
+  readonly valid$ = controlStatus$(this, 'valid');
   readonly status$ = controlStatus$(this, 'status');
   readonly errors$ = controlErrorChanges$(
     this,
