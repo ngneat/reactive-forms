@@ -47,7 +47,7 @@ Let's take a look at all the neat things we provide:
 
 ## Control Type
 
-`FormControl/FormArray` takes a generic that defines the `type` of the control. This `type` is than used to enhance every method exposed by Angular or this library. 
+`FormControl/FormArray` takes a generic that defines the `type` of the control. This `type` is then used to enhance every method exposed by Angular or this library. 
 
 Use it with a `FormControl`:
 
