@@ -1,5 +1,5 @@
 
-import { AbstractControl, FormArray } from "@angular/forms";
+import { AbstractControl, UntypedFormArray } from "@angular/forms";
 import { from, isObservable, Observable, of } from "rxjs";
 import { debounceTime, switchMap, take, tap } from "rxjs/operators";
 
@@ -64,11 +64,11 @@ function handleFormArrays<T>(
   Object.keys(formValue).forEach(controlName => {
     const value = (formValue as any)[controlName];
 
-    if (Array.isArray(value) && control.get(controlName) instanceof FormArray) {
+    if (Array.isArray(value) && control.get(controlName) instanceof UntypedFormArray) {
       if (!arrControlFactory || (arrControlFactory && !(controlName in arrControlFactory))) {
         throw new Error(`Please provide arrControlFactory for ${controlName}`);
       }
-      const current = control.get(controlName) as FormArray;
+      const current = control.get(controlName) as UntypedFormArray;
       const fc = (arrControlFactory as any)[controlName]
       clearFormArray(current);
       value.forEach((v, i) => current.insert(i, fc(v)));
@@ -76,7 +76,7 @@ function handleFormArrays<T>(
   });
 }
 
-export function clearFormArray(control: FormArray) {
+export function clearFormArray(control: UntypedFormArray) {
   while (control.length !== 0) {
     control.removeAt(0);
   }

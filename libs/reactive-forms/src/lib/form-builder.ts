@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, FormBuilder as NgFormBuilder, ValidatorFn } from '@angular/forms';
+import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, UntypedFormBuilder, ValidatorFn } from '@angular/forms';
 import { FormControl, FormGroup } from "..";
 import { FormArray } from "./form-array";
 import { BoxedValue, ControlsOf } from "./types";
 
 @Injectable({ providedIn: 'root' })
-export class FormBuilder extends NgFormBuilder {
+export class FormBuilder extends UntypedFormBuilder {
 
   control<T>(
     formState?: BoxedValue<T>,

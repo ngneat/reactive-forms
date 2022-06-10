@@ -1,6 +1,6 @@
 import {
   AbstractControl,
-  FormGroup as NgFormGroup,
+  UntypedFormGroup,
   ValidationErrors,
 } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
@@ -21,7 +21,7 @@ import {
 } from './core';
 import { DeepPartial, ValuesOf } from './types';
 
-export class FormGroup<T extends Record<string, any>> extends NgFormGroup {
+export class FormGroup<T extends Record<string, any>> extends UntypedFormGroup {
   readonly value!: ValuesOf<T>;
   readonly valueChanges!: Observable<ValuesOf<T>>;
 
@@ -48,8 +48,8 @@ export class FormGroup<T extends Record<string, any>> extends NgFormGroup {
 
   constructor(
     public controls: T,
-    validatorOrOpts?: ConstructorParameters<typeof NgFormGroup>[1],
-    asyncValidator?: ConstructorParameters<typeof NgFormGroup>[2]
+    validatorOrOpts?: ConstructorParameters<typeof UntypedFormGroup>[1],
+    asyncValidator?: ConstructorParameters<typeof UntypedFormGroup>[2]
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }

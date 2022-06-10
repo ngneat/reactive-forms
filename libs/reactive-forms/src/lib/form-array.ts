@@ -1,6 +1,6 @@
 import {
   AbstractControl,
-  FormArray as NgFormArray,
+  UntypedFormArray,
   ValidationErrors,
 } from '@angular/forms';
 import { isObservable, Observable, Subject, Subscription } from 'rxjs';
@@ -26,7 +26,7 @@ export class FormArray<
   Control extends AbstractControl = T extends Record<any, any>
     ? FormGroup<ControlsOf<T>>
     : FormControl<T>
-> extends NgFormArray {
+> extends UntypedFormArray {
   readonly value!: T[];
   readonly valueChanges!: Observable<T[]>;
 
@@ -53,8 +53,8 @@ export class FormArray<
 
   constructor(
     public controls: Array<Control>,
-    validatorOrOpts?: ConstructorParameters<typeof NgFormArray>[1],
-    asyncValidator?: ConstructorParameters<typeof NgFormArray>[2]
+    validatorOrOpts?: ConstructorParameters<typeof UntypedFormArray>[1],
+    asyncValidator?: ConstructorParameters<typeof UntypedFormArray>[2]
   ) {
     super(controls, validatorOrOpts, asyncValidator);
   }

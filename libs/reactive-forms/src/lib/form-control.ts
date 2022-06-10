@@ -1,5 +1,5 @@
 import {
-  FormControl as NgFormControl,
+  UntypedFormControl,
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
@@ -19,7 +19,7 @@ import {
 } from './core';
 import { BoxedValue } from './types';
 
-export class FormControl<T> extends NgFormControl {
+export class FormControl<T> extends UntypedFormControl {
   readonly value!: T;
   readonly valueChanges!: Observable<T>;
 
@@ -46,8 +46,8 @@ export class FormControl<T> extends NgFormControl {
 
   constructor(
     formState?: BoxedValue<T>,
-    validatorOrOpts?: ConstructorParameters<typeof NgFormControl>[1],
-    asyncValidator?: ConstructorParameters<typeof NgFormControl>[2]
+    validatorOrOpts?: ConstructorParameters<typeof UntypedFormControl>[1],
+    asyncValidator?: ConstructorParameters<typeof UntypedFormControl>[2]
   ) {
     super(formState, validatorOrOpts, asyncValidator);
   }
