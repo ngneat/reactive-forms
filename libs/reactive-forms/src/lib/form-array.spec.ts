@@ -1,17 +1,47 @@
 import { Validators } from '@angular/forms';
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subject, Subscription } from 'rxjs';
-import { FormControl, FormGroup } from '..';
+import {ControlsOf, FormControl, FormGroup, ValuesOf} from '..';
 import { ControlState } from './core';
 import { FormArray } from './form-array';
 
 type Base = {
   name: string;
+  nameControl: FormControl<string>;
   phone: {
     prefix: string;
     number: string;
   };
+  phoneControl: FormControl<{
+    prefix: string;
+    number: string;
+  }>;
+  phoneGroup: FormGroup<ControlsOf<{
+    prefix: string;
+    number: string;
+  }>>
+  deep: Base[];
+  deepFormArray: FormArray<Base>;
 };
+
+type ValueOfBase = {
+  name: string;
+  nameControl: string;
+  phone: {
+    prefix: string;
+    number: string;
+  };
+  phoneControl:{
+    prefix: string;
+    number: string;
+  };
+  phoneGroup:{
+    prefix: string;
+    number: string;
+  };
+  deep: ValueOfBase[];
+  deepFormArray: ValueOfBase[];
+}
 
 describe('FormArray Types', () => {
   it('should infer primitives', () => {
@@ -56,26 +86,48 @@ describe('FormArray Types', () => {
     const arr = new FormArray<Base>([
       new FormGroup({
         name: new FormControl(''),
+        nameControl: new FormControl(''),
         phone: new FormGroup({
           prefix: new FormControl(''),
           number: new FormControl(''),
         }),
+        phoneControl: new FormControl({
+          prefix: '',
+          number: '',
+        }),
+        phoneGroup: new FormGroup({
+          prefix: new FormControl(''),
+          number: new FormControl(''),
+        }),
+        deep: new FormArray([]),
+        deepFormArray: new FormArray([]),
       }),
     ]);
 
-    expectTypeOf(arr.value).toEqualTypeOf<Base[]>();
-    expectTypeOf(arr.valueChanges).toEqualTypeOf<Observable<Base[]>>();
-    expectTypeOf(arr.value$).toEqualTypeOf<Observable<Base[]>>();
+    expectTypeOf(arr.value).toEqualTypeOf<ValueOfBase[]>();
+    expectTypeOf(arr.valueChanges).toEqualTypeOf<Observable<ValueOfBase[]>>();
+    expectTypeOf(arr.value$).toEqualTypeOf<Observable<ValueOfBase[]>>();
 
     // @ts-expect-error - should be typed
     arr.insert(0, new FormControl(1));
     arr.push(
       new FormGroup({
         name: new FormControl(''),
+        nameControl: new FormControl(''),
         phone: new FormGroup({
           prefix: new FormControl(''),
           number: new FormControl(''),
         }),
+        phoneControl: new FormControl({
+          prefix: '',
+          number: '',
+        }),
+        phoneGroup: new FormGroup({
+          prefix: new FormControl(''),
+          number: new FormControl(''),
+        }),
+        deep: new FormArray([]),
+        deepFormArray: new FormArray([]),
       })
     );
 
@@ -90,7 +142,7 @@ describe('FormArray Types', () => {
     );
 
     const first$ = arr.select((state) => {
-      expectTypeOf(state).toEqualTypeOf<Base[]>();
+      expectTypeOf(state).toEqualTypeOf<ValueOfBase[]>();
 
       return state[0];
     });
@@ -100,19 +152,19 @@ describe('FormArray Types', () => {
     // @ts-expect-error - should be typed
     arr.reset({ foo: '' });
 
-    arr.reset([{ name: '', phone: { prefix: '', number: '' } }]);
+    arr.reset([{ name: '', phone: { prefix: '', number: '' }, nameControl: '', phoneControl: { prefix: '', number: '' }, phoneGroup: { prefix: '', number: '' }, deep: [], deepFormArray: [] }]);
 
-    expectTypeOf(arr.getRawValue()).toEqualTypeOf<Base[]>();
+    expectTypeOf(arr.getRawValue()).toEqualTypeOf<ValueOfBase[]>();
   });
 
   it('should infer setValue', () => {
     const arr = new FormArray<Base>([]);
 
     try {
-      arr.setValue([{ name: '', phone: { number: '', prefix: '' } }]);
+      arr.setValue([{ name: '', phone: { prefix: '', number: '' }, nameControl: '', phoneControl: { prefix: '', number: '' }, phoneGroup: { prefix: '', number: '' }, deep: [], deepFormArray: [] }]);
 
       const sub = arr.setValue(
-        of([{ name: '', phone: { number: '', prefix: '' } }])
+        of([{ name: '', phone: { prefix: '', number: '' }, nameControl: '', phoneControl: { prefix: '', number: '' }, phoneGroup: { prefix: '', number: '' }, deep: [], deepFormArray: [] }])
       );
       expectTypeOf(sub).toEqualTypeOf<Subscription>();
     } catch {
@@ -211,7 +263,7 @@ describe('FormArray Functionality', () => {
   });
 
   it('should invalidChanges$', () => {
-    const control = new FormArray([new FormControl(null, Validators.required)]);
+    const control = new FormArray([new FormControl<string | null>(null, Validators.required)]);
     const spy = jest.fn();
     control.invalid$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(true);
@@ -222,7 +274,7 @@ describe('FormArray Functionality', () => {
   });
 
   it('should validChanges$', () => {
-    const control = new FormArray([new FormControl(null, Validators.required)]);
+    const control = new FormArray([new FormControl<string | null>(null, Validators.required)]);
     const spy = jest.fn();
     control.valid$.subscribe(spy);
     expect(spy).toHaveBeenCalledWith(false);
