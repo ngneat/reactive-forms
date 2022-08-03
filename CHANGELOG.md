@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.1](https://github.com/ngneat/reactive-forms/compare/v5.0.0...v5.0.1) (2022-08-03)
+
+
+### Bug Fixes
+
+*  incorrect typing of FormArray value for complex models ([7dc954f](https://github.com/ngneat/reactive-forms/commit/7dc954fb7ab480a9d4ece63f8b6bbfd52c03b08d))
+
 ## [5.0.0](https://github.com/ngneat/reactive-forms/compare/v4.1.0...v5.0.0) (2022-06-10)
 
 
