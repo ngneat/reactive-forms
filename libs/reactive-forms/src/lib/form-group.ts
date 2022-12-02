@@ -124,8 +124,8 @@ export class FormGroup<T extends Record<string, any>> extends UntypedFormGroup {
   }
 
   markAsTouched(
-    ...opts: Parameters<AbstractControl['markAllAsTouched']>
-  ): ReturnType<AbstractControl['markAllAsTouched']> {
+    ...opts: Parameters<AbstractControl['markAsTouched']>
+  ): ReturnType<AbstractControl['markAsTouched']> {
     super.markAsTouched(...opts);
     this.touchChanges.next(true);
   }

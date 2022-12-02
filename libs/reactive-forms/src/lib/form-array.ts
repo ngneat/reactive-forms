@@ -140,8 +140,8 @@ export class FormArray<
   }
 
   markAsTouched(
-    ...opts: Parameters<UntypedFormArray['markAllAsTouched']>
-  ): ReturnType<UntypedFormArray['markAllAsTouched']> {
+    ...opts: Parameters<UntypedFormArray['markAsTouched']>
+  ): ReturnType<UntypedFormArray['markAsTouched']> {
     super.markAsTouched(...opts);
     this.touchChanges.next(true);
   }
