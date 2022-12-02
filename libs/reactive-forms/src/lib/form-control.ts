@@ -96,8 +96,8 @@ export class FormControl<T> extends UntypedFormControl {
   }
 
   markAsTouched(
-    ...opts: Parameters<AbstractControl['markAllAsTouched']>
-  ): ReturnType<AbstractControl['markAllAsTouched']> {
+    ...opts: Parameters<AbstractControl['markAsTouched']>
+  ): ReturnType<AbstractControl['markAsTouched']> {
     super.markAsTouched(...opts);
     this.touchChanges.next(true);
   }
