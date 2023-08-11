@@ -19,7 +19,11 @@ export type ValuesOf<T extends ControlsOf<any>> = {
   ? R
   : NonUndefined<T[K]> extends FormGroup<infer R>
   ? ValuesOf<R>
-  : NonUndefined<T[K]> extends FormArray<infer R, infer C> ? R[] : NonUndefined<T[K]>;
+  : NonUndefined<T[K]> extends FormArray<infer R, infer C>
+  ? R extends Record<any, any>
+    ? ValuesOf<R>[]
+    : R[]
+  : NonUndefined<T[K]>;
 };
 
 export type DeepPartial<T> = {
