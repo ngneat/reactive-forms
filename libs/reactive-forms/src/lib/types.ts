@@ -21,7 +21,7 @@ export type ValuesOf<T extends ControlsOf<any>> = {
   ? ValuesOf<R>
   : NonUndefined<T[K]> extends FormArray<infer R, infer C>
   ? R extends Record<any, any>
-    ? ValuesOf<R>[]
+    ? ValuesOf<ControlsOf<R>>[]
     : R[]
   : NonUndefined<T[K]>;
 };
