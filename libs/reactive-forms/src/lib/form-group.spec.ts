@@ -25,6 +25,18 @@ const createGroup = () => {
   );
 };
 
+const createInvalidGroup = () => {
+  return new FormGroup(
+    {
+      name: new FormControl<string | null>(null, Validators.required),
+      phone: new FormGroup({
+        num: new FormControl<number | null>(null, Validators.required),
+        prefix: new FormControl<number | null>(null, Validators.required),
+      }),
+    }
+  );
+};
+
 describe('FormGroup Functionality', () => {
   it('should valueChanges$', () => {
     const control = createGroup();
@@ -43,6 +55,49 @@ describe('FormGroup Functionality', () => {
     expect(spy).toHaveBeenCalledWith({
       name: 'changed',
       phone: { num: null, prefix: null },
+    });
+  });
+
+  it('should validValueChanges$', () => {
+    const control = createInvalidGroup();
+    const spy = jest.fn();
+    control.validValue$.subscribe(spy);
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    control.patchValue({
+      name: 'jim',
+      phone: {
+        num: 0,
+        prefix: 1
+      }
+    });
+    
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledWith({
+      name: 'jim',
+      phone: { num: 0, prefix: 1 },
+    });
+    
+    control.patchValue({
+      name: 'changed',
+    });
+    
+    expect(spy).toHaveBeenCalledTimes(3);
+    expect(spy).toHaveBeenCalledWith({
+      name: 'changed',
+      phone: { num: 0, prefix: 1 },
+    });
+
+    control.patchValue({
+      phone: {
+        num: null
+      }
+    });
+
+    expect(spy).toHaveBeenCalledTimes(3);
+    expect(spy).not.toHaveBeenCalledWith({
+      name: 'changed',
+      phone: { num: null, prefix: 1 },
     });
   });
 

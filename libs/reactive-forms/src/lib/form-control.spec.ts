@@ -14,6 +14,19 @@ describe('FormControl Functionality', () => {
     expect(spy).toHaveBeenCalledWith('patched');
   });
 
+  it('should validValueChanges$', () => {
+    const control = new FormControl<string | null>(null, Validators.required);
+    const spy = jest.fn();
+    control.validValue$.subscribe(spy);
+    expect(spy).toHaveBeenCalledTimes(1);
+    control.patchValue('patched');
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledWith('patched');
+    control.patchValue('');
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).not.toHaveBeenCalledWith('');
+  });
+
   it('should disabledChanges$', () => {
     const control = new FormControl<string>();
     const spy = jest.fn();
