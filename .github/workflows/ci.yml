@@ -1,17 +1,14 @@
-name: '@ngneat/reactive-forms'
+name: 'lothern/reactive-forms'
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
   pull_request:
-
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-
     steps:
       - uses: actions/checkout@v2
       - name: Cache node modules
