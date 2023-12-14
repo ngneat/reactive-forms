@@ -1,7 +1,7 @@
 import { Validators } from '@angular/forms';
 import { expectTypeOf } from 'expect-type';
 import { Observable, of, Subject, Subscription } from 'rxjs';
-import {ControlsOf, FormControl, FormGroup, ValuesOf} from '..';
+import {ControlsOf, FormControl, FormGroup} from '..';
 import { ControlState } from './core';
 import { FormArray } from './form-array';
 
@@ -224,6 +224,13 @@ const createArray = (withError = false) => {
   );
 };
 
+const createInvalidArray = (withError = false) => {
+  return new FormArray<string | null>(
+    [new FormControl(null, Validators.required), new FormControl(null, Validators.required)],
+    withError ? errorFn : []
+  );
+};
+
 describe('FormArray Functionality', () => {
   it('should valueChanges$', () => {
     const control = createArray();
@@ -238,6 +245,25 @@ describe('FormArray Functionality', () => {
     expect(spy).toHaveBeenCalledWith(['1', '2', '3', '']);
     control.removeAt(1);
     expect(spy).toHaveBeenCalledWith(['1', '3', '']);
+  });
+
+  it('should validValueChanges$', () => {
+    const control = createInvalidArray();
+    const spy = jest.fn();
+    control.validValue$.subscribe(spy);
+    expect(spy).toHaveBeenCalledTimes(1);
+    control.patchValue(['1', '2']);
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledWith(['1', '2']);
+    control.push(new FormControl('3', Validators.required));
+    expect(spy).toHaveBeenCalledTimes(3);
+    expect(spy).toHaveBeenCalledWith(['1', '2', '3']);
+    control.push(new FormControl(null, Validators.required));
+    expect(spy).toHaveBeenCalledTimes(3);
+    expect(spy).not.toHaveReturnedWith(['1', '2', '3', null]);
+    control.removeAt(3);
+    expect(spy).toHaveBeenCalledTimes(4);
+    expect(spy).toHaveBeenCalledWith(['1', '2', '3']);
   });
 
   it('should disabledChanges$', () => {

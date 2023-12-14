@@ -16,6 +16,7 @@ import {
   removeError,
   hasErrorAnd,
   controlErrorChanges$,
+  controlValidValueChanges$,
 } from './core';
 import { BoxedValue } from './types';
 
@@ -34,6 +35,7 @@ export class FormControl<T> extends UntypedFormControl {
     .asObservable()
     .pipe(distinctUntilChanged());
   readonly value$ = controlValueChanges$<T>(this);
+  readonly validValue$ = controlValidValueChanges$<T>(this);
   readonly disabled$ = controlStatus$(this, 'disabled');
   readonly enabled$ = controlStatus$(this, 'enabled');
   readonly invalid$ = controlStatus$(this, 'invalid');

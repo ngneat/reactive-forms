@@ -157,6 +157,17 @@ const control = new FormControl('');
 control.value$.subscribe(value => ...);
 ```
 
+### `validValue$`
+
+Similar to value$; Observes the control's value and **only** emits if the control is valid.
+
+```ts
+import { FormControl } from '@ngneat/reactive-forms';
+
+const control = new FormControl(null, [Validators.required]);
+control.validValue$.subscribe(value => ...);
+```
+
 ### `disabled$`
 
 Observes the control's `disable` status.

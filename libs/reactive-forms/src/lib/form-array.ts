@@ -18,6 +18,7 @@ import {
   disableControl,
   enableControl,
   markAllDirty,
+  controlValidValueChanges$,
 } from './core';
 import { DeepPartial } from './types';
 
@@ -46,6 +47,7 @@ export class FormArray<
     .asObservable()
     .pipe(distinctUntilChanged());
   readonly value$ = controlValueChanges$<Array<ValueOfControl<Control>>>(this);
+  readonly validValue$ = controlValidValueChanges$<Array<ValueOfControl<Control>>>(this);
   readonly disabled$ = controlStatus$(this, 'disabled');
   readonly enabled$ = controlStatus$(this, 'enabled');
   readonly invalid$ = controlStatus$(this, 'invalid');

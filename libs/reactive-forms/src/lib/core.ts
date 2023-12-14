@@ -1,6 +1,6 @@
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { defer, merge, Observable, of, Subscription } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 export function selectControlValue$<T, R>(
   control: any,
@@ -18,6 +18,15 @@ export function controlValueChanges$<T>(
   return merge(
     defer(() => of(control.getRawValue())),
     control.valueChanges.pipe(map(() => control.getRawValue()))
+  ) as Observable<T>;
+}
+
+export function controlValidValueChanges$<T>(
+  control: AbstractControl & { getRawValue: () => T }
+): Observable<T> {
+  return merge(
+    defer(() => of(control.getRawValue())),
+    control.valueChanges.pipe(filter(() => control.valid), map(() => control.getRawValue()))
   ) as Observable<T>;
 }
 

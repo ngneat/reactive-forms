@@ -10,6 +10,7 @@ import {
   controlEnabledWhile,
   controlErrorChanges$,
   controlStatus$,
+  controlValidValueChanges$,
   controlValueChanges$,
   disableControl,
   enableControl,
@@ -36,6 +37,7 @@ export class FormGroup<T extends Record<string, any>> extends UntypedFormGroup {
     .asObservable()
     .pipe(distinctUntilChanged());
   readonly value$ = controlValueChanges$<ValuesOf<T>>(this);
+  readonly validValue$ = controlValidValueChanges$<ValuesOf<T>>(this);
   readonly disabled$ = controlStatus$(this, 'disabled');
   readonly enabled$ = controlStatus$(this, 'enabled');
   readonly invalid$ = controlStatus$(this, 'invalid');
